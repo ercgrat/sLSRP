@@ -21,14 +21,21 @@ public class Router {
 			if(!failing) {
 				System.out.println("Waiting to accept incoming client...");
 				SocketBundle client = NetUtils.acceptClient(serverSocket);
-				Packet packet = new Packet();
-				packet.readHeader(client);
+				int packetType = -1;
+				try {
+					packetType = client.in.read();
+				} catch(Exception e) {
+					System.out.println(e);
+				}
 				
-				switch(packet.type) {
-					case Packet.Type.Alive:
-					case Packet.Type.Data:
-					case Packet.Type.LSA:
-					case Packet.Type.Neighbor:
+				switch(packetType) {
+					case 0:
+						break;
+					case 1:
+						break;
+					case 2:
+						break;
+					case 3:
 						break;
 				}
 			}
