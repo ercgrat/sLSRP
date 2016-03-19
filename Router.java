@@ -28,7 +28,7 @@ public class Router {
 				SocketBundle client = NetUtils.acceptClient(serverSocket);
 				int packetType = -1;
 				try {
-					packetType = client.in.read();
+					packetType = client.in.readInt();
 				} catch(Exception e) {
 					System.out.println(e);
 				}

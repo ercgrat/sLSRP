@@ -17,8 +17,8 @@ class NetUtils {
 		SocketBundle client = new SocketBundle();
 		try {
 			client.socket = socket.accept();
-			client.out = new PrintWriter(client.socket.getOutputStream(), true);
-			client.in = new BufferedReader(new InputStreamReader(client.socket.getInputStream()));
+			client.out = new DataOutputStream(client.socket.getOutputStream());
+			client.in = new DataInputStream(client.socket.getInputStream());
 		} catch(IOException e) {
 			System.out.println(e);
 		}
@@ -30,8 +30,8 @@ class NetUtils {
 		SocketBundle server = new SocketBundle();
 		try {
 			server.socket = new Socket(host, port);
-			server.out = new PrintWriter(server.socket.getOutputStream(), true);
-			server.in = new BufferedReader(new InputStreamReader(server.socket.getInputStream()));
+			server.out = new DataOutputStream(server.socket.getOutputStream());
+			server.in = new DataInputStream(server.socket.getInputStream());
 		} catch(IOException e) {
 			System.out.println(e);
 		}
@@ -42,6 +42,6 @@ class NetUtils {
 
 class SocketBundle {
 	Socket socket;
-	PrintWriter out;
-	BufferedReader in;
+	DataOutputStream out;
+	DataInputStream in;
 }
