@@ -1,12 +1,14 @@
+package sLSRP;
 import java.io.*;
 
 public class Configuration {
 	
+	int maxNetworkSize;
 	int helloInterval;
 	int updateInterval;
 	int forwardInterval;
 	int routerID;
-	int version;
+	String version;
 	int maxPacketLength;
 	int ageLimit;
 	double packetErrorRate;
@@ -16,9 +18,11 @@ public class Configuration {
 	
 	public Configuration() {
 		try {
-			BufferedReader br = new BufferedReader(new FileReader("config.txt"));
+			BufferedReader br = new BufferedReader(new FileReader("sLSRP/config.txt"));
 			
 			String[] tokens = readAndParse(br);
+			maxNetworkSize = Integer.parseInt(tokens[1]);
+			tokens = readAndParse(br);
 			helloInterval = Integer.parseInt(tokens[1]);
 			tokens = readAndParse(br);
 			updateInterval = Integer.parseInt(tokens[1]);
@@ -27,13 +31,11 @@ public class Configuration {
 			tokens = readAndParse(br);
 			routerID = Integer.parseInt(tokens[1]);
 			tokens = readAndParse(br);
-			version = Integer.parseInt(tokens[1]);
+			version = tokens[1];
 			tokens = readAndParse(br);
 			maxPacketLength = Integer.parseInt(tokens[1]);
 			tokens = readAndParse(br);
 			ageLimit = Integer.parseInt(tokens[1]);
-			
-			
 			
 			tokens = readAndParse(br);
 			packetErrorRate = Double.parseDouble(tokens[1]);
