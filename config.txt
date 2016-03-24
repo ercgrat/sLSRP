@@ -1,3 +1,12 @@
-Hello Interval : 5000
-Update Interval : 5000
-Forward Interval : 
+Maximum network size (nodes) : 20
+Hello Interval (ms) : 3000
+Update Interval (ms) : 7000
+Forward Interval (ms) : 7000
+Router ID : 1
+LSRP Version : 1.0
+Maximum Packet Length (bytes) : 128
+Age Limit (ms) : 35000
+Packet Error Rate : .01
+Network Congestion Rate : .04
+Router Failure Rate : .1
+Failure Interval (ms) : 10000
