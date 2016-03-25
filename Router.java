@@ -75,7 +75,7 @@ public class Router {
 						break;
 					case 2://TODO If Receive an alive message, send an ACK back to the sender???
 						synchronized (aliveMessageQueue) {
-				    	    // Should send an ACK immediatelly in listening thread(in this thread) 
+				    	    // Should send an ACK immediately in listening thread(in this thread) 
 				        	
 				    	}
 						break;
