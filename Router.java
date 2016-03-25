@@ -30,12 +30,6 @@ public class Router {
 		connector.start();
 		
 		// Fork all threads
-		
-		// Loop over neighbors in the configuration
-		NeighborConnector connector = new NeighborConnector(config);
-		connector.start();
-				
-		// Fork all threads
 				
 		//LSA thread that processes all the LSAs
 		Queue LSAQueue = new LinkedList();
