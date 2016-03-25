@@ -17,7 +17,10 @@ public class NeighborConnector extends Thread {
 		for(int i =0;i<numberOfNeighbors;i++){
 			String address = config.neighbors[i];
 			System.out.println("Try to establish a connection with the neighbor : "+address);
-			SocketBundle client = NetUtils.clientSocket("", 1033);
+			String[] strs = address.split("|");
+			String ip = strs[0];
+			int port = Integer.parseInt(strs[1]);
+			SocketBundle client = NetUtils.clientSocket(ip, port);
 			int connectionType = 1;
 			try {
 				//Send the connection type
