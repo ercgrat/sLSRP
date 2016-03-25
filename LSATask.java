@@ -1,3 +1,5 @@
+package sLSRP;
+
 
 public class LSATask extends Thread {
 	//

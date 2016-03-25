@@ -1,3 +1,5 @@
+package sLSRP;
+
 
 public class NeighborConnector extends Thread {
 	Configuration config;

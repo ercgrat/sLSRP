@@ -1,3 +1,5 @@
+package sLSRP;
+
 
 public class AliveMessageTask extends Thread {
 	int interval;

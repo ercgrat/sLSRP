@@ -77,7 +77,7 @@ public class Router {
 					case 1://TODO Packet???
 						synchronized (packetQueue) {
 				    	    // Add packet task to the queue 
-							Packet packet ;
+							Packet packet = null;
 				    	    Runnable task = new PacketTask(packet);
 				    	    packetQueue.add(task);
 				    	    //Call the queue to process the task
