@@ -17,9 +17,10 @@ public class NeighborConnector extends Thread {
 		for(int i =0;i<numberOfNeighbors;i++){
 			String address = config.neighbors[i];
 			System.out.println("Try to establish a connection with the neighbor : "+address);
-			String[] strs = address.split("|");
-			String ip = strs[0];
+			String[] strs = address.split("=");
+			String ip = strs[0].trim();
 			int port = Integer.parseInt(strs[1]);
+//			System.out.println("Try to establish a connection with the neighbor : "+ip+":"+port);
 			SocketBundle client = NetUtils.clientSocket(ip, port);
 			int connectionType = 1;
 			try {
@@ -27,7 +28,7 @@ public class NeighborConnector extends Thread {
 				client.out.writeInt(connectionType);
 				//read response type
 				int responseType = client.in.readInt();
-				System.out.println("Build connection with neighbor, the response type is: "+responseType);
+				System.out.println("Connection established with neighbor, the response type is: "+responseType);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

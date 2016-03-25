@@ -1,4 +1,5 @@
 package sLSRP;
+import java.io.IOException;
 import java.net.*;
 import java.util.*;
 
@@ -6,6 +7,10 @@ public class Router {
 
 	public static volatile boolean failing = false;
 	
+	//The predefined router port number that other neighbors can reach to it before building connection.
+	private static final int ROUTER_PORT = 1888;
+	//The universal acknowledgement number
+	private static final int ACK_FLAG = 100;
 
 	public static void main(String args[]) {
 		// Read in configuration
@@ -40,8 +45,9 @@ public class Router {
     	aliveMessageQueue.notify();
 		
 		// Create socket and listen
-		ServerSocket serverSocket = NetUtils.serverSocket();
+		ServerSocket serverSocket = NetUtils.serverSocket(ROUTER_PORT);
 		System.out.println("Listening on port " + serverSocket.getLocalPort() + ".");
+		
 		while(true) {
 			if(!failing) {
 				System.out.println("Waiting to accept incoming client...");
@@ -72,6 +78,11 @@ public class Router {
 				    	    //Call the queue to process the task
 				    	    packetQueue.notify();
 				    	}
+					    try {
+						    client.out.writeInt(ACK_FLAG);
+					    } catch (IOException e) {
+						    e.printStackTrace();
+					    }
 						break;
 					case 2://TODO If Receive an alive message, send an ACK back to the sender???
 						synchronized (aliveMessageQueue) {
