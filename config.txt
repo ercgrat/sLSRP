@@ -10,3 +10,4 @@ Packet Error Rate : .01
 Network Congestion Rate : .04
 Router Failure Rate : .1
 Failure Interval (ms) : 10000
+Neighbors : 192.168.1.1|1033,192.168.1.1|1033

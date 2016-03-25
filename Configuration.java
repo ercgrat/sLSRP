@@ -15,10 +15,12 @@ public class Configuration {
 	double networkCongestionRate;
 	double routerFailureRate;
 	int failureInterval;
+	String[] neighbors;
 	
 	public Configuration() {
 		try {
-			BufferedReader br = new BufferedReader(new FileReader("sLSRP/config.txt"));
+//			BufferedReader br = new BufferedReader(new FileReader("sLSRP/config.txt"));
+			BufferedReader br = new BufferedReader(new FileReader("/Users/fanlingling/Documents/javaworkplace/Sample/src/sLSRP/config.txt"));
 			
 			String[] tokens = readAndParse(br);
 			maxNetworkSize = Integer.parseInt(tokens[1]);
@@ -46,6 +48,10 @@ public class Configuration {
 			
 			tokens = readAndParse(br);
 			failureInterval = Integer.parseInt(tokens[1]);
+			
+			tokens = readAndParse(br);
+			String neighborStr = tokens[1];
+			neighbors =  neighborStr.split(",");
 		} catch(IOException e) {
 			System.out.println(e);
 		}

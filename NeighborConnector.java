@@ -12,8 +12,11 @@ public class NeighborConnector extends Thread {
 	public void run() {
 		//TODO Iterate the neighbor list and establish connection with them.
 		
-		int numberOfNeighbors = 1;//this.config.length()
+		int numberOfNeighbors = config.neighbors.length;
+		
 		for(int i =0;i<numberOfNeighbors;i++){
+			String address = config.neighbors[i];
+			System.out.println("Try to establish a connection with the neighbor : "+address);
 			SocketBundle client = NetUtils.clientSocket("", 1033);
 			int connectionType = 1;
 			try {
