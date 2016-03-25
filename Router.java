@@ -9,7 +9,12 @@ public class Router {
 	//Task queue for storing all the LSA tasks
 	private Queue LSAQueue;
 	//Worker thread for invoking LSA tasks
-	private WorkerThread LSAworker
+	private WorkerThread LSAworker;
+	
+	//Task queue for storing all the packet tasks
+	private Queue packetQueue;
+	//Worker thread for invoking packet tasks
+	private WorkerThread packetworker;
 
 	public static void main(String args[]) {
 		// Read in configuration
@@ -28,6 +33,9 @@ public class Router {
 		}
 	    LSAQueue = new LinkedList();
     	LSAworker = new WorkerThread(LSAQueue);
+    	
+    	packetQueue = new LinkedList();
+    	packetworker = new WorkerThread(LSAQueue);
     	
 		
 		// Create socket and listen
@@ -54,7 +62,15 @@ public class Router {
 				    	    LSAQueue.notify();
 				    	}
 						break;
-					case 1:
+					case 1://TODO Packet???
+						synchronized (packetQueue) {
+				    	    // Add packet task to the queue 
+							Packet packet ;
+				    	    Runnable task = new PacketTask(packet);
+				    	    packetQueue.add(task);
+				    	    //Call the queue to process the task
+				    	    packetQueue.notify();
+				    	}
 						break;
 					case 2:
 						break;

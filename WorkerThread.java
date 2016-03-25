@@ -1,7 +1,12 @@
 import java.util.Queue;
 
-
-public class WorkerThread extends Thread {
+/**
+ * 
+ * This class behaves like a coordinator to maintain a queue for a specific task,
+ * for example task for processing packets.
+ *
+ */
+public class WorkerThread extends {
     private final Queue<Runnable> taskQueue;
     public WorkerThread(Queue queue) {
         this.taskQueue = queue;
