@@ -30,16 +30,20 @@ public class Router {
 		LSAHistory history = new LSAHistory(config);
 		
 		// Loop over neighbors in the configuration
+		NeighborConnector connector = new NeighborConnector(config);
+		connector.start();
 		
 		// Fork all threads
 		
+		//LSA thread that processes all the LSAs
 	    LSAQueue = new LinkedList();
     	LSAWorker = new WorkerThread(LSAQueue);
     	
+    	//Establish the packet thread which processes all the incoming packet and send them to the next router
     	packetQueue = new LinkedList();
     	packetWorker = new WorkerThread(packetQueue);
     	
-    	
+    	//Alive message thread that handle all the ongoing alive messages
     	aliveMessageQueue = new LinkedList();
     	aliveMessageWorker = new WorkerThread(aliveMessageQueue);
     	//Add one task thread to the queue, this task will periodically send alive messages, so it will keep acitve all the time.
