@@ -1,7 +1,7 @@
 
 public class NeighborConnector extends Thread {
 	Configuration config;
-	public PacketTask(Configuration config){
+	public NeighborConnector(Configuration config){
 		this.config = config;
 	}
 	@Override

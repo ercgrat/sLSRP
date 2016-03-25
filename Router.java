@@ -6,19 +6,6 @@ public class Router {
 
 	public static volatile boolean failing = false;
 	
-	//Task queue for storing all the LSA tasks
-	private Queue LSAQueue;
-	//Worker thread for invoking LSA tasks
-	private WorkerThread LSAWorker;
-	
-	//Task queue for storing all the packet tasks
-	private Queue packetQueue;
-	//Worker thread for invoking packet tasks
-	private WorkerThread packetWorker;
-	
-	private Queue aliveMessageQueue;
-	private WorkerThread aliveMessageWorker;
-	
 
 	public static void main(String args[]) {
 		// Read in configuration
@@ -35,6 +22,18 @@ public class Router {
 		
 		// Fork all threads
 		
+		//Task queue for storing all the LSA tasks
+		Queue LSAQueue;
+		//Worker thread for invoking LSA tasks
+		WorkerThread LSAWorker;
+		
+		//Task queue for storing all the packet tasks
+		Queue packetQueue;
+		//Worker thread for invoking packet tasks
+		WorkerThread packetWorker;
+		
+		Queue aliveMessageQueue;
+		WorkerThread aliveMessageWorker;
 		//LSA thread that processes all the LSAs
 	    LSAQueue = new LinkedList();
     	LSAWorker = new WorkerThread(LSAQueue);

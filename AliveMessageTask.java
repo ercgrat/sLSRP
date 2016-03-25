@@ -5,7 +5,6 @@ public class AliveMessageTask extends Thread {
 	public AliveMessageTask(int interval, boolean isMessageDeamon){
 		this.interval = interval;
 		this.isMessageDeamon = isMessageDeamon;
-		this.senderAddress = senderAddress;
 	}
 	@Override
 	public void run() {

@@ -6,7 +6,7 @@ import java.util.Queue;
  * for example task for processing packets.
  *
  */
-public class WorkerThread extends {
+public class WorkerThread extends Thread{
     private final Queue<Runnable> taskQueue;
     public WorkerThread(Queue queue) {
         this.taskQueue = queue;
