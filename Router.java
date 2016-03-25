@@ -43,8 +43,8 @@ public class Router {
     	AliveMessageTask aliveMessageTask = new AliveMessageTask(config.helloInterval);
     	aliveMessageQueue = new LinkedList();
     	aliveMessageQueue.add(aliveMessageTask);
-    	aliveMessageQueue.notify();
     	aliveMessageworker = new WorkerThread(aliveMessageQueue);
+    	aliveMessageQueue.notify();
 		
 		// Create socket and listen
 		ServerSocket serverSocket = NetUtils.serverSocket();
