@@ -39,11 +39,12 @@ public class Router {
     	packetQueue = new LinkedList();
     	packetworker = new WorkerThread(LSAQueue);
     	
-    	//The alive message task only has to be called only once and there is only one item in the queue
-    	AliveMessageTask aliveMessageTask = new AliveMessageTask(config.helloInterval);
+    	
     	aliveMessageQueue = new LinkedList();
-    	aliveMessageQueue.add(aliveMessageTask);
     	aliveMessageworker = new WorkerThread(aliveMessageQueue);
+    	//Add one task thread to the queue, this task will periodically send alive messages, so it will keep acitve all the time.
+    	AliveMessageTask aliveMessageTask = new AliveMessageTask(config.helloInterval,true);
+    	aliveMessageQueue.add(aliveMessageTask);
     	aliveMessageQueue.notify();
 		
 		// Create socket and listen
@@ -61,7 +62,7 @@ public class Router {
 				}
 				
 				switch(packetType) {
-					case 0://TODO LSA???
+					case 0://TODO If LSA, call algorithm to calculate the short path and put the rusult into the table, then send an to neighbors???
 						synchronized (LSAQueue) {
 				    	    // Add LSA task to the queue 
 				    	    Runnable task = new LSATask("");
@@ -80,7 +81,15 @@ public class Router {
 				    	    packetQueue.notify();
 				    	}
 						break;
-					case 2:
+					case 2://TODO If Receive an alive message, send an ACK back to the sender???
+						synchronized (aliveMessageQueue) {
+				    	    // Add an alive message task to the queue 
+							AliveMessageTask aliveMessageTask = new AliveMessageTask(config.helloInterval,false);
+							aliveMessageQueue.add(aliveMessageTask);
+				    	    //Call the queue to process the task
+				    	    aliveMessageQueue.notify();
+				        	
+				    	}
 						break;
 					case 3:
 						break;
