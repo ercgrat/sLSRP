@@ -9,15 +9,15 @@ public class Router {
 	//Task queue for storing all the LSA tasks
 	private Queue LSAQueue;
 	//Worker thread for invoking LSA tasks
-	private WorkerThread LSAworker;
+	private WorkerThread LSAWorker;
 	
 	//Task queue for storing all the packet tasks
 	private Queue packetQueue;
 	//Worker thread for invoking packet tasks
-	private WorkerThread packetworker;
+	private WorkerThread packetWorker;
 	
 	private Queue aliveMessageQueue;
-	private WorkerThread aliveMessageworker;
+	private WorkerThread aliveMessageWorker;
 	
 
 	public static void main(String args[]) {
@@ -34,14 +34,14 @@ public class Router {
 		// Fork all threads
 		
 	    LSAQueue = new LinkedList();
-    	LSAworker = new WorkerThread(LSAQueue);
+    	LSAWorker = new WorkerThread(LSAQueue);
     	
     	packetQueue = new LinkedList();
-    	packetworker = new WorkerThread(LSAQueue);
+    	packetWorker = new WorkerThread(packetQueue);
     	
     	
     	aliveMessageQueue = new LinkedList();
-    	aliveMessageworker = new WorkerThread(aliveMessageQueue);
+    	aliveMessageWorker = new WorkerThread(aliveMessageQueue);
     	//Add one task thread to the queue, this task will periodically send alive messages, so it will keep acitve all the time.
     	AliveMessageTask aliveMessageTask = new AliveMessageTask(config.helloInterval,true);
     	aliveMessageQueue.add(aliveMessageTask);
