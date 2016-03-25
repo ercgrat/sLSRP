@@ -5,6 +5,11 @@ import java.util.*;
 public class Router {
 
 	public static volatile boolean failing = false;
+	
+	//Task queue for storing all the LSA tasks
+	private Queue LSAQueue;
+	//Worker thread for invoking LSA tasks
+	private WorkerThread LSAworker
 
 	public static void main(String args[]) {
 		// Read in configuration
@@ -18,6 +23,12 @@ public class Router {
 		// Loop over neighbors in the configuration
 		
 		// Fork all threads
+		for(int i = 0;i<5;i++){
+			//TODO Threads
+		}
+	    LSAQueue = new LinkedList();
+    	LSAworker = new WorkerThread(LSAQueue);
+    	
 		
 		// Create socket and listen
 		ServerSocket serverSocket = NetUtils.serverSocket();
@@ -34,7 +45,14 @@ public class Router {
 				}
 				
 				switch(packetType) {
-					case 0:
+					case 0://TODO LSA???
+						synchronized (LSAQueue) {
+				    	    // Add LSA task to the queue 
+				    	    Runnable task = new LSATask("");
+				    	    LSAQueue.add(task);
+				    	    //Call the queue to process the task
+				    	    LSAQueue.notify();
+				    	}
 						break;
 					case 1:
 						break;
