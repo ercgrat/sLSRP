@@ -15,6 +15,10 @@ public class Router {
 	private Queue packetQueue;
 	//Worker thread for invoking packet tasks
 	private WorkerThread packetworker;
+	
+	private Queue aliveMessageQueue;
+	private WorkerThread aliveMessageworker;
+	
 
 	public static void main(String args[]) {
 		// Read in configuration
@@ -28,15 +32,19 @@ public class Router {
 		// Loop over neighbors in the configuration
 		
 		// Fork all threads
-		for(int i = 0;i<5;i++){
-			//TODO Threads
-		}
+		
 	    LSAQueue = new LinkedList();
     	LSAworker = new WorkerThread(LSAQueue);
     	
     	packetQueue = new LinkedList();
     	packetworker = new WorkerThread(LSAQueue);
     	
+    	//The alive message task only has to be called only once and there is only one item in the queue
+    	AliveMessageTask aliveMessageTask = new AliveMessageTask(config.helloInterval);
+    	aliveMessageQueue = new LinkedList();
+    	aliveMessageQueue.add(aliveMessageTask);
+    	aliveMessageQueue.notify();
+    	aliveMessageworker = new WorkerThread(aliveMessageQueue);
 		
 		// Create socket and listen
 		ServerSocket serverSocket = NetUtils.serverSocket();
