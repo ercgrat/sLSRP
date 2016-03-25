@@ -3,6 +3,10 @@ import java.io.IOException;
 import java.net.*;
 import java.util.*;
 
+import sLSRP.AliveMessageTask;
+import sLSRP.NeighborConnector;
+import sLSRP.WorkerThread;
+
 public class Router {
 
 	public static volatile boolean failing = false;
@@ -27,22 +31,31 @@ public class Router {
 		
 		// Fork all threads
 		
+		// Loop over neighbors in the configuration
+		NeighborConnector connector = new NeighborConnector(config);
+		connector.start();
+				
+		// Fork all threads
+				
 		//LSA thread that processes all the LSAs
 		Queue LSAQueue = new LinkedList();
 		WorkerThread LSAWorker = new WorkerThread(LSAQueue);
-    	
-    	//Establish the packet thread which processes all the incoming packet and send them to the next router
-    	Queue packetQueue = new LinkedList();
-    	WorkerThread packetWorker = new WorkerThread(packetQueue);
-    	
-    	//Alive message thread that handle all the ongoing alive messages
-    	Queue aliveMessageQueue = new LinkedList();
-    	WorkerThread aliveMessageWorker = new WorkerThread(aliveMessageQueue);
-    	
-    	//Add one task thread to the queue, this task will periodically send alive messages, so it will keep acitve all the time.
-    	AliveMessageTask aliveMessageTask = new AliveMessageTask(config.helloInterval,true);
-    	aliveMessageQueue.add(aliveMessageTask);
-    	aliveMessageQueue.notify();
+		LSAWorker.start();
+		    	
+		//Establish the packet thread which processes all the incoming packet and send them to the next router
+		Queue packetQueue = new LinkedList();
+		WorkerThread packetWorker = new WorkerThread(packetQueue);
+		packetWorker.start();
+		    	
+		//Alive message thread that handle all the ongoing alive messages
+		Queue aliveMessageQueue = new LinkedList();
+		//Add one task thread to the queue, this task will periodically send alive messages, so it will keep acitve all the time.
+		AliveMessageTask aliveMessageTask = new AliveMessageTask(config.helloInterval,true);
+		aliveMessageQueue.add(aliveMessageTask);
+		//aliveMessageQueue.notify();
+		WorkerThread aliveMessageWorker = new WorkerThread(aliveMessageQueue);
+		aliveMessageWorker.start();
+		
 		
 		// Create socket and listen
 		ServerSocket serverSocket = NetUtils.serverSocket(ROUTER_PORT);
@@ -89,6 +102,11 @@ public class Router {
 				    	    // Should send an ACK immediately in listening thread(in this thread) 
 				        	
 				    	}
+						try {
+						    client.out.writeInt(ACK_FLAG);
+					    } catch (IOException e) {
+						    e.printStackTrace();
+					    }
 						break;
 					case 3:
 						break;
