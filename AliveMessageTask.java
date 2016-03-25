@@ -2,8 +2,7 @@
 public class AliveMessageTask extends Thread {
 	int interval;
 	boolean isMessageDeamon = false;
-	String senderAddress;
-	public AliveMessageTask(int interval, boolean isMessageDeamon, String senderAddress){
+	public AliveMessageTask(int interval, boolean isMessageDeamon){
 		this.interval = interval;
 		this.isMessageDeamon = isMessageDeamon;
 		this.senderAddress = senderAddress;
@@ -19,9 +18,6 @@ public class AliveMessageTask extends Thread {
 					e.printStackTrace();
 				}
 			}
-		}else{
-			//TODO Send an ACK back to the original sender.
 		}
-		
 	}
 }

@@ -43,7 +43,7 @@ public class Router {
     	aliveMessageQueue = new LinkedList();
     	aliveMessageworker = new WorkerThread(aliveMessageQueue);
     	//Add one task thread to the queue, this task will periodically send alive messages, so it will keep acitve all the time.
-    	AliveMessageTask aliveMessageTask = new AliveMessageTask(config.helloInterval,true,"");
+    	AliveMessageTask aliveMessageTask = new AliveMessageTask(config.helloInterval,true);
     	aliveMessageQueue.add(aliveMessageTask);
     	aliveMessageQueue.notify();
 		
@@ -83,11 +83,7 @@ public class Router {
 						break;
 					case 2://TODO If Receive an alive message, send an ACK back to the sender???
 						synchronized (aliveMessageQueue) {
-				    	    // Add an alive message task to the queue 
-							AliveMessageTask aliveMessageTask = new AliveMessageTask(config.helloInterval,false,"send address(ip and port)");
-							aliveMessageQueue.add(aliveMessageTask);
-				    	    //Call the queue to process the task
-				    	    aliveMessageQueue.notify();
+				    	    // Should send an ACK immediatelly in listening thread(in this thread) 
 				        	
 				    	}
 						break;
