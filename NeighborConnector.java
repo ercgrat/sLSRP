@@ -1,6 +1,8 @@
 package sLSRP;
 
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.Map;
 
 
 public class NeighborConnector extends Thread {
@@ -13,9 +15,11 @@ public class NeighborConnector extends Thread {
 		//TODO Iterate the neighbor list and establish connection with them.
 		
 		int numberOfNeighbors = config.configNeighbors.size();
-		
-		for(int i =0;i<numberOfNeighbors;i++){
-			String address = (String) config.configNeighbors.get(i);
+		Iterator iterator = config.configNeighbors.entrySet().iterator();
+		while(iterator.hasNext()){
+			Map.Entry entry = (Map.Entry)iterator.next();
+			int routerID = (Integer)entry.getKey();
+			String address = (String)entry.getValue();
 			System.out.println("Try to establish a connection with the neighbor : "+address);
 			String[] strs = address.split("=");
 			String ip = strs[1].trim();
@@ -32,7 +36,7 @@ public class NeighborConnector extends Thread {
 				client.out.writeInt(config.routerPort);
 				//read response type
 				int responseType = client.in.readInt();
-				if(responseType==0){
+				if(responseType==1){
 					System.out.println("Connection established with neighbor, the response type is: "+responseType);
 					//Put the other router into current neighbor list
 					NetworkInfo.getInstance().getNeighbors().add(Integer.parseInt(strs[0]));
