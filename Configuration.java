@@ -15,7 +15,9 @@ public class Configuration {
 	double networkCongestionRate;
 	double routerFailureRate;
 	int failureInterval;
-	String[] neighbors;
+	
+	int routerPort;
+	String[] configNeighbors;
 	
 	public Configuration() {
 		try {
@@ -49,9 +51,13 @@ public class Configuration {
 			tokens = readAndParse(br);
 			failureInterval = Integer.parseInt(tokens[1]);
 			
+			//The predefined router port number that other neighbors can reach to it before building connection.
+			tokens = readAndParse(br);
+			routerPort = Integer.parseInt(tokens[1]);
+			
 			tokens = readAndParse(br);
 			String neighborStr = tokens[1];
-			neighbors =  neighborStr.split(",");
+			configNeighbors =  neighborStr.split(",");
 		} catch(IOException e) {
 			System.out.println(e);
 		}

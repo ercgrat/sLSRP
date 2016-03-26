@@ -12,10 +12,10 @@ public class NeighborConnector extends Thread {
 	public void run() {
 		//TODO Iterate the neighbor list and establish connection with them.
 		
-		int numberOfNeighbors = config.neighbors.length;
+		int numberOfNeighbors = config.configNeighbors.length;
 		
 		for(int i =0;i<numberOfNeighbors;i++){
-			String address = config.neighbors[i];
+			String address = config.configNeighbors[i];
 			System.out.println("Try to establish a connection with the neighbor : "+address);
 			String[] strs = address.split("=");
 			String ip = strs[0].trim();
@@ -26,6 +26,10 @@ public class NeighborConnector extends Thread {
 			try {
 				//Send the connection type
 				client.out.writeInt(connectionType);
+				//Send this router's ID
+				client.out.writeInt(config.routerID);
+				//Send this router's port number so that the receiving router can connect to this router.
+				client.out.writeInt(config.routerPort);
 				//read response type
 				int responseType = client.in.readInt();
 				System.out.println("Connection established with neighbor, the response type is: "+responseType);

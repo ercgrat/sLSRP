@@ -11,10 +11,13 @@ public class Router {
 
 	public static volatile boolean failing = false;
 	
-	//The predefined router port number that other neighbors can reach to it before building connection.
-	private static final int ROUTER_PORT = 1888;
+	
+	//private static final int ROUTER_PORT = 1888;
 	//The universal acknowledgement number
 	private static final int ACK_FLAG = 100;
+	
+	
+	
 
 	public static void main(String args[]) {
 		// Read in configuration
@@ -51,7 +54,7 @@ public class Router {
 		
 		
 		// Create socket and listen
-		ServerSocket serverSocket = NetUtils.serverSocket(ROUTER_PORT);
+		ServerSocket serverSocket = NetUtils.serverSocket(config.routerPort);
 		System.out.println("Listening on port " + serverSocket.getLocalPort() + ".");
 		
 		while(true) {
