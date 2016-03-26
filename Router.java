@@ -12,13 +12,10 @@ public class Router {
 	public static volatile boolean failing = false;
 	
 	
-	//private static final int ROUTER_PORT = 1888;
 	//The universal acknowledgement number
 	private static final int ACK_FLAG = 100;
 	
 	
-	
-
 	public static void main(String args[]) {
 		// Read in configuration
 		Configuration config = new Configuration();
@@ -37,12 +34,12 @@ public class Router {
 		//LSA thread that processes all the LSAs
 		Queue LSAQueue = new LinkedList();
 		WorkerThread LSAWorker = new WorkerThread(LSAQueue);
-		LSAWorker.start();
+		//LSAWorker.start();
 		    	
 		//Establish the packet thread which processes all the incoming packet and send them to the next router
 		Queue packetQueue = new LinkedList();
 		WorkerThread packetWorker = new WorkerThread(packetQueue);
-		packetWorker.start();
+		//packetWorker.start();
 		    	
 		//Alive message thread that handle all the ongoing alive messages
 		Queue aliveMessageQueue = new LinkedList();
@@ -109,7 +106,20 @@ public class Router {
 						    e.printStackTrace();
 					    }
 						break;
-					case 3:
+					case 3://Establish Neighborhood 
+						try {
+							//Get the router ID and check if it is in the neighbor list and out of the blacklist.
+							int routerID = client.in.readInt();
+							System.out.println("Neighbor establishment request:"+routerID);
+							if(config.configNeighbors.contains(routerID) && config.blacklist.contains(routerID+"")){
+								NetworkInfo.getInstance().getNeighbors().add(routerID);
+							}else{
+								System.out.println("This router has not been registered for a neighborhood :"+routerID);
+							}
+						    client.out.writeInt(ACK_FLAG);
+					    } catch (IOException e) {
+						    e.printStackTrace();
+					    }
 						break;
 				}
 			}

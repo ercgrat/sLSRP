@@ -20,7 +20,7 @@ public class Configuration {
 	int failureInterval;
 	
 	int routerPort;
-	String[] configNeighbors;
+	List configNeighbors = new ArrayList();
 	List blacklist = new ArrayList();
 	
 	public Configuration() {
@@ -61,7 +61,8 @@ public class Configuration {
 			
 			tokens = readAndParse(br);
 			String neighborStr = tokens[1];
-			configNeighbors =  neighborStr.split(",");
+			String[] neigstrs=  neighborStr.split(",");
+			configNeighbors = (List) Arrays.asList(neigstrs);
 			
 			tokens = readAndParse(br);
 			String nonNeighborStr = tokens[1];
