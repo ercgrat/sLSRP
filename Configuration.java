@@ -2,6 +2,7 @@ package sLSRP;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class Configuration {
@@ -20,7 +21,7 @@ public class Configuration {
 	int failureInterval;
 	
 	int routerPort;
-	List configNeighbors = new ArrayList();
+	HashMap configNeighbors = new HashMap();
 	List blacklist = new ArrayList();
 	
 	public Configuration() {
@@ -62,7 +63,10 @@ public class Configuration {
 			tokens = readAndParse(br);
 			String neighborStr = tokens[1];
 			String[] neigstrs=  neighborStr.split(",");
-			configNeighbors = (List) Arrays.asList(neigstrs);
+			for(int i=0;i<neigstrs.length;i++){
+				String[] ns = neigstrs[i].split("=");
+				configNeighbors.put(Integer.parseInt(ns[0]), neigstrs[i]);
+			}
 			
 			tokens = readAndParse(br);
 			String nonNeighborStr = tokens[1];

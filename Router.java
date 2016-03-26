@@ -111,12 +111,16 @@ public class Router {
 							//Get the router ID and check if it is in the neighbor list and out of the blacklist.
 							int routerID = client.in.readInt();
 							System.out.println("Neighbor establishment request:"+routerID);
-							if(config.configNeighbors.contains(routerID) && config.blacklist.contains(routerID+"")){
+							if(config.configNeighbors.containsKey(routerID) && !config.blacklist.contains(routerID+"")){
 								NetworkInfo.getInstance().getNeighbors().add(routerID);
+								//Send the confirmation flag
+								client.out.writeInt(1);
 							}else{
+								//Send the deny flag
+								client.out.writeInt(0);
 								System.out.println("This router has not been registered for a neighborhood :"+routerID);
 							}
-						    client.out.writeInt(ACK_FLAG);
+						    
 					    } catch (IOException e) {
 						    e.printStackTrace();
 					    }
