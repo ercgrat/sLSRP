@@ -41,6 +41,9 @@ public class NeighborConnector extends Thread {
 			String ip = strs[1].trim();
 			int port = Integer.parseInt(strs[2]);
 //			System.out.println("Try to establish a connection with the neighbor : "+ip+":"+port);
+			
+			long timeStamp = System.currentTimeMillis();
+			
 			SocketBundle client = NetUtils.clientSocket(ip, port);
 			int connectionType = 3;
 			try {
@@ -53,9 +56,23 @@ public class NeighborConnector extends Thread {
 				//read response type
 				int responseType = client.in.readInt();
 				if(responseType==1){
-					System.out.println("Connection established with neighbor, the response type is: "+responseType);
+					long laterTimeStamp = System.currentTimeMillis();
+					int delay = (int) (laterTimeStamp - timeStamp);
+					System.out.println("Connection established with neighbor, the delay is: "+delay);
 					//Put the other router into current neighbor list
-					NetworkInfo.getInstance().getNeighbors().add(Integer.parseInt(strs[0]));
+					if(!NetworkInfo.getInstance().getNeighbors().contains(routerID)){
+						NetworkInfo.getInstance().getNeighbors().add(routerID);
+					}
+					if(!NetworkInfo.getInstance().getRouters().contains(routerID)){
+						NetworkInfo.getInstance().getRouters().add(routerID);
+					}
+					Link link = new Link(config.routerID,routerID);
+					if(!NetworkInfo.getInstance().getLinks().contains(link)){
+						NetworkInfo.getInstance().getLinks().add(link);
+					}else{
+						int index = NetworkInfo.getInstance().getLinks().indexOf(link);
+						NetworkInfo.getInstance().getLinks().get(index).delay = delay;
+					}
 				}else{
 					System.out.println("The neighborhood request has been rejected by the other router, the response type is: "+responseType);
 				}

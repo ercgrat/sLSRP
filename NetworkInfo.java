@@ -18,9 +18,19 @@ public class NetworkInfo {
 	}
 	
 	private List neighbors = new ArrayList();
+	private List routers = new ArrayList();
+	private List<Link> links = new ArrayList();
+	
 	public List getNeighbors() {
 		return neighbors;
 	}
 	
+	public List getRouters() {
+		return routers;
+	}
+	
+	public List<Link> getLinks() {
+		return links;
+	}
 	
 }
