@@ -46,9 +46,8 @@ public class Router {
 		//Add one task thread to the queue, this task will periodically send alive messages, so it will keep acitve all the time.
 		AliveMessageTask aliveMessageTask = new AliveMessageTask(config.helloInterval,true);
 		aliveMessageQueue.add(aliveMessageTask);
-		//aliveMessageQueue.notify();
 		WorkerThread aliveMessageWorker = new WorkerThread(aliveMessageQueue);
-		aliveMessageWorker.start();
+		//aliveMessageWorker.start();
 		
 		
 		// Create socket and listen
@@ -75,6 +74,11 @@ public class Router {
 				    	    //Call the queue to process the task
 				    	    LSAQueue.notify();
 				    	}
+						try {
+						    client.out.writeInt(ACK_FLAG);
+					    } catch (IOException e) {
+						    e.printStackTrace();
+					    }
 						break;
 					case 1://TODO Packet???
 						synchronized (packetQueue) {

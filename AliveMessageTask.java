@@ -25,7 +25,7 @@ public class AliveMessageTask extends Thread {
 				int numberOfNeighbors = 1;
 				
 				for(int i =0;i<numberOfNeighbors;i++){
-					String address = "10.0.0.7=1888";
+					String address = "10.0.0.7=1999";
 					System.out.println("Try to send an alive message to a neighbor : "+address);
 					String[] strs = address.split("=");
 					String ip = strs[0].trim();
