@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 /*
  * This class is used for testing packet or file transfer between routers;
- * This is a seperate program that simulating injecting packets into the network, 
+ * This is a separate program that simulating injecting packets into the network, 
  * then the network sends these packets to the subnet receiver.
  */
 public class SimulateSubnetPacketSender {

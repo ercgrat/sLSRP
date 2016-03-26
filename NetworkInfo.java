@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * This class is singleton in the program so that every class in the program can access to this same instance.
  * It store all the neighbor nodes information and relative links.
- * It has also responsible for the calculation of the short path algorithm.
+ * It is also responsible for the calculation of the short path algorithm.
  */
 public class NetworkInfo {
 	private static  NetworkInfo network;
