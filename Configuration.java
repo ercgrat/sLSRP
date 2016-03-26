@@ -1,5 +1,7 @@
 package sLSRP;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Configuration {
 	
@@ -18,6 +20,7 @@ public class Configuration {
 	
 	int routerPort;
 	String[] configNeighbors;
+	List blacklist = new ArrayList();
 	
 	public Configuration() {
 		try {
@@ -58,6 +61,11 @@ public class Configuration {
 			tokens = readAndParse(br);
 			String neighborStr = tokens[1];
 			configNeighbors =  neighborStr.split(",");
+			
+			tokens = readAndParse(br);
+			String nonNeighborStr = tokens[1];
+			String[] configNonNeighbors =  nonNeighborStr.split(",");
+			blacklist = (List) Arrays.asList(configNonNeighbors);
 		} catch(IOException e) {
 			System.out.println(e);
 		}
