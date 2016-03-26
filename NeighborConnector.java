@@ -3,16 +3,32 @@ package sLSRP;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class NeighborConnector extends Thread {
 	Configuration config;
+	 
+
 	public NeighborConnector(Configuration config){
 		this.config = config;
+		//Set up timer to count down how much time has been spent on the neighborhood request. 
+		Timer timer=new Timer();  
+		//The following will executed in 'helloInterval'  
+		timer.schedule(new TimerTask(){
+			@Override
+			public void run() {
+				if(NeighborConnector.this.isAlive()){
+					NeighborConnector.this.interrupt();
+					System.out.println("Time to build a connection with neighbor has reached a limit, so the thread is interrupted.");
+		        }
+		}}, this.config.helloInterval);
 	}
 	@Override
 	public void run() {
-		//TODO Iterate the neighbor list and establish connection with them.
+		
+		//Iterate the neighbor list and establish connection with them.
 		
 		int numberOfNeighbors = config.configNeighbors.size();
 		Iterator iterator = config.configNeighbors.entrySet().iterator();
