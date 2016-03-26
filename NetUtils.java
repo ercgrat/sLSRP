@@ -4,9 +4,9 @@ import java.io.*;
 
 class NetUtils {
 
-	static ServerSocket serverSocket() {
+	static ServerSocket serverSocket(int port) {
 		try {
-			return new ServerSocket(0);
+			return new ServerSocket(port);
 		} catch (IOException e) {
 			System.out.println(e);
 		}
