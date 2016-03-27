@@ -1,18 +1,22 @@
 package sLSRP;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
 
 
 public class NeighborConnector extends Thread {
 	Configuration config;
-	 
+	Queue LSAQueue;
 
-	public NeighborConnector(Configuration config){
+	public NeighborConnector(Configuration config, Queue LSAQueue){
 		this.config = config;
+		this.LSAQueue = LSAQueue;
 		//Set up timer to count down how much time has been spent on the neighborhood request. 
 		Timer timer=new Timer();  
 		//The following will executed in 'helloInterval'  
@@ -28,6 +32,7 @@ public class NeighborConnector extends Thread {
 	@Override
 	public void run() {
 		
+		
 		//Iterate the neighbor list and establish connection with them.
 		
 		int numberOfNeighbors = config.configNeighbors.size();
@@ -40,7 +45,6 @@ public class NeighborConnector extends Thread {
 			String[] strs = address.split("=");
 			String ip = strs[1].trim();
 			int port = Integer.parseInt(strs[2]);
-//			System.out.println("Try to establish a connection with the neighbor : "+ip+":"+port);
 			
 			long timeStamp = System.currentTimeMillis();
 			
@@ -73,6 +77,7 @@ public class NeighborConnector extends Thread {
 						int index = NetworkInfo.getInstance().getLinks().indexOf(link);
 						NetworkInfo.getInstance().getLinks().get(index).delay = delay;
 					}
+					
 				}else{
 					System.out.println("The neighborhood request has been rejected by the other router, the response type is: "+responseType);
 				}
@@ -81,5 +86,13 @@ public class NeighborConnector extends Thread {
 				e.printStackTrace();
 			}
 		}
+		//And then send LSAs to tell every neighbor about new established links.
+		Runnable task = new LSATask(NetworkInfo.getInstance().getLinks());
+	    LSAQueue.add(task);
+	    //Call the queue to process the task
+	    synchronized (LSAQueue) {
+	    	LSAQueue.notify();
+    	}
+	    
 	}
 }

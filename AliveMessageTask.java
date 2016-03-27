@@ -1,14 +1,17 @@
 package sLSRP;
 
 import java.io.IOException;
+import java.util.Queue;
 
 
 public class AliveMessageTask extends Thread {
 	int interval;
 	boolean isMessageDeamon = false;
-	public AliveMessageTask(int interval, boolean isMessageDeamon){
+	Queue LSAQueue;
+	public AliveMessageTask(int interval, boolean isMessageDeamon, Queue LSAQueue){
 		this.interval = interval;
 		this.isMessageDeamon = isMessageDeamon;
+		this.LSAQueue = LSAQueue;
 	}
 	@Override
 	public void run() {
@@ -42,6 +45,13 @@ public class AliveMessageTask extends Thread {
 						e.printStackTrace();
 					}
 				}
+				//TODO if alive messages fail to reach destination, then the destination may go down, so send LSA
+//				Runnable task = new LSATask(NetworkInfo.getInstance().getLinks());
+//			    LSAQueue.add(task);
+//			    //Call the queue to process the task
+//			    synchronized (LSAQueue) {
+//			    	LSAQueue.notify();
+//		    	}
 			}
 		}
 	}

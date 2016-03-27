@@ -1,13 +1,14 @@
 package sLSRP;
 
 import java.io.IOException;
+import java.util.List;
 
 
 public class LSATask extends Thread {
 	//
-	String lsa;
-	public LSATask(String lsa){
-		this.lsa = lsa;
+	List<Link> links;
+	public LSATask(List<Link> links){
+		this.links = links;
 	}
 	@Override
 	public void run() {
