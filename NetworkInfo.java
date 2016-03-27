@@ -1,13 +1,6 @@
 package sLSRP;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * This class is singleton in the program so that every class in the program can access to this same instance.
@@ -37,6 +30,16 @@ public class NetworkInfo {
 	
 	public List<Link> getLinks() {
 		return links;
+	}
+	
+	public List<Link> getNeighborLinks(int routerID) {
+		List<Link> neighborList = new ArrayList<Link>();
+		for(int i = 0; i < links.size(); i++) {
+			if(links.get(i).A == routerID || links.get(i).B == routerID) {
+				neighborList.add(links.get(i));
+			}
+		}
+		return neighborList;
 	}
 	
 	private Set<Integer> settledNodes;
