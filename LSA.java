@@ -1,5 +1,5 @@
 package sLSRP;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Date;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -10,7 +10,7 @@ public class LSA {
 	public int router;
 	public Date age;
 	public int sequenceNumber;
-	public ArrayList<Link> links;
+	public List<Link> links;
 	public int checksum;
 
 	public LSA(DataInputStream in) throws IOException {
@@ -32,12 +32,17 @@ public class LSA {
 		checksum = in.readInt();
 	}
 	
-	public LSA(int router, int sequenceNumber, ArrayList<Link> links, int checksum) {
+	/*
+	 *
+	 TO DO: Write method to calculate checksum...
+	 *
+	 */
+	
+	public LSA(int router, int sequenceNumber, List<Link> links) {
 		this.router = router;
 		this.age = new Date();
 		this.sequenceNumber = sequenceNumber;
 		this.links = links;
-		this.checksum = checksum;
 	}
 
 	public void forward(DataOutputStream out) throws IOException {
@@ -50,6 +55,13 @@ public class LSA {
 			out.writeInt(links.get(i).B);
 			out.writeDouble(links.get(i).delay);
 		}
+		
+		/*
+		 *
+		 TO DO: Call method to calculate checksum...
+		 *
+		 */
+		int checksum = -1;
 		out.writeInt(checksum);
 	}
 	
