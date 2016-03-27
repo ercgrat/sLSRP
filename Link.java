@@ -4,10 +4,10 @@ public class Link {
 
 	public enum Load { LIGHT, MEDIUM, HEAVY };
 
-	int A;
-	int B;
-	double delay;
-	Load load;
+	public int A;
+	public int B;
+	public double delay;
+	public Load load;
 	
 	public Link(int A, int B) {
 		if(B < A) {
