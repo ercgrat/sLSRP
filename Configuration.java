@@ -20,9 +20,8 @@ public class Configuration {
 	double routerFailureRate;
 	int failureInterval;
 	
-	int routerPort;
 	HashMap configNeighbors = new HashMap();
-	List blacklist = new ArrayList();
+	
 	
 	public Configuration() {
 		try {
@@ -56,9 +55,6 @@ public class Configuration {
 			tokens = readAndParse(br);
 			failureInterval = Integer.parseInt(tokens[1]);
 			
-			//The predefined router port number that other neighbors can reach to it before building connection.
-			tokens = readAndParse(br);
-			routerPort = Integer.parseInt(tokens[1]);
 			
 			tokens = readAndParse(br);
 			String neighborStr = tokens[1];
@@ -71,7 +67,7 @@ public class Configuration {
 			tokens = readAndParse(br);
 			String nonNeighborStr = tokens[1];
 			String[] configNonNeighbors =  nonNeighborStr.split(",");
-			blacklist = (List) Arrays.asList(configNonNeighbors);
+			
 		} catch(IOException e) {
 			System.out.println(e);
 		}

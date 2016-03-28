@@ -52,7 +52,7 @@ public class Router {
 		
 		
 		// Create socket and listen
-		ServerSocket serverSocket = NetUtils.serverSocket(config.routerPort);
+		ServerSocket serverSocket = NetUtils.serverSocket();
 		System.out.println("Listening on port " + serverSocket.getLocalPort() + ".");
 		
 		while(true) {

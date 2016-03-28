@@ -10,6 +10,4 @@ Packet Error Rate : .01
 Network Congestion Rate : .04
 Router Failure Rate : .1
 Failure Interval (ms) : 10000
-port : 1888
 Neighbors : 10.0.0.7=1999
-blacklist : 5,6
