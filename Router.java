@@ -21,7 +21,6 @@ public class Router {
 		Configuration config = new Configuration();
 		
 		// Create data structures
-		Links linkData = new Links(config);
 		RoutingTable routingTable = new RoutingTable(config);
 		LSAHistory history = new LSAHistory(config);
 		
@@ -53,6 +52,7 @@ public class Router {
 		
 		// Create socket and listen
 		ServerSocket serverSocket = NetUtils.serverSocket();
+		config.routerPort = serverSocket.getLocalPort();
 		System.out.println("Listening on port " + serverSocket.getLocalPort() + ".");
 		
 		while(true) {
@@ -112,7 +112,7 @@ public class Router {
 							//Get the router ID and check if it is in the neighbor list and out of the blacklist.
 							int routerID = client.in.readInt();
 							System.out.println("Neighbor establishment request:"+routerID);
-							if(config.configNeighbors.containsKey(routerID) && !config.blacklist.contains(routerID+"")){
+							if(config.configNeighbors.containsKey(routerID)){
 								NetworkInfo.getInstance().getNeighbors().add(routerID);
 								//Send the confirmation flag
 								client.out.writeInt(1);
