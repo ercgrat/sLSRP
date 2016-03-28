@@ -12,6 +12,7 @@ public class Configuration {
 	int updateInterval;
 	int forwardInterval;
 	int routerID;
+	String routerIpAddress;
 	int routerPort;
 	String version;
 	int maxPacketLength;

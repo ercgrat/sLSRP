@@ -49,11 +49,19 @@ public class Router {
 		WorkerThread aliveMessageWorker = new WorkerThread(aliveMessageQueue);
 		//aliveMessageWorker.start();
 		
-		
-		// Create socket and listen
+		// Create socket and listen, get ip/port info
 		ServerSocket serverSocket = NetUtils.serverSocket();
+		try {
+			config.routerIpAddress = IpChecker.getIp();
+		} catch(IOException e) {
+			System.out.println(e);
+		}
 		config.routerPort = serverSocket.getLocalPort();
-		System.out.println("Listening on port " + serverSocket.getLocalPort() + ".");
+		System.out.println("Listening on port " + serverSocket.getLocalPort() + " at IP Address " + config.routerIpAddress + ".");
+		
+		// Create user interface
+		UserInterface ui = new UserInterface(config, NetworkInfo.getInstance());
+		ui.run();
 		
 		while(true) {
 			if(!failing) {
