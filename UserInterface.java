@@ -19,7 +19,7 @@ public class UserInterface extends Thread {
 			"1. Print Link State Database\n" +
 			"2. Print LSA History\n" +
 			"3. Print Router Info (id, ip address, port)\n" +
-			"4. Add Router Info to Neighbor List (id, ip address, port)\n" +
+			"4. Add Router Info to Neighbor List\n" +
 			"5. Remove Router from Neighbor List\n" +
 			"6. Shut down router");
 			
@@ -29,14 +29,24 @@ public class UserInterface extends Thread {
 					continue;
 				}
 				int option = Integer.parseInt(input);
+				String output = "";
 				switch(option) {
 					case 1:
+						List<Link> links = netInfo.getLinks();
+						
+						output = "\n~~~UI Response to 1.~~~\n";
+						for(int i = 0; i < links.size(); i++) {
+							Link l = links.get(i);
+							
+							output += "Link 1:\n\tRouter A: " + l.A + "\tRouter B: " + l.B + "\t delay:" + l.delay + "\tloads class: " + l.load + "\n";
+						}
+						System.out.println(output);
 						break;
 					case 2:
 						List<RouterData> routers = netInfo.getRouters();
 						LSAHistory lsaHistory = netInfo.getLSAHistory();
 						
-						String output = "\n~~~UI Response to 2.~~~\n";
+						output = "\n~~~UI Response to 2.~~~\n";
 						for(int i = 0; i < routers.size(); i++) {
 							int routerID = routers.get(i).routerID;
 							int sequenceNo = lsaHistory.getLastSequenceNumber(routerID);
@@ -51,6 +61,16 @@ public class UserInterface extends Thread {
 						"Port: " + config.routerPort);
 						break;
 					case 4:
+						System.out.println("\n~~~UI Response to 4.~~~\nPlease enter the router id, ip address, and port separated by commas:");
+						String[] routerArgs = br.readLine().split(", |,");
+						if(routerArgs.length != 3) {
+							System.out.println("\n~~~UI Feedback~~~\nAn incorrect number of arguments was specified.");
+						} else if(!routerArgs[0].matches("^\\d+$") || !routerArgs[1].matches("^(\\d{1,3}\\.){3}\\d{1,3}$") || !routerArgs[2].matches("^\\d+$")) {
+							System.out.println("\n~~~UI Feedback~~~\nOne or more of the arguments was invalid.");
+						} else {
+							NeighborConnector.sendNeighborRequest(config.routerID, Integer.parseInt(routerArgs[0]), routerArgs[1], Integer.parseInt(routerArgs[2]));
+						}
+						break;
 					case 5:
 						break;
 					case 6:
@@ -60,6 +80,10 @@ public class UserInterface extends Thread {
 						break;
 				}
 			} catch(IOException e) {
+				System.out.println(e);
+			} catch(NumberFormatException e) {
+				System.out.println(e);
+			} catch(Exception e) {
 				System.out.println(e);
 			}
 		}

@@ -29,12 +29,11 @@ public class NeighborConnector extends Thread {
 		        }
 		}}, this.config.helloInterval);
 	}
+	
 	@Override
 	public void run() {
 		
-		
-		//Iterate the neighbor list and establish connection with them.
-		
+		//Iterate over the neighbor list and establish connections with them.
 		int numberOfNeighbors = config.configNeighbors.size();
 		Iterator iterator = config.configNeighbors.entrySet().iterator();
 		while(iterator.hasNext()){
@@ -46,45 +45,7 @@ public class NeighborConnector extends Thread {
 			String ip = strs[1].trim();
 			int port = Integer.parseInt(strs[2]);
 			
-			long timeStamp = System.currentTimeMillis();
-			
-			SocketBundle client = NetUtils.clientSocket(ip, port);
-			int connectionType = 3;
-			try {
-				//Send the connection type
-				client.out.writeInt(connectionType);
-				//Send this router's ID
-				client.out.writeInt(config.routerID);
-				//Send this router's port number so that the receiving router can connect to this router.
-				client.out.writeInt(config.routerPort);
-				//read response type
-				int responseType = client.in.readInt();
-				if(responseType==1){
-					long laterTimeStamp = System.currentTimeMillis();
-					int delay = (int) (laterTimeStamp - timeStamp);
-					System.out.println("Connection established with neighbor, the delay is: "+delay);
-					//Put the other router into current neighbor list
-					if(!NetworkInfo.getInstance().getNeighbors().contains(routerID)){
-						NetworkInfo.getInstance().getNeighbors().add(routerID);
-					}
-					if(!NetworkInfo.getInstance().getRouters().contains(routerID)){
-						NetworkInfo.getInstance().getRouters().add(new RouterData(routerID, ip, port));
-					}
-					Link link = new Link(config.routerID,routerID);
-					if(!NetworkInfo.getInstance().getLinks().contains(link)){
-						NetworkInfo.getInstance().getLinks().add(link);
-					}else{
-						int index = NetworkInfo.getInstance().getLinks().indexOf(link);
-						NetworkInfo.getInstance().getLinks().get(index).delay = delay;
-					}
-					
-				}else{
-					System.out.println("The neighborhood request has been rejected by the other router, the response type is: "+responseType);
-				}
-				
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			boolean connected = sendNeighborRequest(config.routerID, routerID, ip, port);
 		}
 		//And then send LSAs to tell every neighbor about new established links.
 		Runnable task = new LSATask(NetworkInfo.getInstance().getLinks());
@@ -94,5 +55,55 @@ public class NeighborConnector extends Thread {
 	    	LSAQueue.notify();
     	}
 	    
+	}
+	
+	public static boolean sendNeighborRequest(int routerID, int neighborRouterID, String ip, int port) {
+	
+		SocketBundle client = NetUtils.clientSocket(ip, port);
+		long timeStamp = System.currentTimeMillis();
+		int connectionType = 3;
+		
+		try {
+			//Send the connection type
+			client.out.writeInt(connectionType);
+			//Send this router's ID
+			client.out.writeInt(routerID);
+			//Send this router's port number so that the receiving router can connect to this router.
+			client.out.writeInt(port);
+			
+			//read response type
+			int responseType = client.in.readInt();
+			
+			if(responseType == 1) {
+				long laterTimeStamp = System.currentTimeMillis();
+				int delay = (int) (laterTimeStamp - timeStamp);
+				System.out.println("Connection established with neighbor, the delay is: " + delay);
+				
+				// Add entries to the neighbor, router, and link lists
+				if(!NetworkInfo.getInstance().getNeighbors().contains(neighborRouterID)) {
+					NetworkInfo.getInstance().getNeighbors().add(neighborRouterID);
+				}
+				if(!NetworkInfo.getInstance().getRouters().contains(neighborRouterID)) {
+					NetworkInfo.getInstance().getRouters().add(new RouterData(neighborRouterID, ip, port));
+				}
+				
+				Link link = new Link(routerID, neighborRouterID);
+				if(!NetworkInfo.getInstance().getLinks().contains(link)) {
+					NetworkInfo.getInstance().getLinks().add(link);
+				} else {
+					int index = NetworkInfo.getInstance().getLinks().indexOf(link);
+					NetworkInfo.getInstance().getLinks().get(index).delay = delay;
+				}
+				
+				return true;
+			} else {
+				System.out.println("The neighborhood request has been rejected by the other router, the response type is: "+responseType);
+				return false;
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 }
