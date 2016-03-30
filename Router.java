@@ -9,16 +9,13 @@ import sLSRP.WorkerThread;
 
 public class Router {
 
-	public static volatile boolean failing = false;
-	
-	
-	//The universal acknowledgement number
-	private static final int ACK_FLAG = 100;
-	
+	public static volatile boolean failing = false;	
+	private static final int ACK_FLAG = 100; //The universal acknowledgement number
 	
 	public static void main(String args[]) {
 		// Read in configuration
 		Configuration config = new Configuration();
+		NetworkInfo.getInstance().setConfiguration(config);
 		
 		// Create data structures
 		RoutingTable routingTable = new RoutingTable(config);

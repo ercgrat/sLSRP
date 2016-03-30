@@ -68,7 +68,7 @@ public class NeighborConnector extends Thread {
 						NetworkInfo.getInstance().getNeighbors().add(routerID);
 					}
 					if(!NetworkInfo.getInstance().getRouters().contains(routerID)){
-						NetworkInfo.getInstance().getRouters().add(routerID);
+						NetworkInfo.getInstance().getRouters().add(new RouterData(routerID, ip, port));
 					}
 					Link link = new Link(config.routerID,routerID);
 					if(!NetworkInfo.getInstance().getLinks().contains(link)){

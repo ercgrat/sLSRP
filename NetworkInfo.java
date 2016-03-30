@@ -8,23 +8,33 @@ import java.util.*;
  * It is also responsible for the calculation of the short path algorithm.
  */
 public class NetworkInfo {
-	private static  NetworkInfo network;
-	private NetworkInfo(){}
+	private static NetworkInfo network;
+	private Configuration config;
+	
+	private NetworkInfo() {}
+	
 	public static NetworkInfo getInstance(){
-		if(network==null)
+		if(network == null) {
 			network = new NetworkInfo();
+		}
 		return network;
 	}
 	
 	private List neighbors = new ArrayList();
-	private List routers = new ArrayList();
+	private List<RouterData> routers = new ArrayList();
 	private List<Link> links = new ArrayList();
+	private LSAHistory lsaHistory;
+	
+	public void setConfiguration(Configuration config) {
+		this.config = config;
+		lsaHistory = new LSAHistory(config);
+	}
 	
 	public List getNeighbors() {
 		return neighbors;
 	}
 	
-	public List getRouters() {
+	public List<RouterData> getRouters() {
 		return routers;
 	}
 	
@@ -40,6 +50,10 @@ public class NetworkInfo {
 			}
 		}
 		return neighborList;
+	}
+	
+	public LSAHistory getLSAHistory() {
+		return lsaHistory;
 	}
 	
 	private Set<Integer> settledNodes;
