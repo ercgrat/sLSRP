@@ -115,19 +115,27 @@ public class Router {
 						break;
 					case 3://Establish Neighborhood 
 						try {
+							//Read the request type to figure out if it's a request or a cease
+							int requestType = client.in.readInt();
 							//Get the router ID and check if it is in the neighbor list and out of the blacklist.
 							int routerID = client.in.readInt();
+							//Read the port
 							int port = client.in.readInt();
 							System.out.println("Neighbor establishment request: " + routerID + ", " + ip + ", " + port);
 							
-							if(config.configNeighbors.containsKey(routerID)){ //Add and send confirmation flag
-								NeighborConnector.addNeighbor(config.routerID, routerID, ip, port);
-								client.out.writeInt(1);
-							} else { //Send deny flag
-								client.out.writeInt(0);
-								System.out.println("This router has been denied neighborhood: " + routerID + ", " + ip + ", " + port);
-							}
-						    
+							if(requestType == 1) { // Request neighbors
+								if(config.configNeighbors.containsKey(routerID)){ //Add and send confirmation flag
+									NeighborConnector.addNeighbor(config.routerID, routerID, ip, port);
+									client.out.writeInt(1);
+								} else { //Send deny flag
+									client.out.writeInt(0);
+									System.out.println("This router has been denied neighborhood: " + routerID + ", " + ip + ", " + port);
+								}
+							} else if(requestType == 2) { // Cease neighbors
+								NeighborConnector.removeNeighbor(config.routerID, routerID, ip, port);
+							} else {
+								System.out.println("Neighbor packet had invalid request type.");
+							}						    
 					    } catch (IOException e) {
 						    e.printStackTrace();
 					    }

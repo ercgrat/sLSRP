@@ -75,19 +75,10 @@ public class NeighborConnector extends Thread {
 	
 	public static void removeNeighbor(int routerID, int neighborRouterID, String ip, int port) {
 		// Remove entries from the neighbor, router, and link lists
-		if(NetworkInfo.getInstance().getNeighbors().contains(neighborRouterID)) {
-			NetworkInfo.getInstance().getNeighbors().remove(neighborRouterID);
-		}
-		
-		RouterData data = new RouterData(neighborRouterID, ip, port);
-		if(NetworkInfo.getInstance().getRouters().contains(data)) {
-			NetworkInfo.getInstance().getRouters().remove(data);
-		}
+		NetworkInfo.getInstance().getNeighbors().remove(neighborRouterID);
 		
 		Link link = new Link(routerID, neighborRouterID);
-		if(NetworkInfo.getInstance().getLinks().contains(link)) {
-			NetworkInfo.getInstance().getLinks().remove(link);
-		}
+		NetworkInfo.getInstance().getLinks().remove(link);
 	}
 	
 	public static void sendNeighborRequest(int routerID, int neighborRouterID, String ip, int port) {
@@ -100,10 +91,10 @@ public class NeighborConnector extends Thread {
 		try {
 			//Send the connection type
 			client.out.writeInt(connectionType);
-			//Send this router's ID
-			client.out.writeInt(routerID);
 			// Send the neighbor request type (1 = request, 2 = cease)
 			client.out.writeInt(requestType);
+			//Send this router's ID
+			client.out.writeInt(routerID);
 			//Send this router's port number so that the receiving router can connect to this router.
 			client.out.writeInt(port);
 			
@@ -143,7 +134,7 @@ public class NeighborConnector extends Thread {
 			client.out.writeInt(port);
 			client.socket.close();
 			
-			sendCeaseNeighborRequest(routerID, neighborRouterID, ip, port);		
+			removeNeighbor(routerID, neighborRouterID, ip, port);		
 			
 		} catch (IOException e) {
 			e.printStackTrace();
