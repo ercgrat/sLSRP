@@ -45,7 +45,7 @@ public class NeighborConnector extends Thread {
 			String ip = strs[1].trim();
 			int port = Integer.parseInt(strs[2]);
 			
-			boolean connected = sendNeighborRequest(config.routerID, routerID, ip, port);
+			sendNeighborRequest(config.routerID, routerID, ip, port);
 		}
 		//And then send LSAs to tell every neighbor about new established links.
 		Runnable task = new LSATask(NetworkInfo.getInstance().getLinks());
@@ -57,53 +57,96 @@ public class NeighborConnector extends Thread {
 	    
 	}
 	
-	public static boolean sendNeighborRequest(int routerID, int neighborRouterID, String ip, int port) {
+	public static void addNeighbor(int routerID, int neighborRouterID, String ip, int port) {
+		// Add entries to the neighbor, router, and link lists
+		if(!NetworkInfo.getInstance().getNeighbors().contains(neighborRouterID)) {
+			NetworkInfo.getInstance().getNeighbors().add(neighborRouterID);
+		}
+		
+		if(!NetworkInfo.getInstance().getRouters().contains(neighborRouterID)) {
+			NetworkInfo.getInstance().getRouters().add(new RouterData(neighborRouterID, ip, port));
+		}
+		
+		Link link = new Link(routerID, neighborRouterID);
+		if(!NetworkInfo.getInstance().getLinks().contains(link)) {
+			NetworkInfo.getInstance().getLinks().add(link);
+		}
+	}
+	
+	public static void removeNeighbor(int routerID, int neighborRouterID, String ip, int port) {
+		// Remove entries from the neighbor, router, and link lists
+		if(NetworkInfo.getInstance().getNeighbors().contains(neighborRouterID)) {
+			NetworkInfo.getInstance().getNeighbors().remove(neighborRouterID);
+		}
+		
+		RouterData data = new RouterData(neighborRouterID, ip, port);
+		if(NetworkInfo.getInstance().getRouters().contains(data)) {
+			NetworkInfo.getInstance().getRouters().remove(data);
+		}
+		
+		Link link = new Link(routerID, neighborRouterID);
+		if(NetworkInfo.getInstance().getLinks().contains(link)) {
+			NetworkInfo.getInstance().getLinks().remove(link);
+		}
+	}
+	
+	public static void sendNeighborRequest(int routerID, int neighborRouterID, String ip, int port) {
 	
 		SocketBundle client = NetUtils.clientSocket(ip, port);
 		long timeStamp = System.currentTimeMillis();
 		int connectionType = 3;
+		int requestType = 1;
 		
 		try {
 			//Send the connection type
 			client.out.writeInt(connectionType);
 			//Send this router's ID
 			client.out.writeInt(routerID);
+			// Send the neighbor request type (1 = request, 2 = cease)
+			client.out.writeInt(requestType);
 			//Send this router's port number so that the receiving router can connect to this router.
 			client.out.writeInt(port);
 			
 			//read response type
 			int responseType = client.in.readInt();
+			client.socket.close();
 			
 			if(responseType == 1) {
 				long laterTimeStamp = System.currentTimeMillis();
 				int delay = (int) (laterTimeStamp - timeStamp);
 				System.out.println("Connection established with neighbor, the delay is: " + delay);
 				
-				// Add entries to the neighbor, router, and link lists
-				if(!NetworkInfo.getInstance().getNeighbors().contains(neighborRouterID)) {
-					NetworkInfo.getInstance().getNeighbors().add(neighborRouterID);
-				}
-				if(!NetworkInfo.getInstance().getRouters().contains(neighborRouterID)) {
-					NetworkInfo.getInstance().getRouters().add(new RouterData(neighborRouterID, ip, port));
-				}
-				
-				Link link = new Link(routerID, neighborRouterID);
-				if(!NetworkInfo.getInstance().getLinks().contains(link)) {
-					NetworkInfo.getInstance().getLinks().add(link);
-				} else {
-					int index = NetworkInfo.getInstance().getLinks().indexOf(link);
-					NetworkInfo.getInstance().getLinks().get(index).delay = delay;
-				}
-				
-				return true;
+				addNeighbor(routerID, neighborRouterID, ip, port);
 			} else {
 				System.out.println("The neighborhood request has been rejected by the other router, the response type is: "+responseType);
-				return false;
 			}
 			
 		} catch (IOException e) {
 			e.printStackTrace();
-			return false;
+		}
+	}
+	
+	public static void sendCeaseNeighborRequest(int routerID, int neighborRouterID, String ip, int port) {
+	
+		SocketBundle client = NetUtils.clientSocket(ip, port);
+		int connectionType = 3;
+		int requestType = 2;
+		
+		try {
+			//Send the connection type
+			client.out.writeInt(connectionType);
+			// Send the neighbor request type (1 = request, 2 = cease)
+			client.out.writeInt(requestType);
+			//Send this router's ID
+			client.out.writeInt(routerID);
+			//Send this router's port number so that the receiving router can connect to this router.
+			client.out.writeInt(port);
+			client.socket.close();
+			
+			sendCeaseNeighborRequest(routerID, neighborRouterID, ip, port);		
+			
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }

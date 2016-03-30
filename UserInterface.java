@@ -72,6 +72,33 @@ public class UserInterface extends Thread {
 						}
 						break;
 					case 5:
+						System.out.println("\n~~~UI Response to 5.~~~\nPlease enter the router id:");
+						String routerInput = br.readLine();
+						
+						if(!routerInput.matches("^\\d+$")) {
+							System.out.println("\n~~~UI Feedback~~~\nAn incorrect number of arguments was specified.");
+						} else {
+							int routerID = Integer.parseInt(routerInput);
+							
+							List<RouterData> rData = netInfo.getRouters();
+							RouterData data = null;
+							for(int i = 0; i < rData.size(); i++) {
+								if(rData.get(i).routerID == routerID) {
+									if(netInfo.getNeighbors().contains(routerID)) {
+										data = rData.get(i);
+										break;
+									} else {
+										System.out.println("\n~~~UI Feedback~~~\nThere is no neighboring router with that id.");
+									}
+								}
+							}
+							
+							if(data != null) {
+								NeighborConnector.sendCeaseNeighborRequest(config.routerID, routerID, data.ipAddress, data.port);						
+							} else {
+								System.out.println("\n~~~UI Feedback~~~\nThere is no router in the database with that id.");
+							}
+						}
 						break;
 					case 6:
 						System.exit(0);

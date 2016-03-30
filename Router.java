@@ -64,6 +64,7 @@ public class Router {
 			if(!failing) {
 				System.out.println("Waiting to accept incoming client...");
 				SocketBundle client = NetUtils.acceptClient(serverSocket);
+				String ip = client.socket.getInetAddress().toString();
 				int packetType = -1;
 				try {
 					packetType = client.in.readInt();
@@ -116,15 +117,15 @@ public class Router {
 						try {
 							//Get the router ID and check if it is in the neighbor list and out of the blacklist.
 							int routerID = client.in.readInt();
-							System.out.println("Neighbor establishment request:"+routerID);
-							if(config.configNeighbors.containsKey(routerID)){
-								NetworkInfo.getInstance().getNeighbors().add(routerID);
-								//Send the confirmation flag
+							int port = client.in.readInt();
+							System.out.println("Neighbor establishment request: " + routerID + ", " + ip + ", " + port);
+							
+							if(config.configNeighbors.containsKey(routerID)){ //Add and send confirmation flag
+								NeighborConnector.addNeighbor(config.routerID, routerID, ip, port);
 								client.out.writeInt(1);
-							}else{
-								//Send the deny flag
+							} else { //Send deny flag
 								client.out.writeInt(0);
-								System.out.println("This router has not been registered for a neighborhood :"+routerID);
+								System.out.println("This router has been denied neighborhood: " + routerID + ", " + ip + ", " + port);
 							}
 						    
 					    } catch (IOException e) {
