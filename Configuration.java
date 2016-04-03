@@ -58,17 +58,21 @@ public class Configuration {
 			failureInterval = Integer.parseInt(tokens[1]);
 			
 			
-			tokens = readAndParse(br);
-			String neighborStr = tokens[1];
-			String[] neigstrs=  neighborStr.split(",");
-			for(int i=0;i<neigstrs.length;i++){
-				String[] ns = neigstrs[i].split("=");
-				configNeighbors.put(Integer.parseInt(ns[0]), neigstrs[i]);
+			try{
+				tokens = readAndParse(br);
+				String neighborStr = tokens[1];
+				String[] neigstrs=  neighborStr.split(",");
+				for(int i=0;i<neigstrs.length;i++){
+					String[] ns = neigstrs[i].split("=");
+					configNeighbors.put(Integer.parseInt(ns[0]), neigstrs[i]);
+				}
+			}catch(Exception e){
+				e.printStackTrace();
 			}
 			
-			tokens = readAndParse(br);
-			String nonNeighborStr = tokens[1];
-			String[] configNonNeighbors =  nonNeighborStr.split(",");
+			//tokens = readAndParse(br);
+			//String nonNeighborStr = tokens[1];
+			//String[] configNonNeighbors =  nonNeighborStr.split(",");
 			
 		} catch(IOException e) {
 			System.out.println(e);
