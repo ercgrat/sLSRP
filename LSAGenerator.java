@@ -1,5 +1,6 @@
 package sLSRP;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 /**
@@ -23,6 +24,9 @@ public class LSAGenerator {
 	Configuration config;
 	NetworkInfo netInfo;
 	Timer timer = new Timer();
+	//Store all the LSAs received from neighbors, the first key(integer) is routerID, the second key is sequenceID.
+	//When receive a LSA, first check if the table has the LSA records of this router, then check if this LSA has been received
+	public static HashMap<Integer,HashMap<Integer,LSA>> recievedLSAHistoryTable = new HashMap<Integer,HashMap<Integer,LSA>>();
 	
 	private LSAGenerator(Configuration inConfig, NetworkInfo inNetInfo) {
 		this.config = inConfig;
