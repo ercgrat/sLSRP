@@ -58,4 +58,11 @@ public class LSAGenerator {
 		LSA lsa = new LSA(config.routerID, sequenceNumber, netInfo.getNeighborLinks(config.routerID));
 		return lsa;
 	}
+	public void processLSA(LSA lsa){
+//	    // Add LSA task to the queue 
+//	    Runnable task = new LSATask(new ArrayList());
+//	    LSAQueue.add(task);
+//	    //Call the queue to process the task
+//	    LSAQueue.notify();
+	}
 }

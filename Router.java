@@ -75,11 +75,8 @@ public class Router {
 				switch(packetType) {
 					case 0://TODO If LSA, call algorithm to calculate the short path and put the rusult into the table, then send an to neighbors???
 						synchronized (LSAQueue) {
-				    	    // Add LSA task to the queue 
-				    	    Runnable task = new LSATask(new ArrayList());
-				    	    LSAQueue.add(task);
-				    	    //Call the queue to process the task
-				    	    LSAQueue.notify();
+							LSA lsa = new LSA();
+							LSAGenerator.getInstance(config, NetworkInfo.getInstance()).processLSA(lsa);
 				    	}
 						try {
 						    client.out.writeInt(ACK_FLAG);
@@ -87,7 +84,7 @@ public class Router {
 						    e.printStackTrace();
 					    }
 						break;
-					case 1://TODO Packet???
+					case 1://TODO if a packet, call algorithm to calculate the short path and put the rusult into the table, then send it to neighbors???
 						synchronized (packetQueue) {
 				    	    // Add packet task to the queue 
 							Packet packet = null;
