@@ -22,13 +22,14 @@ public class LSAGenerator {
 	int sequenceNumber;
 	Configuration config;
 	NetworkInfo netInfo;
+	Timer timer = new Timer();
 	
 	private LSAGenerator(Configuration inConfig, NetworkInfo inNetInfo) {
 		this.config = inConfig;
 		this.netInfo = inNetInfo;
 		sequenceNumber = 0;
 		
-		Timer timer = new Timer();  
+		  
 		timer.schedule(new TimerTask(){
 			public void run() {
 				LSA lsa = generateLSA();
