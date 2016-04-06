@@ -11,16 +11,18 @@ public class LSATask extends Thread {
 	int routerID;
 	LSA lsa;
 	RouterData routerdata;
+	List<Link> links;
 	public LSATask(int routerID,LSA lsa){
 		this.routerID = routerID;
 		this.lsa = lsa;
+		this.links = NetworkInfo.getInstance().getNeighborLinks(routerID);
 		routerdata = NetworkInfo.getInstance().getRouters().get(routerID);
 	}
 	@Override
 	public void run() {
 		String ip = routerdata.ipAddress;
 		int port = routerdata.port;
-		
+		ip = ip.replaceFirst("/", "");
 		System.out.println("Try to send an LSA to the next destinated router : "+routerID+"   IP: "+ip+":"+port);
 		SocketBundle client = NetUtils.clientSocket(ip, port);
 		int connectionType = 0;
@@ -31,19 +33,15 @@ public class LSATask extends Thread {
 			client.out.writeLong(lsa.age.getTime());
 			client.out.writeInt(lsa.sequenceNumber);
 			
-			ArrayList links = new ArrayList();
+			
 			int numLinks = links.size();
 			client.out.writeInt(numLinks);
 			
-//			for(int i = 0; i < numLinks; i++) {
-//				int routerA = in.readInt();
-//				int routerB = in.readInt();
-//				double delay = in.readDouble();
-//				
-//				Link l = new Link(routerA, routerB);
-//				l.delay = delay;
-//				links.add(l);
-//			}
+			for(int i = 0; i < numLinks; i++) {
+				client.out.writeInt(links.get(i).A);
+				client.out.writeInt(links.get(i).B);
+				client.out.writeDouble(links.get(i).delay);
+			}
 			
 			int checksum = lsa.checksum;
 			client.out.writeInt(checksum);
