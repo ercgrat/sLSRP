@@ -68,7 +68,7 @@ public class Router {
 				}
 				
 				switch(packetType) {
-					case 0://TODO If LSA, call algorithm to calculate the short path and put the rusult into the table, then send an to neighbors???
+					case 0://If LSA, call the algorithm to calculate the short path and put the result into the table, then send it to all the neighbors.
 						LSA lsa = null;
 						
 						try {
@@ -84,7 +84,7 @@ public class Router {
 						    e.printStackTrace();
 					    }
 						break;
-					case 1://TODO if a packet, call algorithm to calculate the short path and put the rusult into the table, then send it to neighbors???
+					case 1:// If a packet, call the algorithm to calculate the short path and put the result into the table, then send it to all the neighbors.
 						synchronized (packetQueue) {
 				    	    // Add packet task to the queue 
 							Packet packet = null;
@@ -99,9 +99,9 @@ public class Router {
 						    e.printStackTrace();
 					    }
 						break;
-					case 2://TODO If Receive an alive message, send an ACK back to the sender???
+					case 2://Receive an alive message, send an ACK back to the sender.
 						synchronized (aliveMessageQueue) {
-				    	    //Should send an ACK immediately in listening thread(in this thread) 
+				    	    //TODO Should send an ACK immediately in listening thread(in this thread) 
 				        	
 				    	}
 						try {
