@@ -62,6 +62,7 @@ public class LSAGenerator {
 		return lsa;
 	}
 	public void processLSA(LSA lsa){
+		
 		//Check if LSA history table has records for this router
 		if(recievedLSAHistoryTable.containsKey(lsa.router)){
 			//if there is a record exists in the table
@@ -90,8 +91,13 @@ public class LSAGenerator {
 		while(iterator.hasNext()){
 			Map.Entry entry = (Map.Entry)iterator.next();
 			int routerID = (Integer)entry.getKey();
-			LSATask task = new LSATask(routerID, LSAGenerator.getInstance(config, netInfo).generateLSA());
-			task.start();
+			if(routerID!=lsa.router){
+				LSATask task = new LSATask(routerID, LSAGenerator.getInstance(config, netInfo).generateLSA());
+				task.start();
+			}else{
+				System.out.println("Try not to send LSA back to the original sender.");
+			}
+			
 		}
 	}
 	

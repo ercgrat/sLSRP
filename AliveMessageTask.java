@@ -19,7 +19,7 @@ public class AliveMessageTask extends Thread {
 			public void run() {
 				if(AliveMessageTask.this.isAlive()){
 					AliveMessageTask.this.interrupt();
-					System.out.println("Time to build a connection with neighbor has reached a limit, so the thread is interrupted.");
+					System.err.println("Time to build a connection with neighbor has reached a limit, so the thread is interrupted.");
 					//remove this router from router table
 					NeighborConnector.removeNeighbor(AliveMessageTask.this.routerID,AliveMessageTask.this.routerObject.routerID
 							,AliveMessageTask.this.routerObject.ipAddress,AliveMessageTask.this.routerObject.port);
@@ -29,7 +29,8 @@ public class AliveMessageTask extends Thread {
 	@Override
 	public void run() {
 		String ip = routerObject.ipAddress;
-		System.out.println("Try to send an alive message to a neighbor : "+ip);
+		ip = ip.replace("/", "");
+		System.err.println("Try to send an alive message to a neighbor : "+ip);
 		int port = routerObject.port;
 		SocketBundle client = NetUtils.clientSocket(ip, port);
 		int connectionType = 2;

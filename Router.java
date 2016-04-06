@@ -75,13 +75,15 @@ public class Router {
 					    }
 						break;
 					case 1:// If a packet, call the algorithm to calculate the short path and put the result into the table, then send it to all the neighbors.
-						//Packet packet = null;
-						//Runnable task = new PacketTask(packet);
+						Packet packet = null;
 					    try {
 						    client.out.writeInt(ACK_FLAG);
 					    } catch (IOException e) {
 						    e.printStackTrace();
 					    }
+					    //Check if the destination is this router
+					    PacketTask task = new PacketTask(packet,config.routerID,config.failureInterval);
+					    //task.start();
 						break;
 					case 2://Receive an alive message, send an ACK back to the sender.
 						
