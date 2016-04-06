@@ -7,6 +7,9 @@ public class Packet {
 	int destinationID;
 	byte[] data;
 	int sequenceID ;//Used to assemble packets together
+	int isLastpacket;
+	int contentType;//file or something alse.
+	int dataLength;
 	
 //	abstract void packAndSend(SocketBundle socketBundle);
 //	abstract void receiveAndUnpack(SocketBundle socketBundle);
