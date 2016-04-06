@@ -48,12 +48,10 @@ public class NeighborConnector extends Thread {
 			sendNeighborRequest(config.routerID, routerID, ip, port);
 		}
 		//And then send LSAs to tell every neighbor about new established links.
-		Runnable task = new LSATask(NetworkInfo.getInstance().getLinks());
-	    LSAQueue.add(task);
-	    //Call the queue to process the task
-	    synchronized (LSAQueue) {
-	    	LSAQueue.notify();
-    	}
+		for(int i=0;i<NetworkInfo.getInstance().getNeighbors().size();i++){
+			LSATask task = new LSATask((int)NetworkInfo.getInstance().getNeighbors().get(i));
+			task.start();
+		}
 	    
 	}
 	

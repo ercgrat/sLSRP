@@ -1,5 +1,6 @@
 package sLSRP;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -81,10 +82,10 @@ public class LSAGenerator {
 			recievedLSAHistoryTable.put(lsa.router, map);
 		}
 		//send the LSA to all the neighbor except the neighbor who sent it to this router
-//	    // Add LSA task to the queue 
-//	    Runnable task = new LSATask(new ArrayList());
-//	    LSAQueue.add(task);
-//	    //Call the queue to process the task
-//	    LSAQueue.notify();
+		for(int i=0;i<NetworkInfo.getInstance().getNeighbors().size();i++){
+			LSATask task = new LSATask((int)NetworkInfo.getInstance().getNeighbors().get(i));
+			task.start();
+		}
 	}
+	
 }
