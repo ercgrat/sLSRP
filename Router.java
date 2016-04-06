@@ -5,7 +5,6 @@ import java.util.*;
 
 import sLSRP.AliveMessageTask;
 import sLSRP.NeighborConnector;
-import sLSRP.WorkerThread;
 
 public class Router {
 
