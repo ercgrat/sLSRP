@@ -2,6 +2,7 @@ package sLSRP;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -46,9 +47,12 @@ public class NeighborConnector extends Thread {
 			sendNeighborRequest(config.routerID, routerID, ip, port);
 		}
 		//And then send LSAs to tell every neighbor about new established links.
-		for(int i=0;i<NetworkInfo.getInstance().getNeighbors().size();i++){
-			LSATask task = new LSATask((int)NetworkInfo.getInstance().getNeighbors().get(i)
-					,LSAGenerator.getInstance(config, NetworkInfo.getInstance()).generateLSA());
+		HashMap<Integer,RouterData> routers = NetworkInfo.getInstance().getRouters();
+		Iterator iterator2 = routers.entrySet().iterator();
+		while(iterator2.hasNext()){
+			Map.Entry entry = (Map.Entry)iterator2.next();
+			int routerID = (Integer)entry.getKey();
+			LSATask task = new LSATask(routerID,LSAGenerator.getInstance(config, NetworkInfo.getInstance()).generateLSA());
 			task.start();
 		}
 	    
@@ -56,10 +60,6 @@ public class NeighborConnector extends Thread {
 	
 	public static void addNeighbor(int routerID, int neighborRouterID, String ip, int port) {
 		// Add entries to the neighbor, router, and link lists
-		if(!NetworkInfo.getInstance().getNeighbors().contains(neighborRouterID)) {
-			NetworkInfo.getInstance().getNeighbors().add(neighborRouterID);
-		}
-		
 		NetworkInfo.getInstance().getRouters().put(neighborRouterID, new RouterData(neighborRouterID, ip, port));
 		
 		Link link = new Link(routerID, neighborRouterID);
@@ -70,7 +70,7 @@ public class NeighborConnector extends Thread {
 	
 	public static void removeNeighbor(int routerID, int neighborRouterID, String ip, int port) {
 		// Remove entries from the neighbor, router, and link lists
-		NetworkInfo.getInstance().getNeighbors().remove(neighborRouterID);
+		NetworkInfo.getInstance().getRouters().remove(neighborRouterID);
 		
 		Link link = new Link(routerID, neighborRouterID);
 		NetworkInfo.getInstance().getLinks().remove(link);

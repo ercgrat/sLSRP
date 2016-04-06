@@ -91,12 +91,10 @@ public class UserInterface extends Thread {
 							
 							RouterData data = null;
 							if(rData.containsKey(routerID)){
-								if(netInfo.getNeighbors().contains(routerID)) {
-									data = rData.get(routerID);
-									break;
-								} else {
-									System.out.println("\n~~~UI Feedback~~~\nThere is no neighboring router with that id.");
-								}
+								data = rData.get(routerID);
+								break;
+							} else {
+								System.out.println("\n~~~UI Feedback~~~\nThere is no neighboring router with that id.");
 							}
 //							for(int i = 0; i < rData.size(); i++) {
 //								if(rData.get(i).routerID == routerID) {

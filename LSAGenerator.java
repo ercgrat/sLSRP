@@ -2,6 +2,8 @@ package sLSRP;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 /**
@@ -82,8 +84,13 @@ public class LSAGenerator {
 			recievedLSAHistoryTable.put(lsa.router, map);
 		}
 		//send the LSA to all the neighbor except the neighbor who sent it to this router
-		for(int i=0;i<NetworkInfo.getInstance().getNeighbors().size();i++){
-			LSATask task = new LSATask((int)NetworkInfo.getInstance().getNeighbors().get(i), LSAGenerator.getInstance(config, netInfo).generateLSA());
+		
+		HashMap<Integer,RouterData> routers = NetworkInfo.getInstance().getRouters();
+		Iterator iterator = routers.entrySet().iterator();
+		while(iterator.hasNext()){
+			Map.Entry entry = (Map.Entry)iterator.next();
+			int routerID = (Integer)entry.getKey();
+			LSATask task = new LSATask(routerID, LSAGenerator.getInstance(config, netInfo).generateLSA());
 			task.start();
 		}
 	}
