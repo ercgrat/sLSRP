@@ -22,13 +22,9 @@ public class Router {
 		LSAHistory history = new LSAHistory(config);
 		
 		
-		//LSA thread that processes all the LSAs
-		Queue LSAQueue = new LinkedList();
-		WorkerThread LSAWorker = new WorkerThread(LSAQueue);
-		LSAWorker.start();
 		
 		// Loop over neighbors in the configuration
-		NeighborConnector connector = new NeighborConnector(config,LSAQueue);
+		NeighborConnector connector = new NeighborConnector(config);
 		connector.start();
 		
 		// Fork all threads
@@ -41,7 +37,7 @@ public class Router {
 		//Alive message thread that handle all the ongoing alive messages
 		Queue aliveMessageQueue = new LinkedList();
 		//Add one task thread to the queue, this task will periodically send alive messages, so it will keep acitve all the time.
-		AliveMessageTask aliveMessageTask = new AliveMessageTask(config.helloInterval,true,LSAQueue);
+		AliveMessageTask aliveMessageTask = new AliveMessageTask(config.helloInterval,true);
 		aliveMessageQueue.add(aliveMessageTask);
 		WorkerThread aliveMessageWorker = new WorkerThread(aliveMessageQueue);
 		//aliveMessageWorker.start();
@@ -74,15 +70,13 @@ public class Router {
 				
 				switch(packetType) {
 					case 0://TODO If LSA, call algorithm to calculate the short path and put the rusult into the table, then send an to neighbors???
-						synchronized (LSAQueue) {
-							LSA lsa = null;
-							try {
-								lsa = new LSA(client.in);
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
-							LSAGenerator.getInstance(config, NetworkInfo.getInstance()).processLSA(lsa);
-				    	}
+						LSA lsa = null;
+						try {
+							lsa = new LSA(client.in);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						LSAGenerator.getInstance(config, NetworkInfo.getInstance()).processLSA(lsa);
 						try {
 						    client.out.writeInt(ACK_FLAG);
 					    } catch (IOException e) {

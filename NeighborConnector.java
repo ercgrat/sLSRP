@@ -12,11 +12,9 @@ import java.util.TimerTask;
 
 public class NeighborConnector extends Thread {
 	Configuration config;
-	Queue LSAQueue;
 
-	public NeighborConnector(Configuration config, Queue LSAQueue){
+	public NeighborConnector(Configuration config){
 		this.config = config;
-		this.LSAQueue = LSAQueue;
 		//Set up timer to count down how much time has been spent on the neighborhood request. 
 		Timer timer=new Timer();  
 		//The following will executed in 'helloInterval'  

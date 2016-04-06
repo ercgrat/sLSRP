@@ -7,11 +7,10 @@ import java.util.Queue;
 public class AliveMessageTask extends Thread {
 	int interval;
 	boolean isMessageDeamon = false;
-	Queue LSAQueue;
-	public AliveMessageTask(int interval, boolean isMessageDeamon, Queue LSAQueue){
+	
+	public AliveMessageTask(int interval, boolean isMessageDeamon){
 		this.interval = interval;
 		this.isMessageDeamon = isMessageDeamon;
-		this.LSAQueue = LSAQueue;
 	}
 	@Override
 	public void run() {
