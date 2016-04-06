@@ -59,6 +59,28 @@ public class LSAGenerator {
 		return lsa;
 	}
 	public void processLSA(LSA lsa){
+		//Check if LSA history table has records for this router
+		if(recievedLSAHistoryTable.containsKey(lsa.router)){
+			//if there is a record exists in the table
+			//then check if this LSA has been in the table by using sequenceID
+			HashMap<Integer,LSA> map = recievedLSAHistoryTable.get(lsa.router);
+			if(map.containsKey(lsa.sequenceNumber)){
+				//if table has a record of this LSA, then check the age attribute to see if this LSA should be replaced
+				if(map.get(lsa.sequenceNumber).age.before(lsa.age)){
+					//replace the old record
+					recievedLSAHistoryTable.get(lsa.router).put(lsa.sequenceNumber, lsa);
+				}
+			}else{
+				//put it into the history table
+				recievedLSAHistoryTable.get(lsa.router).put(lsa.sequenceNumber, lsa);
+			}
+		}else{
+			//put it into the history table
+			HashMap<Integer,LSA> map = new HashMap<Integer,LSA>();
+			map.put(lsa.sequenceNumber, lsa);
+			recievedLSAHistoryTable.put(lsa.router, map);
+		}
+		//send the LSA to all the neighbor except the neighbor who sent it to this router
 //	    // Add LSA task to the queue 
 //	    Runnable task = new LSATask(new ArrayList());
 //	    LSAQueue.add(task);

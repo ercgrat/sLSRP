@@ -75,7 +75,12 @@ public class Router {
 				switch(packetType) {
 					case 0://TODO If LSA, call algorithm to calculate the short path and put the rusult into the table, then send an to neighbors???
 						synchronized (LSAQueue) {
-							LSA lsa = new LSA();
+							LSA lsa = null;
+							try {
+								lsa = new LSA(client.in);
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
 							LSAGenerator.getInstance(config, NetworkInfo.getInstance()).processLSA(lsa);
 				    	}
 						try {
