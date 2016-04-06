@@ -7,16 +7,18 @@ import java.util.List;
 public class LSATask extends Thread {
 	//
 	int routerID;
-	public LSATask(int routerID){
+	LSA lsa;
+	RouterData routerdata;
+	public LSATask(int routerID,LSA lsa){
 		this.routerID = routerID;
+		this.lsa = lsa;
+		routerdata = NetworkInfo.getInstance().getRouters().get(routerID);
 	}
 	@Override
 	public void run() {
-		String address = "10.0.0.7=1999";
+		String ip = routerdata.ipAddress;
+		int port = routerdata.port;
 		
-		String[] strs = address.split("=");
-		String ip = strs[0].trim();
-		int port = Integer.parseInt(strs[1]);
 		System.out.println("Try to send an LSA to the next destinated router : "+routerID+"   IP: "+ip+":"+port);
 //		SocketBundle client = NetUtils.clientSocket(ip, port);
 //		int connectionType = 0;

@@ -35,24 +35,24 @@ public class LSAGenerator {
 		sequenceNumber = 0;
 		
 		  
-		timer.schedule(new TimerTask(){
-			public void run() {
-				LSA lsa = generateLSA();
-				for(int i = 0; i < netInfo.getNeighbors().size(); i++) {
-					/*
-					 *
-					 TO DO: Get ip/port from netInfo.
-					 *
-					 */
-					SocketBundle client = NetUtils.clientSocket("IP ADDR", -1);
-					try {
-						lsa.forward(client.out);
-					} catch(IOException e) {
-						System.out.println(e);
-					}
-				}
-			}
-		}, config.forwardInterval);
+//		timer.schedule(new TimerTask(){
+//			public void run() {
+//				LSA lsa = generateLSA();
+//				for(int i = 0; i < netInfo.getNeighbors().size(); i++) {
+//					/*
+//					 *
+//					 TO DO: Get ip/port from netInfo.
+//					 *
+//					 */
+//					SocketBundle client = NetUtils.clientSocket("IP ADDR", -1);
+//					try {
+//						lsa.forward(client.out);
+//					} catch(IOException e) {
+//						System.out.println(e);
+//					}
+//				}
+//			}
+//		}, config.forwardInterval);
 	}
 	public LSA generateLSA(){
 		sequenceNumber++;
@@ -83,7 +83,7 @@ public class LSAGenerator {
 		}
 		//send the LSA to all the neighbor except the neighbor who sent it to this router
 		for(int i=0;i<NetworkInfo.getInstance().getNeighbors().size();i++){
-			LSATask task = new LSATask((int)NetworkInfo.getInstance().getNeighbors().get(i));
+			LSATask task = new LSATask((int)NetworkInfo.getInstance().getNeighbors().get(i), LSAGenerator.getInstance(config, netInfo).generateLSA());
 			task.start();
 		}
 	}

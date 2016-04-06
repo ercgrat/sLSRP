@@ -15,17 +15,17 @@ public class NeighborConnector extends Thread {
 
 	public NeighborConnector(Configuration config){
 		this.config = config;
-		//Set up timer to count down how much time has been spent on the neighborhood request. 
-		Timer timer=new Timer();  
-		//The following will executed in 'helloInterval'  
-		timer.schedule(new TimerTask(){
-			@Override
-			public void run() {
-				if(NeighborConnector.this.isAlive()){
-					NeighborConnector.this.interrupt();
-					System.out.println("Time to build a connection with neighbor has reached a limit, so the thread is interrupted.");
-		        }
-		}}, this.config.helloInterval);
+//		//Set up timer to count down how much time has been spent on the neighborhood request. 
+//		Timer timer=new Timer();  
+//		//The following will executed in 'helloInterval'  
+//		timer.schedule(new TimerTask(){
+//			@Override
+//			public void run() {
+//				if(NeighborConnector.this.isAlive()){
+//					NeighborConnector.this.interrupt();
+//					System.out.println("Time to build a connection with neighbor has reached a limit, so the thread is interrupted.");
+//		        }
+//		}}, this.config.helloInterval);
 	}
 	
 	@Override
@@ -47,7 +47,8 @@ public class NeighborConnector extends Thread {
 		}
 		//And then send LSAs to tell every neighbor about new established links.
 		for(int i=0;i<NetworkInfo.getInstance().getNeighbors().size();i++){
-			LSATask task = new LSATask((int)NetworkInfo.getInstance().getNeighbors().get(i));
+			LSATask task = new LSATask((int)NetworkInfo.getInstance().getNeighbors().get(i)
+					,LSAGenerator.getInstance(config, NetworkInfo.getInstance()).generateLSA());
 			task.start();
 		}
 	    
@@ -59,9 +60,7 @@ public class NeighborConnector extends Thread {
 			NetworkInfo.getInstance().getNeighbors().add(neighborRouterID);
 		}
 		
-		if(!NetworkInfo.getInstance().getRouters().contains(neighborRouterID)) {
-			NetworkInfo.getInstance().getRouters().add(new RouterData(neighborRouterID, ip, port));
-		}
+		NetworkInfo.getInstance().getRouters().put(neighborRouterID, new RouterData(neighborRouterID, ip, port));
 		
 		Link link = new Link(routerID, neighborRouterID);
 		if(!NetworkInfo.getInstance().getLinks().contains(link)) {
@@ -83,6 +82,7 @@ public class NeighborConnector extends Thread {
 		long timeStamp = System.currentTimeMillis();
 		int connectionType = 3;
 		int requestType = 1;
+		System.out.println("Connection established with neighbor, the delay is: " +port);
 		
 		try {
 			//Send the connection type
@@ -96,6 +96,7 @@ public class NeighborConnector extends Thread {
 			
 			//read response type
 			int responseType = client.in.readInt();
+			
 			client.socket.close();
 			
 			if(responseType == 1) {

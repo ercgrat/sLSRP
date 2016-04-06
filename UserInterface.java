@@ -1,6 +1,9 @@
 package sLSRP;
 import java.io.*;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class UserInterface extends Thread {
 
@@ -43,12 +46,15 @@ public class UserInterface extends Thread {
 						System.out.println(output);
 						break;
 					case 2:
-						List<RouterData> routers = netInfo.getRouters();
+						HashMap<Integer,RouterData> routers = netInfo.getRouters();
 						LSAHistory lsaHistory = netInfo.getLSAHistory();
 						
+						
 						output = "\n~~~UI Response to 2.~~~\n";
-						for(int i = 0; i < routers.size(); i++) {
-							int routerID = routers.get(i).routerID;
+						Iterator iterator = routers.entrySet().iterator();
+						while(iterator.hasNext()){
+							Map.Entry entry = (Map.Entry)iterator.next();
+							int routerID = (Integer)entry.getKey();
 							int sequenceNo = lsaHistory.getLastSequenceNumber(routerID);
 							output += "Router ID " + routerID + " - Sequence No. " + sequenceNo + "\n";
 						}
@@ -80,18 +86,28 @@ public class UserInterface extends Thread {
 						} else {
 							int routerID = Integer.parseInt(routerInput);
 							
-							List<RouterData> rData = netInfo.getRouters();
+							//List<RouterData> rData = netInfo.getRouters();
+							HashMap<Integer,RouterData> rData = netInfo.getRouters();
+							
 							RouterData data = null;
-							for(int i = 0; i < rData.size(); i++) {
-								if(rData.get(i).routerID == routerID) {
-									if(netInfo.getNeighbors().contains(routerID)) {
-										data = rData.get(i);
-										break;
-									} else {
-										System.out.println("\n~~~UI Feedback~~~\nThere is no neighboring router with that id.");
-									}
+							if(rData.containsKey(routerID)){
+								if(netInfo.getNeighbors().contains(routerID)) {
+									data = rData.get(routerID);
+									break;
+								} else {
+									System.out.println("\n~~~UI Feedback~~~\nThere is no neighboring router with that id.");
 								}
 							}
+//							for(int i = 0; i < rData.size(); i++) {
+//								if(rData.get(i).routerID == routerID) {
+//									if(netInfo.getNeighbors().contains(routerID)) {
+//										data = rData.get(i);
+//										break;
+//									} else {
+//										System.out.println("\n~~~UI Feedback~~~\nThere is no neighboring router with that id.");
+//									}
+//								}
+//							}
 							
 							if(data != null) {
 								NeighborConnector.sendCeaseNeighborRequest(config.routerID, routerID, data.ipAddress, data.port);						

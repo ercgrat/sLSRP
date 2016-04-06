@@ -21,7 +21,7 @@ public class NetworkInfo {
 	}
 	
 	private List neighbors = new ArrayList();
-	private List<RouterData> routers = new ArrayList();
+	private HashMap<Integer,RouterData> routers = new HashMap<Integer,RouterData>();
 	private List<Link> links = new ArrayList();
 	private LSAHistory lsaHistory;
 	
@@ -34,7 +34,7 @@ public class NetworkInfo {
 		return neighbors;
 	}
 	
-	public List<RouterData> getRouters() {
+	public HashMap<Integer,RouterData> getRouters() {
 		return routers;
 	}
 	
