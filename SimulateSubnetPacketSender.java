@@ -13,10 +13,13 @@ import java.util.Scanner;
  * then the network sends these packets to the subnet receiver.
  */
 public class SimulateSubnetPacketSender {
+    
 	int packetSize = 0;
+    
 	public SimulateSubnetPacketSender(int packetSize){
 		this.packetSize = packetSize;
 	}
+    
 	ArrayList<Byte> readFile(String filePath){
         FileInputStream inputStream;
         ArrayList<Byte> list = new ArrayList<Byte>();
@@ -34,10 +37,12 @@ public class SimulateSubnetPacketSender {
 		} 
 		return list;
 	}
+    
 	ArrayList<Packet> generatePackets(ArrayList<Byte> list){
 		ArrayList<Packet> packetList = new ArrayList<Packet>();
 		return packetList;
 	}
+    
 	public static void userAction(){
 		Scanner reader = new Scanner(System.in);
 		System.out.println("Please enter a directory path.");
@@ -58,6 +63,7 @@ public class SimulateSubnetPacketSender {
 			userAction();
 		}
 	}
+    
 	public static void main(String[] args) {
 		//TODO
 		userAction();

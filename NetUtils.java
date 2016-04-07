@@ -3,6 +3,9 @@ import java.net.*;
 import java.io.*;
 
 class NetUtils {
+    
+    static final int CRC32_GEN = 0x04c11db7;
+    static final int CRC32_MSB = 0x80000000;
 
 	static ServerSocket serverSocket() {
 		try {
@@ -37,6 +40,24 @@ class NetUtils {
 		}
 		return server;
 	}
+    
+    static long getChecksum(BufferedReader br) throws IOException {
+        long checksum = 0;
+        int c, i, overflow;
+        
+        while(br.ready()) {
+            c = br.read();
+            for(i = 0x80; i != 0; i >>= 1) {
+                overflow = (int)(checksum & CRC32_MSB);
+                checksum = (checksum << 1) | ((i & c) != 0 ? 1 : 0);
+                if(overflow != 0) {
+                    checksum ^= CRC32_GEN;
+                }
+            }
+        }
+        
+        return checksum;
+    }
 
 }
 

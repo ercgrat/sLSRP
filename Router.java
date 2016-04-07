@@ -64,10 +64,11 @@ public class Router {
 						try {
 							lsa = new LSA(client.in);
 							System.out.println("Receive an LSA, sequenceNumber: "+lsa.sequenceNumber+"  router: "+lsa.router);
+                            LSAGenerator.getInstance(config, NetworkInfo.getInstance()).processLSA(lsa);
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
-						LSAGenerator.getInstance(config, NetworkInfo.getInstance()).processLSA(lsa);
+						
 						try {
 						    client.out.writeInt(ACK_FLAG);
 					    } catch (IOException e) {

@@ -8,7 +8,7 @@ import java.util.Scanner;
  * This is a separate program that simulates accepting packets from the network.
  */
 public class SimulateSubnetPacketReceiver {
-	public static void assemblePacket(Pakcet packet){
+	public static void assemblePacket(Packet packet){
 		
 	}
 	

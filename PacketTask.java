@@ -9,10 +9,10 @@ import sLSRP.SimulateSubnetPacketReceiver;
 
 
 public class PacketTask extends Thread {
-	//
+    
 	Packet packet;
-	
 	RouterData routerObject = null;
+
 	public PacketTask(Packet packet,int routerID,int failureInterval){
 		this.packet = packet;
 		

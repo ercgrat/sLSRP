@@ -52,8 +52,13 @@ public class NeighborConnector extends Thread {
 		while(iterator2.hasNext()){
 			Map.Entry entry = (Map.Entry)iterator2.next();
 			int routerID = (Integer)entry.getKey();
-			LSATask task = new LSATask(routerID,LSAGenerator.getInstance(config, NetworkInfo.getInstance()).generateLSA());
-			task.start();
+            try {
+                LSATask task = new LSATask(routerID,LSAGenerator.getInstance(config, NetworkInfo.getInstance()).generateLSA());
+                task.start();
+            } catch(IOException e) {
+                System.out.println("Failed to send LSA update about new neighbor connection.");
+                e.printStackTrace();
+            }
 		}
 	    
 	}

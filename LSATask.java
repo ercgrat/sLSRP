@@ -29,22 +29,7 @@ public class LSATask extends Thread {
 		try {
 			//Send the connection type
 			client.out.writeInt(connectionType);
-			client.out.writeInt(routerID);
-			client.out.writeLong(lsa.age.getTime());
-			client.out.writeInt(lsa.sequenceNumber);
-			
-			
-			int numLinks = links.size();
-			client.out.writeInt(numLinks);
-			
-			for(int i = 0; i < numLinks; i++) {
-				client.out.writeInt(links.get(i).A);
-				client.out.writeInt(links.get(i).B);
-				client.out.writeDouble(links.get(i).delay);
-			}
-			
-			int checksum = lsa.checksum;
-			client.out.writeInt(checksum);
+            lsa.forward(client.out);
 			
 			//read response type
 			int responseType = client.in.readInt();

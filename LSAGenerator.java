@@ -1,5 +1,5 @@
 package sLSRP;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -56,12 +56,18 @@ public class LSAGenerator {
 //			}
 //		}, config.forwardInterval);
 	}
-	public LSA generateLSA(){
+	public LSA generateLSA() throws IOException {
 		sequenceNumber++;
 		LSA lsa = new LSA(config.routerID, sequenceNumber, netInfo.getNeighborLinks(config.routerID));
 		return lsa;
 	}
-	public void processLSA(LSA lsa){
+	public void processLSA(LSA lsa) throws IOException {
+        
+        long checksum = NetUtils.getChecksum(new BufferedReader(new StringReader(lsa.toChecksumString())));
+        if(checksum != lsa.checksum) {
+            System.out.println("LSA is corruped; received checksum does not match calculated checksum. Dropping this LSA update.");
+            return;
+        }
 		
 		//Check if LSA history table has records for this router
 		if(recievedLSAHistoryTable.containsKey(lsa.router)){
