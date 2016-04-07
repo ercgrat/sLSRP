@@ -1,5 +1,6 @@
 package sLSRP;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -37,12 +38,29 @@ public class SimulateSubnetPacketSender {
 		ArrayList<Packet> packetList = new ArrayList<Packet>();
 		return packetList;
 	}
-//	public static void main(String[] args) {
-//		//TODO
-//		Scanner reader = new Scanner(System.in);
-//		System.out.println("Enter a file path: ");
-//		String text = reader.nextLine();
-//		
-//		System.out.println("--->"+text);
-//	}
+	public static void userAction(){
+		Scanner reader = new Scanner(System.in);
+		System.out.println("Please enter a directory path.");
+		String text = reader.nextLine();
+		System.out.println("Your input is: "+text);
+		
+		File filePath = new File(text);
+		if(filePath.exists() && filePath.isDirectory()){
+			System.out.println("Please enter a file name to be sent or enter 1 to send all the files.");
+			String name = reader.nextLine();
+			if("1".equals(name)){
+				
+			}else{
+				
+			}
+		}else{
+			System.out.println("Please enter a valid directory path.");
+			userAction();
+		}
+	}
+	public static void main(String[] args) {
+		//TODO
+		userAction();
+		
+	}
 }
