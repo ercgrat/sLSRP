@@ -1,9 +1,6 @@
 package sLSRP;
 import java.io.*;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class UserInterface extends Thread {
 
@@ -24,7 +21,8 @@ public class UserInterface extends Thread {
 			"3. Print Router Info (id, ip address, port)\n" +
 			"4. Add Router Info to Neighbor List\n" +
 			"5. Remove Router from Neighbor List\n" +
-			"6. Shut down router");
+			"6. Send a file to another application\n" +
+            "7. Shut down router");
 			
 			try {
 				String input = br.readLine();
@@ -82,30 +80,18 @@ public class UserInterface extends Thread {
 						String routerInput = br.readLine();
 						
 						if(!routerInput.matches("^\\d+$")) {
-							System.out.println("\n~~~UI Feedback~~~\nAn incorrect number of arguments was specified.");
+							System.out.println("\n~~~UI Feedback~~~\nThe router id must be an integer.");
 						} else {
 							int routerID = Integer.parseInt(routerInput);
 							
-							//List<RouterData> rData = netInfo.getRouters();
-							HashMap<Integer,RouterData> rData = netInfo.getRouters();
-							
+                            List<Integer> neighbors = netInfo.getNeighbors(config.routerID);
 							RouterData data = null;
-							if(rData.containsKey(routerID)){
-								data = rData.get(routerID);
-								break;
+							if(neighbors.contains(routerID)) { // Router specified is a neighbor
+								data = netInfo.getRouters().get(routerID);
 							} else {
 								System.out.println("\n~~~UI Feedback~~~\nThere is no neighboring router with that id.");
+                                break;
 							}
-//							for(int i = 0; i < rData.size(); i++) {
-//								if(rData.get(i).routerID == routerID) {
-//									if(netInfo.getNeighbors().contains(routerID)) {
-//										data = rData.get(i);
-//										break;
-//									} else {
-//										System.out.println("\n~~~UI Feedback~~~\nThere is no neighboring router with that id.");
-//									}
-//								}
-//							}
 							
 							if(data != null) {
 								NeighborConnector.sendCeaseNeighborRequest(config.routerID, routerID, data.ipAddress, data.port);						
@@ -114,7 +100,66 @@ public class UserInterface extends Thread {
 							}
 						}
 						break;
-					case 6:
+                    case 6:
+                        System.out.println("\n~~~UI Response to 6.~~~\nPlease enter the destination router id and a filename separated by a space:");
+						String[] fileInput = br.readLine().split(" ");
+                        
+                        if(fileInput.length != 2) {
+                            System.out.println("\n~~~UI Feedback~~~\nAn incorrect number of arguments was specified.");
+                            break;
+                        }
+                        if(!fileInput[0].matches("^\\d+$")) {
+							System.out.println("\n~~~UI Feedback~~~\nThe router id must be an integer.");
+                            break;
+						}
+						int routerID = Integer.parseInt(fileInput[0]);
+                        
+                        List<Integer> path = netInfo.getPath(routerID);
+                        if(path == null){
+                            System.out.println("\n~~~UI Feedback~~~\nThere is no valid path to the router with that id.");
+                            break;
+                        }
+                        
+                        RouterData rData = netInfo.getRouters().get(path.get(0)); // Router data for next hop
+                        Packet packet = new Packet(config.routerID, routerID, 0, false, null);
+                        int connectionType = 1;
+                        
+                        File file = new File(fileInput[1]);
+                        byte[] fileData = new byte[(int)file.length()];
+                        FileInputStream fis = new FileInputStream(file);
+                        fis.read(fileData);
+                        fis.close();
+                        
+                        List<Byte> buffer = new ArrayList<Byte>();
+                        for(int i = 0; i < fileData.length; i++) {
+                            buffer.add(fileData[i]);
+                            if(buffer.size() == config.maxPacketLength || i == fileData.length - 1) {
+                                Byte[] data = (Byte [])(buffer.toArray());
+                                packet.data = new byte[data.length];
+                                for(int j = 0; j < data.length; j++) {
+                                    packet.data[j] = data[j];
+                                }
+                                
+                                packet.dataLength = config.maxPacketLength;
+                                if(i == fileData.length - 1) {
+                                    packet.isLastPacket = true;
+                                }
+                                packet.refreshChecksum();
+                                
+                                SocketBundle client = NetUtils.clientSocket(rData.ipAddress, rData.port);
+                                client.out.writeInt(connectionType);
+                                packet.forward(client.out);
+                                client.socket.close();
+                                
+                                buffer.clear();
+                            }
+                        }
+                        
+                        
+                        System.out.println("\n~~~UI Response to 6.~~~\nFile successfully transmitted.");
+                        
+                        break;
+					case 7:
 						System.exit(0);
 						break;
 					default:

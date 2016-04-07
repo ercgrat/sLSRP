@@ -95,7 +95,7 @@ public class NetworkInfo {
 	    throw new RuntimeException("Should not happen");
 	  }
 
-	  private List<Integer> getNeighbors(int node) {
+	  public List<Integer> getNeighbors(int node) {
 	    List<Integer> neighbors = new ArrayList<Integer>();
 	    for (Link link : links) {
 	      if (link.A==node

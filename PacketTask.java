@@ -46,10 +46,11 @@ public class PacketTask extends Thread {
 			int port = routerObject.port;
 			System.out.println("Try to send a packet to the next destinated router : "+ip+":"+port);
 			SocketBundle client = NetUtils.clientSocket(ip, port);
-			int connectionType = 0;
+			int connectionType = 1;
 			try {
 				//Send the connection type
 				client.out.writeInt(connectionType);
+                packet.forward(client.out);
 				//read response type
 				int responseType = client.in.readInt();
 				System.out.println("Successfully sent a packet out, the response type is: "+responseType);

@@ -78,6 +78,7 @@ public class Router {
 					case 1:// If a packet, call the algorithm to calculate the short path and put the result into the table, then send it to all the neighbors.
 						Packet packet = null;
 					    try {
+                            packet = new Packet(client.in);
 						    client.out.writeInt(ACK_FLAG);
 					    } catch (IOException e) {
 						    e.printStackTrace();
