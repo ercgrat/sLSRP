@@ -40,6 +40,8 @@ public class Router {
 		AliveMessageDeamon aliveMessageDeamon = new AliveMessageDeamon(config.helloInterval, config.routerID);
 		aliveMessageDeamon.start();
         
+        LSAGenerator lsaGenerator = LSAGenerator.getInstance(config, NetworkInfo.getInstance());
+        
 		// Create user interface
 		UserInterface ui = new UserInterface(config, NetworkInfo.getInstance());
 		ui.start();

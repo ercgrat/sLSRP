@@ -34,6 +34,7 @@ public class LSA {
 		sequenceNumber = in.readInt();
 		int numLinks = in.readInt();
 		
+        links = new ArrayList<Link>();
 		for(int i = 0; i < numLinks; i++) {
 			int routerA = in.readInt();
 			int routerB = in.readInt();
@@ -48,11 +49,13 @@ public class LSA {
 	}
 	
 	public LSA(int router, int sequenceNumber, List<Link> links) throws IOException {
+        System.out.println("Constructing an LSA with the checksum method.");
 		this.router = router;
 		this.age = new Date();
 		this.sequenceNumber = sequenceNumber;
 		this.links = links;
-		this.checksum = NetUtils.getChecksum(new BufferedReader(new StringReader(this.toChecksumString())));
+        //this.checksum = NetUtils.getChecksum(new BufferedReader(new StringReader(this.toChecksumString())));
+        this.checksum = 0;
 	}
 
 	public void forward(DataOutputStream out) throws IOException {

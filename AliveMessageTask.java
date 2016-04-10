@@ -10,12 +10,12 @@ public class AliveMessageTask extends Thread {
     RouterData routerObject;
 	int routerID = 0;
     private final int ALIVE_FAILURE_TIME = 10000;
+    Timer timer; 
     
 	public AliveMessageTask(RouterData routerObject, int routerid){
 		this.routerObject = routerObject;
 		this.routerID = routerID;
-		Timer timer=new Timer();  
-		//The following will executed in 'helloInterval'  
+        timer = new Timer();
 		timer.schedule(new TimerTask(){
             @Override
             public void run() {
@@ -33,7 +33,7 @@ public class AliveMessageTask extends Thread {
 	public void run() {
 		String ip = routerObject.ipAddress;
 		ip = ip.replace("/", "");
-		System.err.println("Try to send an alive message to a neighbor : "+ip);
+		System.err.println("Try to send an alive message to a neighbor : " + ip + ", port: " + port);
 		int port = routerObject.port;
 		SocketBundle client = NetUtils.clientSocket(ip, port);
 		int connectionType = 2;
@@ -48,5 +48,8 @@ public class AliveMessageTask extends Thread {
             NeighborConnector.removeNeighbor(AliveMessageTask.this.routerID, AliveMessageTask.this.routerObject.routerID,
                 AliveMessageTask.this.routerObject.ipAddress, AliveMessageTask.this.routerObject.port);
 		}
+        timer.cancel();
+        timer.purge();
+        this.interrupt();
 	}
 }
