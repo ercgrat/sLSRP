@@ -43,7 +43,7 @@ public class AliveMessageTask extends Thread {
 			//read response type
 			int responseType = client.in.readInt();
 			System.out.println("Successufully sent an alive message, the response type is: "+responseType);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
             NeighborConnector.removeNeighbor(AliveMessageTask.this.routerID, AliveMessageTask.this.routerObject.routerID,
                 AliveMessageTask.this.routerObject.ipAddress, AliveMessageTask.this.routerObject.port);
