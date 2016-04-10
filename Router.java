@@ -20,16 +20,7 @@ public class Router {
 		RoutingTable routingTable = new RoutingTable(config);
 		LSAHistory history = new LSAHistory(config);
 		
-		
-		// Loop over neighbors in the configuration
-		NeighborConnector connector = new NeighborConnector(config);
-		connector.start();
-		
 		// Fork all threads
-		    	
-		//Alive message thread that handle all the ongoing alive messages
-		AliveMessageDeamon aliveMessageDeamon = new AliveMessageDeamon(config.helloInterval, config.routerID);
-		aliveMessageDeamon.start();
 		
 		// Create socket and listen, get ip/port info
 		ServerSocket serverSocket = NetUtils.serverSocket();
@@ -41,6 +32,14 @@ public class Router {
 		config.routerPort = serverSocket.getLocalPort();
 		System.out.println("Listening on port " + serverSocket.getLocalPort() + " at IP Address " + config.routerIpAddress + ".");
 		
+        // Loop over neighbors in the configuration
+		NeighborConnector connector = new NeighborConnector(config);
+		connector.start();
+        
+        //Alive message thread that handle all the ongoing alive messages
+		AliveMessageDeamon aliveMessageDeamon = new AliveMessageDeamon(config.helloInterval, config.routerID);
+		aliveMessageDeamon.start();
+        
 		// Create user interface
 		UserInterface ui = new UserInterface(config, NetworkInfo.getInstance());
 		ui.start();
