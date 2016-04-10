@@ -23,6 +23,7 @@ public class Configuration {
 	int failureInterval;
 	
 	HashMap configNeighbors = new HashMap();
+	List<String> neighborBlacklist = new ArrayList<String>();
 	
 	
 	public Configuration() {
@@ -57,22 +58,26 @@ public class Configuration {
 			tokens = readAndParse(br);
 			failureInterval = Integer.parseInt(tokens[1]);
 			
+			tokens = readAndParse(br);
+			String nonNeighborStr = tokens[1];
+			String[] configNonNeighbors =  nonNeighborStr.split(",");
+			neighborBlacklist = (List) Arrays.asList(configNonNeighbors);
 			
 			try{
 				tokens = readAndParse(br);
-				String neighborStr = tokens[1];
-				String[] neigstrs=  neighborStr.split(",");
-				for(int i=0;i<neigstrs.length;i++){
-					String[] ns = neigstrs[i].split("=");
-					configNeighbors.put(Integer.parseInt(ns[0]), neigstrs[i]);
+				if(tokens!=null){
+					String neighborStr = tokens[1];
+					String[] neigstrs=  neighborStr.split(",");
+					for(int i=0;i<neigstrs.length;i++){
+						String[] ns = neigstrs[i].split("=");
+						configNeighbors.put(Integer.parseInt(ns[0]), neigstrs[i]);
+					}
 				}
+				
 			}catch(Exception e){
 				e.printStackTrace();
 			}
 			
-			//tokens = readAndParse(br);
-			//String nonNeighborStr = tokens[1];
-			//String[] configNonNeighbors =  nonNeighborStr.split(",");
 			
 		} catch(IOException e) {
 			System.out.println(e);
@@ -81,6 +86,7 @@ public class Configuration {
 	
 	String[] readAndParse(BufferedReader br) throws IOException {
 		String line = br.readLine();
+		if(line==null){return null;}
 		String[] tokens = line.split(":");
 		tokens[0] = tokens[0].trim();
 		tokens[1] = tokens[1].trim();
