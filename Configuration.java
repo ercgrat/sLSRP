@@ -29,7 +29,7 @@ public class Configuration {
 	public Configuration() {
 		try {
 //			BufferedReader br = new BufferedReader(new FileReader("sLSRP/config.txt"));
-			BufferedReader br = new BufferedReader(new FileReader("/Users/fanlingling/Documents/javaworkplace/Sample/src/sLSRP/config.txt"));
+			BufferedReader br = new BufferedReader(new FileReader("sLSRP/config.txt"));
 			
 			String[] tokens = readAndParse(br);
 			maxNetworkSize = Integer.parseInt(tokens[1]);
