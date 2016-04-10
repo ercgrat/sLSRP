@@ -5,26 +5,29 @@ import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
 
-
 public class AliveMessageTask extends Thread {
-	RouterData routerObject;
+    
+    RouterData routerObject;
 	int routerID = 0;
-	public AliveMessageTask(RouterData routerObject,int failureInterval,int routerid){
+    private final int ALIVE_FAILURE_TIME = 10000;
+    
+	public AliveMessageTask(RouterData routerObject, int routerid){
 		this.routerObject = routerObject;
 		this.routerID = routerID;
 		Timer timer=new Timer();  
 		//The following will executed in 'helloInterval'  
 		timer.schedule(new TimerTask(){
-			@Override
-			public void run() {
-				if(AliveMessageTask.this.isAlive()){
-					AliveMessageTask.this.interrupt();
-					System.err.println("Time to build a connection with neighbor has reached a limit, so the thread is interrupted.");
-					//remove this router from router table
-					NeighborConnector.removeNeighbor(AliveMessageTask.this.routerID,AliveMessageTask.this.routerObject.routerID
-							,AliveMessageTask.this.routerObject.ipAddress,AliveMessageTask.this.routerObject.port);
-		        }
-		}}, failureInterval);
+            @Override
+            public void run() {
+                if(AliveMessageTask.this.isAlive()){
+                    AliveMessageTask.this.interrupt();
+                    System.err.println("Time to build a connection with neighbor has reached a limit, so the thread is interrupted.");
+                    //remove this router from router table
+                    NeighborConnector.removeNeighbor(AliveMessageTask.this.routerID,AliveMessageTask.this.routerObject.routerID
+                            ,AliveMessageTask.this.routerObject.ipAddress,AliveMessageTask.this.routerObject.port);
+                }
+            }
+        }, ALIVE_FAILURE_TIME);
 	}
 	@Override
 	public void run() {

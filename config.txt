@@ -11,4 +11,4 @@ Network Congestion Rate : .04
 Router Failure Rate : .1
 Failure Interval (ms) : 10000
 blacklist : 3
-Neighbors : 1=136.142.227.12=48491
+Neighbors : 1=136.142.227.12=59136

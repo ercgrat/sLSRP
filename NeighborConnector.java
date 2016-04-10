@@ -44,7 +44,7 @@ public class NeighborConnector extends Thread {
 			String ip = strs[1].trim();
 			int port = Integer.parseInt(strs[2]);
 			
-			sendNeighborRequest(config.routerID, routerID, ip, port);
+			sendNeighborRequest(config.routerID, config.routerPort, routerID, ip, port);
 		}
 		//And then send LSAs to tell every neighbor about new established links.
 		HashMap<Integer,RouterData> routers = NetworkInfo.getInstance().getRouters();
@@ -81,13 +81,12 @@ public class NeighborConnector extends Thread {
 		NetworkInfo.getInstance().getLinks().remove(link);
 	}
 	
-	public static void sendNeighborRequest(int routerID, int neighborRouterID, String ip, int port) {
+	public static void sendNeighborRequest(int routerID, int routerPort, int neighborRouterID, String neighborIp, int neighborPort) {
 	
-		SocketBundle client = NetUtils.clientSocket(ip, port);
+		SocketBundle client = NetUtils.clientSocket(neighborIp, neighborPort);
 		long timeStamp = System.currentTimeMillis();
 		int connectionType = 3;
 		int requestType = 1;
-		System.out.println("Connection established with neighbor, the delay is: " +port);
 		
 		try {
 			//Send the connection type
@@ -97,7 +96,7 @@ public class NeighborConnector extends Thread {
 			//Send this router's ID
 			client.out.writeInt(routerID);
 			//Send this router's port number so that the receiving router can connect to this router.
-			client.out.writeInt(port);
+			client.out.writeInt(routerPort);
 			
 			//read response type
 			int responseType = client.in.readInt();
@@ -109,7 +108,7 @@ public class NeighborConnector extends Thread {
 				int delay = (int) (laterTimeStamp - timeStamp);
 				System.out.println("Connection established with neighbor, the delay is: " + delay);
 				
-				addNeighbor(routerID, neighborRouterID, ip, port);
+				addNeighbor(routerID, neighborRouterID, neighborIp, neighborPort);
 			} else {
 				System.out.println("The neighborhood request has been rejected by the other router, the response type is: "+responseType);
 			}

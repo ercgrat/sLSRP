@@ -72,7 +72,7 @@ public class UserInterface extends Thread {
 						} else if(!routerArgs[0].matches("^\\d+$") || !routerArgs[1].matches("^(\\d{1,3}\\.){3}\\d{1,3}$") || !routerArgs[2].matches("^\\d+$")) {
 							System.out.println("\n~~~UI Feedback~~~\nOne or more of the arguments was invalid.");
 						} else {
-							NeighborConnector.sendNeighborRequest(config.routerID, Integer.parseInt(routerArgs[0]), routerArgs[1], Integer.parseInt(routerArgs[2]));
+							NeighborConnector.sendNeighborRequest(config.routerID, config.routerPort, Integer.parseInt(routerArgs[0]), routerArgs[1], Integer.parseInt(routerArgs[2]));
 						}
 						break;
 					case 5:

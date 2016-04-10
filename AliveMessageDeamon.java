@@ -6,11 +6,9 @@ import java.util.Map;
 
 public class AliveMessageDeamon extends Thread {
 	int interval = 0;
-	int failureInterval;
 	int routerID = 0;
-	public AliveMessageDeamon(int interval,int failureInterval,int routerID){
+	public AliveMessageDeamon(int interval, int routerID){
 		this.interval = interval;
-		this.failureInterval = failureInterval;
 		this.routerID = routerID;
 	}
 	@Override
@@ -29,7 +27,7 @@ public class AliveMessageDeamon extends Thread {
 			while(iterator.hasNext()){
 				Map.Entry entry = (Map.Entry)iterator.next();
 				int routerID = (Integer)entry.getKey();
-				AliveMessageTask task = new AliveMessageTask(routers.get(routerID),failureInterval,this.routerID);
+				AliveMessageTask task = new AliveMessageTask(routers.get(routerID), this.routerID);
 				task.start();
 			}
 			

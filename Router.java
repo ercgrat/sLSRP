@@ -28,7 +28,7 @@ public class Router {
 		// Fork all threads
 		    	
 		//Alive message thread that handle all the ongoing alive messages
-		AliveMessageDeamon aliveMessageDeamon = new AliveMessageDeamon(config.helloInterval,config.failureInterval,config.routerID);
+		AliveMessageDeamon aliveMessageDeamon = new AliveMessageDeamon(config.helloInterval, config.routerID);
 		aliveMessageDeamon.start();
 		
 		// Create socket and listen, get ip/port info
