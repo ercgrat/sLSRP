@@ -29,6 +29,10 @@ public class NetworkInfo {
 		lsaHistory = new LSAHistory(config);
 	}
 	
+	public Configuration getConfiguration() {
+		return this.config;
+	}
+	
 	
 	public HashMap<Integer,RouterData> getRouters() {
 		return routers;
