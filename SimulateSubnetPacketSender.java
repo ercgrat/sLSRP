@@ -61,6 +61,7 @@ public class SimulateSubnetPacketSender {
 				}
 				try {
 					Packet p = new Packet(senderId,destinationID,sequenceID, true,list2);
+					p.contentType = fileName;
 					packetList.add(p);
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -75,6 +76,7 @@ public class SimulateSubnetPacketSender {
 				}
 				try {
 					Packet p = new Packet(senderId,destinationID,sequenceID, true,list2);
+					p.contentType = fileName;
 					packetList.add(p);
 					toIndex = fromIndex+packetLength;
 				} catch (IOException e) {

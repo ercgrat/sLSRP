@@ -6,7 +6,7 @@ public class Packet {
 	int destinationID;
 	int sequenceID ;//Used to assemble packets together
 	boolean isLastPacket;
-	int contentType;//file or something alse. <-- why do we need this? application should determine
+	String contentType;//file or something alse. <-- why do we need this? application should determine
 	int dataLength;
     byte[] data;
 	long checksum;
