@@ -1,6 +1,9 @@
 package sLSRP;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -47,8 +50,9 @@ public class AliveMessageTask extends Thread {
 	public void run() {
 		String ip = routerObject.ipAddress;
 		ip = ip.replace("/", "");
-		System.err.println("Try to send an alive message to a neighbor : " + ip + ", port: " + port);
 		int port = routerObject.port;
+		System.err.println("Try to send an alive message to a neighbor : " + ip + ", port: " + port);
+		
 		SocketBundle client = NetUtils.clientSocket(ip, port);
 		int connectionType = 2;
 		try {
@@ -70,9 +74,9 @@ public class AliveMessageTask extends Thread {
                 try {
                     LSATask task = new LSATask(routerID,LSAGenerator.getInstance(NetworkInfo.getInstance().getConfiguration(), NetworkInfo.getInstance()).generateLSA());
                     task.start();
-                } catch(IOException e) {
+                } catch(IOException ex) {
                     System.out.println("Failed to send LSA update about new neighbor connection.");
-                    e.printStackTrace();
+                    ex.printStackTrace();
                 }
     		}
 		}

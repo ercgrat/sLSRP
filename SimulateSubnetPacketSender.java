@@ -75,7 +75,7 @@ public class SimulateSubnetPacketSender {
 					list2[i] = sublist.get(i);
 				}
 				try {
-					Packet p = new Packet(senderId,destinationID,sequenceID, true,list2);
+					Packet p = new Packet(senderId,destinationID,sequenceID, false,list2);
 					p.contentType = fileName;
 					packetList.add(p);
 					toIndex = fromIndex+packetLength;
