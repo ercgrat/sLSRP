@@ -6,6 +6,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import sLSRP.NetworkInfo;
+import sLSRP.RouterData;
 
 
 
@@ -23,7 +24,7 @@ public class PacketTask extends Thread {
 	    	//SimulateSubnetPacketServer.assemblePacket(packet);
 	    	String ip = NetworkInfo.SERVER_IP ;
 			int port = NetworkInfo.SERVER_PORT ;
-			//TODO
+			routerObject = new RouterData(0,ip,port);
 	    }else{
 	    	//Get the SPF and send the packet to the destination
 	    	LinkedList<Integer> paths = NetworkInfo.getInstance().getPath(packet.destinationID);

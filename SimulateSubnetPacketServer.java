@@ -1,6 +1,8 @@
 package sLSRP;
 
 import java.io.Console;
+import java.io.IOException;
+import java.net.ServerSocket;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -30,15 +32,71 @@ public class SimulateSubnetPacketServer {
 			
 		}
 	}
-	
+	public static volatile boolean failing = false;	
+	private static final int ACK_FLAG = 100; //The universal acknowledgement number
 	public static void main(String[] args) {
-		
-//		Console console = System.console();
-//		String s = console.readLine();
-//		String text = console.readLine();
 		
 		//First, register itself  to its edge router
 		//Then start to listen to incoming packets from its edge routers
+		// Create socket and listen, get ip/port info
+		ServerSocket serverSocket = NetUtils.serverSocket();
+		String localIp = null;
+		try {
+			localIp = IpChecker.getIp();
+		} catch(IOException e) {
+			System.out.println(e);
+		}
+		final int localPort = serverSocket.getLocalPort();
+		System.out.println("Listening on port " + serverSocket.getLocalPort() + " at IP Address " + localIp + ".");
+		//Register itself to its edge router
+		new Thread(){
+			@Override
+			public void run() {
+				String ip = "";
+				int port = 0;
+				System.out.println("Try to register itself to its edge router : "+ip+":"+port);
+				SocketBundle client = NetUtils.clientSocket(ip, port);
+				int connectionType = 4;
+				try {
+					//Send the connection type
+					client.out.writeInt(connectionType);
+					client.out.writeInt(localPort);
+					//read response type
+					int responseType = client.in.readInt();
+					System.out.println("Successfully registered: "+responseType);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			
+		}.start();
+		while(true) {
+			if(!failing) {
+				System.out.println("Waiting to accept incoming packets...");
+				SocketBundle client = NetUtils.acceptClient(serverSocket);
+				String ip = client.socket.getInetAddress().toString();
+				int packetType = -1;
+				try {
+					packetType = client.in.readInt();
+				} catch(Exception e) {
+					System.out.println(e);
+				}
+				
+				switch(packetType) {
+					
+					case 1:// If a packet, call the algorithm to calculate the short path and put the result into the table, then send it to all the neighbors.
+						Packet packet = null;
+					    try {
+                            packet = new Packet(client.in);
+						    client.out.writeInt(ACK_FLAG);
+					    } catch (IOException e) {
+						    e.printStackTrace();
+					    }
+					    assemblePacket(packet);
+						break;
+				}
+			}
+		}
 	}
 
 }
