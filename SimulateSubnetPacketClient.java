@@ -47,7 +47,9 @@ public class SimulateSubnetPacketClient {
 	}
     static void sendFile(String filePath,String fileName){
     	ArrayList<Byte> list = readFile(filePath);
-    	generatePackets(list,fileName);
+    	ArrayList<Packet> = generatePackets(list,fileName);
+    	//Send the packets TODO
+    	PacketTask task ;
     }
 	static ArrayList<Packet> generatePackets(ArrayList<Byte> list,String fileName){
 		ArrayList<Packet> packetList = new ArrayList<Packet>();
