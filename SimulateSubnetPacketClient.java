@@ -16,14 +16,14 @@ import sLSRP.SocketBundle;
  * This is a separate program that simulating injecting packets into the network, 
  * then the network sends these packets to the subnet receiver.
  */
-public class SimulateSubnetPacketSender {
+public class SimulateSubnetPacketClient {
     
 	static int packetLength = 0;
 	static int senderId;
 	static int destinationID; 
 	
     
-	public SimulateSubnetPacketSender(int packetLength){
+	public SimulateSubnetPacketClient(int packetLength){
 		this.packetLength = packetLength;
 	}
     

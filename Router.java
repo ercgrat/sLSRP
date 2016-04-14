@@ -5,6 +5,7 @@ import java.util.*;
 
 import sLSRP.AliveMessageTask;
 import sLSRP.NeighborConnector;
+import sLSRP.NetworkInfo;
 
 public class Router {
 
@@ -125,7 +126,13 @@ public class Router {
 						break;
 					case 4://Server host registration 
 						try {
-							//TODO				    
+							//Read the port
+							int port = client.in.readInt();
+							System.out.println("Received a host registration request: " + ip + ", " + port);
+							//Add the host to the host list
+							NetworkInfo.SERVER_IP = ip;
+							NetworkInfo.SERVER_PORT = port;
+						    client.out.writeInt(ACK_FLAG);
 					    } catch (IOException e) {
 						    e.printStackTrace();
 					    }

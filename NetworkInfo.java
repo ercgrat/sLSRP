@@ -24,6 +24,9 @@ public class NetworkInfo {
 	private List<Link> links = new ArrayList();
 	private LSAHistory lsaHistory;
 	
+	public static String SERVER_IP = "";
+	public static int SERVER_PORT = 0;
+	
 	public void setConfiguration(Configuration config) {
 		this.config = config;
 		lsaHistory = new LSAHistory(config);

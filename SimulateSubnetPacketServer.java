@@ -8,7 +8,7 @@ import java.util.Scanner;
  * This class is used for testing packet or file transfer between routers;
  * This is a separate program that simulates accepting packets from the network.
  */
-public class SimulateSubnetPacketReceiver {
+public class SimulateSubnetPacketServer {
 	//The key at the first level is ID of the object that packets belong to, 
 	//the second key is sequenceID that identifies a packet.
 	static HashMap<String,HashMap<Integer,Packet>> packTable = new HashMap<String,HashMap<Integer,Packet>>();

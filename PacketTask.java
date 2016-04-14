@@ -5,7 +5,8 @@ import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import sLSRP.SimulateSubnetPacketReceiver;
+import sLSRP.NetworkInfo;
+
 
 
 public class PacketTask extends Thread {
@@ -18,8 +19,11 @@ public class PacketTask extends Thread {
 		
 		//Check if the destination is this router
 	    if(packet.destinationID==routerID){
-	    	//
-	    	SimulateSubnetPacketReceiver.assemblePacket(packet);
+	    	//Send it to the sub-host
+	    	//SimulateSubnetPacketServer.assemblePacket(packet);
+	    	String ip = NetworkInfo.SERVER_IP ;
+			int port = NetworkInfo.SERVER_PORT ;
+			//TODO
 	    }else{
 	    	//Get the SPF and send the packet to the destination
 	    	LinkedList<Integer> paths = NetworkInfo.getInstance().getPath(packet.destinationID);
