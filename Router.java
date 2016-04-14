@@ -123,6 +123,13 @@ public class Router {
 						    e.printStackTrace();
 					    }
 						break;
+					case 4://Server host registration 
+						try {
+							//TODO				    
+					    } catch (IOException e) {
+						    e.printStackTrace();
+					    }
+						break;
 				}
 			}
 		}

@@ -31,15 +31,14 @@ public class SimulateSubnetPacketReceiver {
 		}
 	}
 	
-//	public static void main(String[] args) {
-//		//TODO
-////		Scanner reader = new Scanner(System.in);
-////		System.out.println("Enter a file path: ");
-////		reader.nextInt();
-//		
+	public static void main(String[] args) {
+		
 //		Console console = System.console();
 //		String s = console.readLine();
 //		String text = console.readLine();
-//	}
+		
+		//First, register itself  to its edge router
+		//Then start to listen to incoming packets from its edge routers
+	}
 
 }

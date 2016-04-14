@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import sLSRP.NetUtils;
+import sLSRP.SocketBundle;
+
 /*
  * This class is used for testing packet or file transfer between routers;
  * This is a separate program that simulating injecting packets into the network, 
@@ -87,7 +90,32 @@ public class SimulateSubnetPacketSender {
 		
 		return packetList;
 	}
-    
+	void connectToEdgeRouter(String ip,int port){
+    	SocketBundle client = NetUtils.clientSocket(ip, port);
+		int connectionType = 3;
+		int requestType = 1;
+		
+		try {
+			//Send the connection type
+			client.out.writeInt(connectionType);
+			// Send the neighbor request type (1 = request, 2 = cease)
+			client.out.writeInt(requestType);
+			
+			//read response type
+			int responseType = client.in.readInt();
+			
+			client.socket.close();
+			
+			if(responseType == 1) {
+				System.out.println("" );
+			} else {
+				System.out.println(" ");
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    }
 	public static void userAction(){
 		Scanner reader = new Scanner(System.in);
 		System.out.println("Please enter a directory path.");
@@ -123,7 +151,8 @@ public class SimulateSubnetPacketSender {
 	}
     
 	public static void main(String[] args) {
-		//TODO
+		//First connect to its edge router
+		
 		userAction();
 		
 	}
