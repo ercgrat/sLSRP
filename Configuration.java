@@ -26,10 +26,9 @@ public class Configuration {
 	List<String> neighborBlacklist = new ArrayList<String>();
 	
 	
-	public Configuration() {
+	public Configuration(String filepath) {
 		try {
-//			BufferedReader br = new BufferedReader(new FileReader("sLSRP/config.txt"));
-			BufferedReader br = new BufferedReader(new FileReader("sLSRP/config.txt"));
+			BufferedReader br = new BufferedReader(new FileReader(filepath));
 			
 			String[] tokens = readAndParse(br);
 			maxNetworkSize = Integer.parseInt(tokens[1]);

@@ -6,6 +6,7 @@ class NetUtils {
     
     static final int CRC32_GEN = 0x04c11db7;
     static final int CRC32_MSB = 0x80000000;
+    static final int EOF = -1;
 
 	static ServerSocket serverSocket() {
 		try {
@@ -47,6 +48,9 @@ class NetUtils {
         
         while(br.ready()) {
             c = br.read();
+            if(c == EOF) {
+                break;
+            }
             for(i = 0x80; i != 0; i >>= 1) {
                 overflow = (int)(checksum & CRC32_MSB);
                 checksum = (checksum << 1) | ((i & c) != 0 ? 1 : 0);

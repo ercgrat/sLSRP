@@ -54,8 +54,8 @@ public class LSA {
 		this.age = new Date();
 		this.sequenceNumber = sequenceNumber;
 		this.links = links;
-        //this.checksum = NetUtils.getChecksum(new BufferedReader(new StringReader(this.toChecksumString())));
-        this.checksum = 0;
+        System.out.println("this.toChecksum == " + this.toChecksumString());
+        this.checksum = NetUtils.getChecksum(new BufferedReader(new StringReader(this.toChecksumString())));
 	}
 
 	public void forward(DataOutputStream out) throws IOException {

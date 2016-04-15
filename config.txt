@@ -2,7 +2,7 @@ Maximum network size (nodes) : 20
 Hello Interval (ms) : 3000
 Update Interval (ms) : 7000
 Forward Interval (ms) : 7000
-Router ID : 3
+Router ID : 2
 LSRP Version : 1.0
 Maximum Packet Length (bytes) : 128
 Age Limit (ms) : 35000
@@ -11,4 +11,4 @@ Network Congestion Rate : .04
 Router Failure Rate : .1
 Failure Interval (ms) : 10000
 blacklist : 3
-Neighbors : 1=136.142.227.12=48030
+Neighbors : 1=136.142.227.9=54834

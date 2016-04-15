@@ -13,8 +13,14 @@ public class Router {
 	private static final int ACK_FLAG = 100; //The universal acknowledgement number
 	
 	public static void main(String args[]) {
+        
+        if(args.length != 1) {
+            System.out.println("Invalid number of arguments. Please provide a configuration filename, e.g.:\n\tjava sLSRP/Router.java config.txt");
+            return;
+        }
+        
 		// Read in configuration
-		Configuration config = new Configuration();
+		Configuration config = new Configuration(args[0]);
 		NetworkInfo.getInstance().setConfiguration(config);
 		
 		// Create data structures
