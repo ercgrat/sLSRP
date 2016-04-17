@@ -14,7 +14,10 @@ public class Link {
 			int temp = A;
 			this.A = B;
 			this.B = temp;
-		}
+		} else {
+            this.A = A;
+            this.B = B;
+        }
         System.out.println(this.A);
         System.out.println(this.B);
 		delay = 0;

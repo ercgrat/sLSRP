@@ -64,7 +64,7 @@ public class LSAProcessor {
     }
     
 	public void processLSA(LSA lsa) throws IOException {
-        
+        System.out.println("Incoming checksum string == " + lsa.toChecksumString());
         long checksum = NetUtils.getChecksum(new BufferedReader(new StringReader(lsa.toChecksumString())));
         System.out.println("Received checksum on incoming packet: " + lsa.checksum);
         System.out.println("Calculated checksum on incoming packet: " + checksum);
