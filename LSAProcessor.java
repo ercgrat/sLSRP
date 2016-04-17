@@ -7,55 +7,50 @@ import java.util.*;
  * (for example, loss a neighbor or gain a neighbor)
  * It is also responsible for periodically sending LSAs.
  */
-public class LSAGenerator {
-	private static LSAGenerator generator;
-	
-	private LSAGenerator() {}
-	
-	public static LSAGenerator getInstance(Configuration inConfig, NetworkInfo inNetInfo){
-		if(generator == null) {
-			generator = new LSAGenerator(inConfig,inNetInfo);
-		}
-		return generator;
-	}
-	int sequenceNumber;
-	Configuration config;
-	NetworkInfo netInfo;
-	Timer timer = new Timer();
-	//Store all the LSAs received from neighbors, the first key(integer) is routerID, the second key is sequenceID.
+public class LSAProcessor {
+    
+	private static LSAProcessor processor;
+    int sequenceNumber;
+    Configuration config;
+    NetworkInfo netInfo;
+    //Store all the LSAs received from neighbors, the first key(integer) is routerID, the second key is sequenceID.
 	//When receive a LSA, first check if the table has the LSA records of this router, then check if this LSA has been received
 	public static HashMap<Integer,HashMap<Integer,LSA>> recievedLSAHistoryTable = new HashMap<Integer,HashMap<Integer,LSA>>();
 	
-	private LSAGenerator(Configuration inConfig, NetworkInfo inNetInfo) {
-		this.config = inConfig;
-		this.netInfo = inNetInfo;
-		sequenceNumber = 0;
-
-		/*timer.schedule(new TimerTask(){
-			public void run() {
-                try {
-                    LSA lsa = generateLSA();
-                    List<Integer> neighbors = netInfo.getNeighbors(config.routerID);
-                    for(int i = 0; i < neighbors.size(); i++) {
-                        RouterData rData = netInfo.getRouters().get(neighbors.get(i));
-                        SocketBundle client = NetUtils.clientSocket(rData.ipAddress, rData.port);
-                        lsa.forward(client.out);
-                    }
-                } catch(IOException e) {
-                    System.out.println(e);
-                }
-			}
-		}, config.forwardInterval);*/
+	private LSAProcessor(Configuration config, NetworkInfo netInfo) {
+        this.config = config;
+        this.netInfo = netInfo;
+        this.sequenceNumber = 0;
+    }
+	
+	public static LSAProcessor getInstance(Configuration inConfig, NetworkInfo inNetInfo){
+		if(processor == null) {
+			processor = new LSAProcessor(inConfig,inNetInfo);
+		}
+		return processor;
 	}
     
-	public LSA generateLSA() throws IOException {
-		sequenceNumber++;
-		LSA lsa = new LSA(config.routerID, sequenceNumber, netInfo.getNeighborLinks(config.routerID));
-		return lsa;
-	}
+    public void broadcastLSA() {
+        try {
+            sequenceNumber++;
+            LSA lsa = new LSA(config.routerID, sequenceNumber, netInfo.getNeighborLinks(config.routerID));
+            List<Integer> neighbors = netInfo.getNeighbors(config.routerID);
+            for(int i = 0; i < neighbors.size(); i++) {
+                RouterData rData = netInfo.getRouters().get(neighbors.get(i));
+                SocketBundle client = NetUtils.clientSocket(rData.ipAddress, rData.port);
+                lsa.forward(client.out);
+            }
+            System.out.println("done forwarding generated LSA to neighbors.");
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
 	public void processLSA(LSA lsa) throws IOException {
         
         long checksum = NetUtils.getChecksum(new BufferedReader(new StringReader(lsa.toChecksumString())));
+        System.out.println("Received checksum on incoming packet: " + lsa.checksum);
+        System.out.println("Calculated checksum on incoming packet: " + checksum);
         if(checksum != lsa.checksum) {
             System.out.println("LSA is corruped; received checksum does not match calculated checksum. Dropping this LSA update.");
             return;

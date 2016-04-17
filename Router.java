@@ -47,7 +47,12 @@ public class Router {
 		AliveMessageDeamon aliveMessageDeamon = new AliveMessageDeamon(config.helloInterval, config.routerID);
 		aliveMessageDeamon.start();
         
-        LSAGenerator lsaGenerator = LSAGenerator.getInstance(config, NetworkInfo.getInstance());
+        // LSA utility singleton
+        LSAProcessor lsaProcessor = LSAProcessor.getInstance(config, NetworkInfo.getInstance());
+        
+        // LSA generating thread
+        LSAGeneratorDaemon lsaGenerator = new LSAGeneratorDaemon(config, NetworkInfo.getInstance(), lsaProcessor);
+        lsaGenerator.start();
         
 		// Create user interface
 		UserInterface ui = new UserInterface(config, NetworkInfo.getInstance());
@@ -72,7 +77,7 @@ public class Router {
 						try {
 							lsa = new LSA(client.in);
 							System.out.println("Receive an LSA, sequenceNumber: "+lsa.sequenceNumber+"  router: "+lsa.router);
-                            LSAGenerator.getInstance(config, NetworkInfo.getInstance()).processLSA(lsa);
+                            lsaProcessor.processLSA(lsa);
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
