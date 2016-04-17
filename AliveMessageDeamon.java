@@ -5,18 +5,19 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class AliveMessageDeamon extends Thread {
-	int interval = 0;
-	int routerID = 0;
-	public AliveMessageDeamon(int interval, int routerID){
-		this.interval = interval;
-		this.routerID = routerID;
+    
+    Configuration config;
+	
+    public AliveMessageDeamon(Configuration config){
+        this.config = config;
 	}
+    
 	@Override
 	public void run() {
 		while(true){
 			
 			try {
-				Thread.sleep(interval);
+				Thread.sleep(config.helloInterval);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -27,7 +28,7 @@ public class AliveMessageDeamon extends Thread {
 			while(iterator.hasNext()){
 				Map.Entry entry = (Map.Entry)iterator.next();
 				int routerID = (Integer)entry.getKey();
-				AliveMessageTask task = new AliveMessageTask(routers.get(routerID), this.routerID);
+				AliveMessageTask task = new AliveMessageTask(routers.get(routerID), config.routerID, LSAProcessor.getInstance(config, NetworkInfo.getInstance()));
 				task.start();
 			}
 			

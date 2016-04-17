@@ -11,13 +11,15 @@ import java.util.TimerTask;
 public class AliveMessageTask extends Thread {
     
     RouterData routerObject;
+    final LSAProcessor processor;
 	int routerID = 0;
     private final int ALIVE_FAILURE_TIME = 10000;
     Timer timer; 
     
-	public AliveMessageTask(RouterData routerObject, int routerid){
+	public AliveMessageTask(RouterData routerObject, int routerid, LSAProcessor processorInstance){
 		this.routerObject = routerObject;
 		this.routerID = routerID;
+        this.processor = processorInstance;
         timer = new Timer();
 		timer.schedule(new TimerTask(){
             @Override
@@ -28,20 +30,9 @@ public class AliveMessageTask extends Thread {
                     //remove this router from router table
                     NeighborConnector.removeNeighbor(AliveMessageTask.this.routerID,AliveMessageTask.this.routerObject.routerID
                             ,AliveMessageTask.this.routerObject.ipAddress,AliveMessageTask.this.routerObject.port);
-                  //And then send LSAs to tell every neighbor about new established links.
-            		HashMap<Integer,RouterData> routers = NetworkInfo.getInstance().getRouters();
-            		Iterator iterator2 = routers.entrySet().iterator();
-            		while(iterator2.hasNext()){
-            			Map.Entry entry = (Map.Entry)iterator2.next();
-            			int routerID = (Integer)entry.getKey();
-                        try {
-                            LSATask task = new LSATask(routerID,LSAGenerator.getInstance(NetworkInfo.getInstance().getConfiguration(), NetworkInfo.getInstance()).generateLSA());
-                            task.start();
-                        } catch(IOException e) {
-                            System.out.println("Failed to send LSA update about new neighbor connection.");
-                            e.printStackTrace();
-                        }
-            		}
+                    
+                    //And then send LSAs to tell every neighbor about new established links.
+            		processor.broadcastLSA();
                 }
             }
         }, ALIVE_FAILURE_TIME);
@@ -65,20 +56,7 @@ public class AliveMessageTask extends Thread {
 			e.printStackTrace();
             NeighborConnector.removeNeighbor(AliveMessageTask.this.routerID, AliveMessageTask.this.routerObject.routerID,
                 AliveMessageTask.this.routerObject.ipAddress, AliveMessageTask.this.routerObject.port);
-          //And then send LSAs to tell every neighbor about new established links.
-    		HashMap<Integer,RouterData> routers = NetworkInfo.getInstance().getRouters();
-    		Iterator iterator2 = routers.entrySet().iterator();
-    		while(iterator2.hasNext()){
-    			Map.Entry entry = (Map.Entry)iterator2.next();
-    			int routerID = (Integer)entry.getKey();
-                try {
-                    LSATask task = new LSATask(routerID,LSAGenerator.getInstance(NetworkInfo.getInstance().getConfiguration(), NetworkInfo.getInstance()).generateLSA());
-                    task.start();
-                } catch(IOException ex) {
-                    System.out.println("Failed to send LSA update about new neighbor connection.");
-                    ex.printStackTrace();
-                }
-    		}
+            processor.broadcastLSA();
 		}
         timer.cancel();
         timer.purge();

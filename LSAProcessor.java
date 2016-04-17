@@ -37,8 +37,10 @@ public class LSAProcessor {
             List<Integer> neighbors = netInfo.getNeighbors(config.routerID);
             for(int i = 0; i < neighbors.size(); i++) {
                 RouterData rData = netInfo.getRouters().get(neighbors.get(i));
-                SocketBundle client = NetUtils.clientSocket(rData.ipAddress, rData.port);
-                lsa.forward(client.out);
+                if(rData.routerID != lsa.router) {
+                    SocketBundle client = NetUtils.clientSocket(rData.ipAddress, rData.port);
+                    lsa.forward(client.out);
+                }
             }
             System.out.println("done forwarding generated LSA to neighbors.");
         } catch(IOException e) {
@@ -77,21 +79,9 @@ public class LSAProcessor {
 			map.put(lsa.sequenceNumber, lsa);
 			recievedLSAHistoryTable.put(lsa.router, map);
 		}
-		//send the LSA to all the neighbor except the neighbor who sent it to this router
 		
-		HashMap<Integer,RouterData> routers = NetworkInfo.getInstance().getRouters();
-		Iterator iterator = routers.entrySet().iterator();
-		while(iterator.hasNext()){
-			Map.Entry entry = (Map.Entry)iterator.next();
-			int routerID = (Integer)entry.getKey();
-			if(routerID!=lsa.router){
-				LSATask task = new LSATask(routerID, LSAGenerator.getInstance(config, netInfo).generateLSA());
-				task.start();
-			}else{
-				System.out.println("Try not to send LSA back to the original sender.");
-			}
-			
-		}
+        //send the LSA to all the neighbor except the neighbor who sent it to this router
+		this.broadcastLSA();
 	}
 	
 }

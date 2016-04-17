@@ -12,21 +12,13 @@ import java.util.TimerTask;
 
 
 public class NeighborConnector extends Thread {
-	Configuration config;
+	
+    Configuration config;
+    NetworkInfo netInfo;
 
-	public NeighborConnector(Configuration config){
+	public NeighborConnector(Configuration config, NetworkInfo netInfo){
 		this.config = config;
-//		//Set up timer to count down how much time has been spent on the neighborhood request. 
-//		Timer timer=new Timer();  
-//		//The following will executed in 'helloInterval'  
-//		timer.schedule(new TimerTask(){
-//			@Override
-//			public void run() {
-//				if(NeighborConnector.this.isAlive()){
-//					NeighborConnector.this.interrupt();
-//					System.out.println("Time to build a connection with neighbor has reached a limit, so the thread is interrupted.");
-//		        }
-//		}}, this.config.helloInterval);
+        this.netInfo = netInfo;
 	}
 	
 	@Override
@@ -46,20 +38,9 @@ public class NeighborConnector extends Thread {
 			
 			sendNeighborRequest(config.routerID, config.routerPort, routerID, ip, port);
 		}
+        
 		//And then send LSAs to tell every neighbor about new established links.
-		HashMap<Integer,RouterData> routers = NetworkInfo.getInstance().getRouters();
-		Iterator iterator2 = routers.entrySet().iterator();
-		while(iterator2.hasNext()){
-			Map.Entry entry = (Map.Entry)iterator2.next();
-			int routerID = (Integer)entry.getKey();
-            try {
-                LSATask task = new LSATask(routerID,LSAGenerator.getInstance(config, NetworkInfo.getInstance()).generateLSA());
-                task.start();
-            } catch(IOException e) {
-                System.out.println("Failed to send LSA update about new neighbor connection.");
-                e.printStackTrace();
-            }
-		}
+		LSAProcessor.getInstance(config, netInfo).broadcastLSA();
 	    
 	}
 	

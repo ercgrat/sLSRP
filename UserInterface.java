@@ -21,8 +21,7 @@ public class UserInterface extends Thread {
 			"3. Print Router Info (id, ip address, port)\n" +
 			"4. Add Router Info to Neighbor List\n" +
 			"5. Remove Router from Neighbor List\n" +
-			"6. Send a file to another application\n" +
-            "7. Shut down router");
+            "6. Shut down router");
 			
 			try {
 				String input = br.readLine();
@@ -101,7 +100,9 @@ public class UserInterface extends Thread {
 						}
 						break;
                     case 6:
-                        System.out.println("\n~~~UI Response to 6.~~~\nPlease enter the destination router id and a filename separated by a space:");
+						System.exit(0);
+						break;
+                        /*System.out.println("\n~~~UI Response to 6.~~~\nPlease enter the destination router id and a filename separated by a space:");
 						String[] fileInput = br.readLine().split(" ");
                         
                         if(fileInput.length != 2) {
@@ -159,9 +160,7 @@ public class UserInterface extends Thread {
                         System.out.println("\n~~~UI Response to 6.~~~\nFile successfully transmitted.");
                         
                         break;
-					case 7:
-						System.exit(0);
-						break;
+					*/
 					default:
 						break;
 				}

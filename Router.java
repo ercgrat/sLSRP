@@ -40,11 +40,11 @@ public class Router {
 		System.out.println("Listening on port " + serverSocket.getLocalPort() + " at IP Address " + config.routerIpAddress + ".");
 		
         // Loop over neighbors in the configuration
-		NeighborConnector connector = new NeighborConnector(config);
+		NeighborConnector connector = new NeighborConnector(config, NetworkInfo.getInstance());
 		connector.start();
         
         //Alive message thread that handle all the ongoing alive messages
-		AliveMessageDeamon aliveMessageDeamon = new AliveMessageDeamon(config.helloInterval, config.routerID);
+		AliveMessageDeamon aliveMessageDeamon = new AliveMessageDeamon(config);
 		aliveMessageDeamon.start();
         
         // LSA utility singleton
