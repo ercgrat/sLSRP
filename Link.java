@@ -15,6 +15,8 @@ public class Link {
 			this.A = B;
 			this.B = temp;
 		}
+        System.out.println(this.A);
+        System.out.println(this.B);
 		delay = 0;
 		load = Load.LIGHT;
 	}

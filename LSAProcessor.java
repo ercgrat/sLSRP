@@ -34,10 +34,10 @@ public class LSAProcessor {
         try {
             sequenceNumber++;
             LSA lsa = new LSA(config.routerID, sequenceNumber, netInfo.getNeighborLinks(config.routerID));
-            List<Integer> neighbors = netInfo.getNeighbors(config.routerID);
+            HashMap<Integer,RouterData> neighbors = netInfo.getNeighbors();
             System.out.println("neighbors:\n" + neighbors);
-            for(int i = 0; i < neighbors.size(); i++) {
-                RouterData rData = netInfo.getNeighbors().get(neighbors.get(i));
+            for(Integer key : neighbors.keySet()) {
+                RouterData rData = neighbors.get(key);
                 if(rData.routerID != lsa.router) {
                     System.out.println("About to send LSA to router id " + rData.routerID);
                     SocketBundle client = NetUtils.clientSocket(rData.ipAddress, rData.port);

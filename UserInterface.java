@@ -33,6 +33,7 @@ public class UserInterface extends Thread {
 				switch(option) {
 					case 1:
 						List<Link> links = netInfo.getLinks();
+                        System.out.println(links);
 						
 						output = "\n~~~UI Response to 1.~~~\n";
 						for(int i = 0; i < links.size(); i++) {

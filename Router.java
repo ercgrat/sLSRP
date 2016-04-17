@@ -119,10 +119,10 @@ public class Router {
 							System.out.println("Neighbor establishment request: " + routerID + ", " + ip + ", " + port);
 							
 							if(requestType == 1) { // Request neighbors
-								if(config.neighborBlacklist.contains(routerID+"")){ //Add and send confirmation flag
+								if(config.neighborBlacklist.contains(routerID+"")){ // Send NAK flag
 									client.out.writeInt(0);
 									System.out.println("This router has been denied neighborhood: " + routerID + ", " + ip + ", " + port);
-								} else { //Send deny flag
+								} else { //Send ACK flag
                                     NeighborConnector.addNeighbor(config.routerID, routerID, ip, port);
 									client.out.writeInt(1);
 								}
@@ -148,6 +148,9 @@ public class Router {
 						    e.printStackTrace();
 					    }
 						break;
+                    default:
+                        System.out.println("Received invalid connection type " + packetType);
+                        break;
 				}
 			}
 		}

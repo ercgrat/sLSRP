@@ -107,10 +107,11 @@ public class NetworkInfo {
 	  public List<Integer> getNeighbors(int node) {
 	    List<Integer> neighbors = new ArrayList<Integer>();
 	    for (Link link : links) {
-	      if (link.A==node
-	          && !isSettled(link.B)) {
-	        neighbors.add(link.B);
-	      }
+	      if (link.A == node) {
+	        neighbors.add(link.A);
+	      } else if(link.B == node) {
+            neighbors.add(link.B);
+          }
 	    }
 	    return neighbors;
 	  }
