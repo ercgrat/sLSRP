@@ -25,7 +25,8 @@ public class LSAGeneratorDaemon extends Thread {
 			}
             
             // Broadcast a new LSA
-            processor.broadcastLSA();
+            LSA lsa = processor.createLSA();
+            processor.broadcastLSA(lsa);
 		}
 	}
 }

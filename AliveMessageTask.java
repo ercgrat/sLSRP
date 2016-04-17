@@ -32,7 +32,8 @@ public class AliveMessageTask extends Thread {
                             ,AliveMessageTask.this.routerObject.ipAddress,AliveMessageTask.this.routerObject.port);
                     
                     //And then send LSAs to tell every neighbor about new established links.
-            		processor.broadcastLSA();
+            		LSA lsa = processor.createLSA();
+                    processor.broadcastLSA(lsa);
                 }
             }
         }, ALIVE_FAILURE_TIME);
@@ -56,7 +57,8 @@ public class AliveMessageTask extends Thread {
 			e.printStackTrace();
             NeighborConnector.removeNeighbor(AliveMessageTask.this.routerID, AliveMessageTask.this.routerObject.routerID,
                 AliveMessageTask.this.routerObject.ipAddress, AliveMessageTask.this.routerObject.port);
-            processor.broadcastLSA();
+            LSA lsa = processor.createLSA();
+            processor.broadcastLSA(lsa);
 		}
         timer.cancel();
         timer.purge();

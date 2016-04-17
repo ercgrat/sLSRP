@@ -30,15 +30,27 @@ public class LSAProcessor {
 		return processor;
 	}
     
-    public void broadcastLSA() {
+    public LSA createLSA() {
+        sequenceNumber++;
+        LSA lsa = null;
         try {
-            sequenceNumber++;
-            LSA lsa = new LSA(config.routerID, sequenceNumber, netInfo.getNeighborLinks(config.routerID));
+            lsa = new LSA(config.routerID, sequenceNumber, netInfo.getNeighborLinks(config.routerID));
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+        
+        return lsa;
+    }
+    
+    public void broadcastLSA(LSA lsa) {
+        try {
             HashMap<Integer,RouterData> neighbors = netInfo.getNeighbors();
             System.out.println("neighbors:\n" + neighbors);
             for(Integer key : neighbors.keySet()) {
                 RouterData rData = neighbors.get(key);
                 if(rData.routerID != lsa.router) {
+                    System.out.println("router data id: " + rData.routerID);
+                    System.out.println("lsa router id: " + lsa.router);
                     rData.ipAddress = rData.ipAddress.replaceFirst("/", "");
                     System.out.println("About to send LSA to router id " + rData.routerID + ", " + rData.ipAddress + ", " + rData.port);
                     SocketBundle client = NetUtils.clientSocket(rData.ipAddress, rData.port);
@@ -87,7 +99,7 @@ public class LSAProcessor {
 		}
 		
         //send the LSA to all the neighbor except the neighbor who sent it to this router
-		this.broadcastLSA();
+		this.broadcastLSA(lsa);
 	}
 	
 }

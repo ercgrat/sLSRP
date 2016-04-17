@@ -40,7 +40,8 @@ public class NeighborConnector extends Thread {
 		}
         
 		//And then send LSAs to tell every neighbor about new established links.
-		LSAProcessor.getInstance(config, netInfo).broadcastLSA();
+		LSA lsa = LSAProcessor.getInstance(config, netInfo).createLSA();
+        LSAProcessor.getInstance(config, netInfo).broadcastLSA(lsa);
 	    
 	}
 	
