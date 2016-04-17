@@ -66,9 +66,12 @@ public class Configuration {
 				tokens = readAndParse(br);
 				if(tokens!=null){
 					String neighborStr = tokens[1];
-					String[] neigstrs=  neighborStr.split(",");
-					for(int i=0;i<neigstrs.length;i++){
+					String[] neigstrs = neighborStr.split(",");
+					for(int i=0; i < neigstrs.length; i++) {
 						String[] ns = neigstrs[i].split("=");
+                        if(ns[0].equals("")) {
+                            continue;
+                        }
 						configNeighbors.put(Integer.parseInt(ns[0]), neigstrs[i]);
 					}
 				}
