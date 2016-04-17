@@ -46,7 +46,7 @@ public class NeighborConnector extends Thread {
 	
 	public static void addNeighbor(int routerID, int neighborRouterID, String ip, int port) {
 		// Add entries to the neighbor, router, and link lists
-		NetworkInfo.getInstance().getRouters().put(neighborRouterID, new RouterData(neighborRouterID, ip, port));
+		NetworkInfo.getInstance().getNeighbors().put(neighborRouterID, new RouterData(neighborRouterID, ip, port));
 		
 		Link link = new Link(routerID, neighborRouterID);
 		if(!NetworkInfo.getInstance().getLinks().contains(link)) {
@@ -57,7 +57,7 @@ public class NeighborConnector extends Thread {
 	
 	public static void removeNeighbor(int routerID, int neighborRouterID, String ip, int port) {
 		// Remove entries from the neighbor, router, and link lists
-		NetworkInfo.getInstance().getRouters().remove(neighborRouterID);
+		NetworkInfo.getInstance().getNeighbors().remove(neighborRouterID);
 		
 		Link link = new Link(routerID, neighborRouterID);
 		NetworkInfo.getInstance().getLinks().remove(link);

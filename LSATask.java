@@ -16,7 +16,7 @@ public class LSATask extends Thread {
 		this.routerID = routerID;
 		this.lsa = lsa;
 		this.links = NetworkInfo.getInstance().getNeighborLinks(routerID);
-		routerdata = NetworkInfo.getInstance().getRouters().get(routerID);
+		routerdata = NetworkInfo.getInstance().getNeighbors().get(routerID);
 	}
 	@Override
 	public void run() {

@@ -43,7 +43,7 @@ public class UserInterface extends Thread {
 						System.out.println(output);
 						break;
 					case 2:
-						HashMap<Integer,RouterData> routers = netInfo.getRouters();
+						HashMap<Integer,RouterData> routers = netInfo.getNeighbors();
 						LSAHistory lsaHistory = netInfo.getLSAHistory();
 						
 						
@@ -86,7 +86,7 @@ public class UserInterface extends Thread {
                             List<Integer> neighbors = netInfo.getNeighbors(config.routerID);
 							RouterData data = null;
 							if(neighbors.contains(routerID)) { // Router specified is a neighbor
-								data = netInfo.getRouters().get(routerID);
+								data = netInfo.getNeighbors().get(routerID);
 							} else {
 								System.out.println("\n~~~UI Feedback~~~\nThere is no neighboring router with that id.");
                                 break;

@@ -37,7 +37,7 @@ public class LSAProcessor {
             List<Integer> neighbors = netInfo.getNeighbors(config.routerID);
             System.out.println("neighbors:\n" + neighbors);
             for(int i = 0; i < neighbors.size(); i++) {
-                RouterData rData = netInfo.getRouters().get(neighbors.get(i));
+                RouterData rData = netInfo.getNeighbors().get(neighbors.get(i));
                 if(rData.routerID != lsa.router) {
                     System.out.println("About to send LSA to router id " + rData.routerID);
                     SocketBundle client = NetUtils.clientSocket(rData.ipAddress, rData.port);
@@ -70,16 +70,19 @@ public class LSAProcessor {
 				if(map.get(lsa.sequenceNumber).age.before(lsa.age)){
 					//replace the old record
 					recievedLSAHistoryTable.get(lsa.router).put(lsa.sequenceNumber, lsa);
+					NetworkInfo.getInstance().setLinks(lsa.links);
 				}
 			}else{
 				//put it into the history table
 				recievedLSAHistoryTable.get(lsa.router).put(lsa.sequenceNumber, lsa);
+				NetworkInfo.getInstance().setLinks(lsa.links);
 			}
 		}else{
 			//put it into the history table
 			HashMap<Integer,LSA> map = new HashMap<Integer,LSA>();
 			map.put(lsa.sequenceNumber, lsa);
 			recievedLSAHistoryTable.put(lsa.router, map);
+			NetworkInfo.getInstance().setLinks(lsa.links);
 		}
 		
         //send the LSA to all the neighbor except the neighbor who sent it to this router

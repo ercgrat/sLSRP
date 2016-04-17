@@ -22,7 +22,7 @@ public class AliveMessageDeamon extends Thread {
 				e.printStackTrace();
 			}
 			// Periodically set up socket connection to send alive messages
-			HashMap<Integer,RouterData> routers = NetworkInfo.getInstance().getRouters();
+			HashMap<Integer,RouterData> routers = NetworkInfo.getInstance().getNeighbors();
 			
 			Iterator iterator = routers.entrySet().iterator();
 			while(iterator.hasNext()){
