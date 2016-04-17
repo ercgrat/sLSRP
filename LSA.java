@@ -59,6 +59,7 @@ public class LSA {
 	}
 
 	public void forward(DataOutputStream out) throws IOException {
+        out.writeInt(0);
 		out.writeInt(router);
 		out.writeLong(age.getTime());
 		out.writeInt(sequenceNumber);
