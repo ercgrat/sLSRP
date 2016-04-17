@@ -10,7 +10,6 @@ public class Configuration {
 	int maxNetworkSize;
 	int helloInterval;
 	int updateInterval;
-	int forwardInterval;
 	int routerID;
 	String routerIpAddress;
 	int routerPort;
@@ -36,8 +35,6 @@ public class Configuration {
 			helloInterval = Integer.parseInt(tokens[1]);
 			tokens = readAndParse(br);
 			updateInterval = Integer.parseInt(tokens[1]);
-			tokens = readAndParse(br);
-			forwardInterval = Integer.parseInt(tokens[1]);
 			tokens = readAndParse(br);
 			routerID = Integer.parseInt(tokens[1]);
 			tokens = readAndParse(br);

@@ -19,7 +19,7 @@ public class LSAGeneratorDaemon extends Thread {
 		while(true){
             // Sleep for LSA forwarding interval
 			try {
-				Thread.sleep(config.forwardInterval);
+				Thread.sleep(config.updateInterval);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
