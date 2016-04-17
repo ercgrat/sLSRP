@@ -35,9 +35,11 @@ public class LSAProcessor {
             sequenceNumber++;
             LSA lsa = new LSA(config.routerID, sequenceNumber, netInfo.getNeighborLinks(config.routerID));
             List<Integer> neighbors = netInfo.getNeighbors(config.routerID);
+            System.out.println("neighbors:\n" + neighbors);
             for(int i = 0; i < neighbors.size(); i++) {
                 RouterData rData = netInfo.getRouters().get(neighbors.get(i));
                 if(rData.routerID != lsa.router) {
+                    System.out.println("About to send LSA to router id " + rData.routerID);
                     SocketBundle client = NetUtils.clientSocket(rData.ipAddress, rData.port);
                     lsa.forward(client.out);
                 }
