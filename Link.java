@@ -12,8 +12,8 @@ public class Link {
 	public Link(int A, int B) {
 		if(B < A) {
 			int temp = A;
-			A = B;
-			B = temp;
+			this.A = B;
+			this.B = temp;
 		}
 		delay = 0;
 		load = Load.LIGHT;

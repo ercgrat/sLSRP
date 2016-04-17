@@ -51,6 +51,7 @@ public class NeighborConnector extends Thread {
 		Link link = new Link(routerID, neighborRouterID);
 		if(!NetworkInfo.getInstance().getLinks().contains(link)) {
 			NetworkInfo.getInstance().getLinks().add(link);
+            System.out.println("Adding link from this router (" + routerID + ") to (" + neighborRouterID + ")");
 		}
 	}
 	
