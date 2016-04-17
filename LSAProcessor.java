@@ -39,7 +39,7 @@ public class LSAProcessor {
             for(Integer key : neighbors.keySet()) {
                 RouterData rData = neighbors.get(key);
                 if(rData.routerID != lsa.router) {
-                    rData.ipAddress.replaceFirst("/", "");
+                    rData.ipAddress = rData.ipAddress.replaceFirst("/", "");
                     System.out.println("About to send LSA to router id " + rData.routerID + ", " + rData.ipAddress + ", " + rData.port);
                     SocketBundle client = NetUtils.clientSocket(rData.ipAddress, rData.port);
                     lsa.forward(client.out);
