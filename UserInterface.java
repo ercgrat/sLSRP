@@ -45,15 +45,18 @@ public class UserInterface extends Thread {
 						break;
 					case 2:
 						HashMap<Integer,RouterData> routers = netInfo.getNeighbors();
-						LSAHistory lsaHistory = netInfo.getLSAHistory();
-						
+						HashMap<Integer,HashMap<Integer,LSA>> receivedLSAHistoryTable = LSAProcessor.getInstance(config, netInfo).receivedLSAHistoryTable;
 						
 						output = "\n~~~UI Response to 2.~~~\n";
 						Iterator iterator = routers.entrySet().iterator();
 						while(iterator.hasNext()){
 							Map.Entry entry = (Map.Entry)iterator.next();
 							int routerID = (Integer)entry.getKey();
-							int sequenceNo = lsaHistory.getLastSequenceNumber(routerID);
+                            HashMap<Integer, LSA> lsaHistory = receivedLSAHistoryTable.get(routerID);
+                            ArrayList<Integer> sequenceNumbers = new ArrayList<Integer>();
+                            sequenceNumbers.addAll(lsaHistory.keySet());
+                            Collections.sort(sequenceNumbers);
+							int sequenceNo = sequenceNumbers.get(sequenceNumbers.size() - 1);
 							output += "Router ID " + routerID + " - Sequence No. " + sequenceNo + "\n";
 						}
 						System.out.println(output);

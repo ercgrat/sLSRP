@@ -22,14 +22,12 @@ public class NetworkInfo {
 	
 	private HashMap<Integer,RouterData> neighbors = new HashMap<Integer,RouterData>();
 	private List<Link> links = new ArrayList();
-	private LSAHistory lsaHistory;
 	
 	public static String SERVER_IP = "";
 	public static int SERVER_PORT = 0;
 	
 	public void setConfiguration(Configuration config) {
 		this.config = config;
-		lsaHistory = new LSAHistory(config);
 	}
 	
 	public Configuration getConfiguration() {
@@ -55,10 +53,6 @@ public class NetworkInfo {
 			}
 		}
 		return neighborList;
-	}
-	
-	public LSAHistory getLSAHistory() {
-		return lsaHistory;
 	}
 	
 	private Set<Integer> settledNodes;

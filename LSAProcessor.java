@@ -15,7 +15,7 @@ public class LSAProcessor {
     NetworkInfo netInfo;
     //Store all the LSAs received from neighbors, the first key(integer) is routerID, the second key is sequenceID.
 	//When receive a LSA, first check if the table has the LSA records of this router, then check if this LSA has been received
-	public static HashMap<Integer,HashMap<Integer,LSA>> recievedLSAHistoryTable = new HashMap<Integer,HashMap<Integer,LSA>>();
+	public static HashMap<Integer,HashMap<Integer,LSA>> receivedLSAHistoryTable = new HashMap<Integer,HashMap<Integer,LSA>>();
 	
 	private LSAProcessor(Configuration config, NetworkInfo netInfo) {
         this.config = config;
@@ -74,27 +74,27 @@ public class LSAProcessor {
         }
 		
 		//Check if LSA history table has records for this router
-		if(recievedLSAHistoryTable.containsKey(lsa.router)){
+		if(receivedLSAHistoryTable.containsKey(lsa.router)){
 			//if there is a record exists in the table
 			//then check if this LSA has been in the table by using sequenceID
-			HashMap<Integer,LSA> map = recievedLSAHistoryTable.get(lsa.router);
+			HashMap<Integer,LSA> map = receivedLSAHistoryTable.get(lsa.router);
 			if(map.containsKey(lsa.sequenceNumber)){
 				//if table has a record of this LSA, then check the age attribute to see if this LSA should be replaced
 				if(map.get(lsa.sequenceNumber).age.before(lsa.age)){
 					//replace the old record
-					recievedLSAHistoryTable.get(lsa.router).put(lsa.sequenceNumber, lsa);
+					receivedLSAHistoryTable.get(lsa.router).put(lsa.sequenceNumber, lsa);
 					NetworkInfo.getInstance().setLinks(lsa.links);
 				}
 			}else{
 				//put it into the history table
-				recievedLSAHistoryTable.get(lsa.router).put(lsa.sequenceNumber, lsa);
+				receivedLSAHistoryTable.get(lsa.router).put(lsa.sequenceNumber, lsa);
 				NetworkInfo.getInstance().setLinks(lsa.links);
 			}
 		}else{
 			//put it into the history table
 			HashMap<Integer,LSA> map = new HashMap<Integer,LSA>();
 			map.put(lsa.sequenceNumber, lsa);
-			recievedLSAHistoryTable.put(lsa.router, map);
+			receivedLSAHistoryTable.put(lsa.router, map);
 			NetworkInfo.getInstance().setLinks(lsa.links);
 		}
 		

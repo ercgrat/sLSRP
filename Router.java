@@ -25,7 +25,6 @@ public class Router {
 		
 		// Create data structures
 		RoutingTable routingTable = new RoutingTable(config);
-		LSAHistory history = new LSAHistory(config);
 		
 		// Fork all threads
 		
