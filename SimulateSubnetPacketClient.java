@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import sLSRP.NetUtils;
@@ -17,10 +18,13 @@ import sLSRP.SocketBundle;
  * then the network sends these packets to the subnet receiver.
  */
 public class SimulateSubnetPacketClient {
-    
-	static int packetLength = 0;
-	static int senderId;
-	static int destinationID; 
+	private static final int ACK_FLAG = 100; //The universal acknowledgement number
+	static int packetLength = 512;
+	static int senderId =2;
+	static int destinationID =1; 
+	
+	static String ip = "10.0.0.7";
+	static int port = 49345;
 	
     
 	public SimulateSubnetPacketClient(int packetLength){
@@ -48,8 +52,23 @@ public class SimulateSubnetPacketClient {
     static void sendFile(String filePath,String fileName){
     	ArrayList<Byte> list = readFile(filePath);
     	ArrayList<Packet> packets = generatePackets(list,fileName);
-    	//Send the packets TODO
-    	PacketTask task ;
+    	//Send the packets
+    	for(final Packet packet:packets){
+    		new Thread(){
+    			@Override
+    			public void run() {
+    				//We want to make sure the packets will be received by its destination in order
+    				//so every time, we send a packet, make the thread wait for a while
+    				try {
+						this.sleep(100);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+    				connectToEdgeRouter(ip,port, packet);
+    			}
+        	}.start();
+    	}
+    	
     }
 	static ArrayList<Packet> generatePackets(ArrayList<Byte> list,String fileName){
 		ArrayList<Packet> packetList = new ArrayList<Packet>();
@@ -59,59 +78,67 @@ public class SimulateSubnetPacketClient {
 		boolean flag = true;
 		while(flag){
 			if(toIndex>=list.size()){
-				ArrayList<Byte> sublist = (ArrayList<Byte>) list.subList(fromIndex, list.size());
+				System.out.println("toIndex>=list.size()");
+				List<Byte> sublist = (List<Byte>) list.subList(fromIndex, list.size());
 				byte list2[] = new byte[sublist.size()];
 				for(int i=0;i<sublist.size();i++){
 					list2[i] = sublist.get(i);
 				}
 				try {
-					Packet p = new Packet(senderId,destinationID,sequenceID, true,list2);
+					Packet p = new Packet(senderId,destinationID,sequenceID,list2);
 					p.contentType = fileName;
 					packetList.add(p);
+					sequenceID = sequenceID+1;
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 				
 				flag = false;
 			}else{
-				ArrayList<Byte> sublist = (ArrayList<Byte>) list.subList(fromIndex, toIndex);
+				System.out.println("toIndex<list.size()"+toIndex);
+				List<Byte> sublist = (List<Byte>) list.subList(fromIndex, toIndex);
 				byte list2[] = new byte[sublist.size()];
 				for(int i=0;i<sublist.size();i++){
 					list2[i] = sublist.get(i);
 				}
 				try {
-					Packet p = new Packet(senderId,destinationID,sequenceID, false,list2);
+					Packet p = new Packet(senderId,destinationID,sequenceID,list2);
 					p.contentType = fileName;
 					packetList.add(p);
-					toIndex = fromIndex+packetLength;
+					sequenceID = sequenceID+1;
+					
+					fromIndex = toIndex;
+					toIndex = toIndex+packetLength;
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
 		}
-		
+		for(Packet packet:packetList){
+			packet.numberOfPackets = packetList.size();
+		}
 		return packetList;
 	}
-	void connectToEdgeRouter(String ip,int port){
+	static void connectToEdgeRouter(String ip,int port,Packet packet){
+		System.out.println("connectToEdgeRouter" );
     	SocketBundle client = NetUtils.clientSocket(ip, port);
-		int connectionType = 3;
 		int requestType = 1;
 		
 		try {
-			//Send the connection type
-			client.out.writeInt(connectionType);
-			// Send the neighbor request type (1 = request, 2 = cease)
+			
 			client.out.writeInt(requestType);
+			System.out.println("connectToEdgeRouter 2" );
+			packet.forward(client.out);
 			
 			//read response type
 			int responseType = client.in.readInt();
 			
 			client.socket.close();
 			
-			if(responseType == 1) {
-				System.out.println("" );
+			if(responseType == ACK_FLAG) {
+				System.out.println("Successfully sent a packet" );
 			} else {
-				System.out.println(" ");
+				System.out.println("Failed to send a packet" );
 			}
 			
 		} catch (IOException e) {
@@ -154,7 +181,12 @@ public class SimulateSubnetPacketClient {
     
 	public static void main(String[] args) {
 		//First connect to its edge router
-		
+		if(args.length < 2) {
+            System.out.println("Invalid number of arguments. Please provide an IP address and port number.");
+            return;
+        }
+		ip = args[0];
+		port = Integer.parseInt(args[1]);
 		userAction();
 		
 	}

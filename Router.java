@@ -97,7 +97,7 @@ public class Router {
 					    }
 					    //Check if the destination is this router
 					    PacketTask task = new PacketTask(packet,config.routerID,config.failureInterval);
-					    //task.start();
+					    task.start();
 						break;
 					case 2://Receive an alive message, send an ACK back to the sender.
 						
