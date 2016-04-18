@@ -181,12 +181,14 @@ public class SimulateSubnetPacketClient {
     
 	public static void main(String[] args) {
 		//First connect to its edge router
-		if(args.length < 2) {
+		if(args.length < 4) {
             System.out.println("Invalid number of arguments. Please provide an IP address and port number.");
             return;
         }
 		ip = args[0];
 		port = Integer.parseInt(args[1]);
+		senderId = Integer.parseInt(args[2]);;
+		destinationID = Integer.parseInt(args[3]);;
 		userAction();
 		
 	}

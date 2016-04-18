@@ -1,7 +1,6 @@
 Maximum network size (nodes) : 20
 Hello Interval (ms) : 3000
 Update Interval (ms) : 7000
-Forward Interval (ms) : 7000
 Router ID : 2
 LSRP Version : 1.0
 Maximum Packet Length (bytes) : 128
