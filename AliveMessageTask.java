@@ -11,14 +11,16 @@ import java.util.TimerTask;
 public class AliveMessageTask extends Thread {
     
     RouterData routerObject;
+    Link neighborLink;
     final LSAProcessor processor;
 	int routerID = 0;
     private final int ALIVE_FAILURE_TIME = 10000;
     Timer timer; 
     
-	public AliveMessageTask(RouterData routerObject, int routerid, LSAProcessor processorInstance){
+	public AliveMessageTask(RouterData routerObject, int routerid, Link neighborLink, LSAProcessor processorInstance){
 		this.routerObject = routerObject;
 		this.routerID = routerID;
+        this.neighborLink = neighborLink;
         this.processor = processorInstance;
         timer = new Timer();
 		timer.schedule(new TimerTask(){
@@ -47,11 +49,16 @@ public class AliveMessageTask extends Thread {
 		
 		SocketBundle client = NetUtils.clientSocket(ip, port);
 		int connectionType = 2;
+        long timeStamp = System.currentTimeMillis();
+        
 		try {
 			//Send the connection type
 			client.out.writeInt(connectionType);
 			//read response type
 			int responseType = client.in.readInt();
+            long laterTimeStamp = System.currentTimeMillis();
+            int delay = (int) (laterTimeStamp - timeStamp);
+            neighborLink.delay = delay;
 			System.out.println("Successufully sent an alive message, the response type is: "+responseType);
 		} catch (Exception e) {
 			e.printStackTrace();

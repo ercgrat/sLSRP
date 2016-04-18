@@ -38,7 +38,7 @@ public class LSA {
 		for(int i = 0; i < numLinks; i++) {
 			int routerA = in.readInt();
 			int routerB = in.readInt();
-			double delay = in.readDouble();
+			int delay = in.readInt();
 			
 			Link l = new Link(routerA, routerB);
 			l.delay = delay;
@@ -67,7 +67,7 @@ public class LSA {
 		for(int i = 0; i < links.size(); i++) {
 			out.writeInt(links.get(i).A);
 			out.writeInt(links.get(i).B);
-			out.writeDouble(links.get(i).delay);
+			out.writeInt(links.get(i).delay);
 		}
 		out.writeLong(checksum);
 	}

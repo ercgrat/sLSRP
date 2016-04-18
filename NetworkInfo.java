@@ -38,8 +38,15 @@ public class NetworkInfo {
 	public HashMap<Integer,RouterData> getNeighbors() {
 		return neighbors;
 	}
-	public void setLinks(List<Link> links) {
-		this.links = links;
+	public void updateLinks(List<Link> links) {
+		for(Link link : links) {
+            if(!this.links.contains(link)) {
+                this.links.add(link);
+            } else {
+                Link old = this.links.get(this.links.indexOf(link));
+                old.delay = link.delay;
+            }
+        }
 	}
 	public List<Link> getLinks() {
 		return links;

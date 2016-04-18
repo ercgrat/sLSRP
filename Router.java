@@ -122,7 +122,7 @@ public class Router {
 									client.out.writeInt(0);
 									System.out.println("This router has been denied neighborhood: " + routerID + ", " + ip + ", " + port);
 								} else { //Send ACK flag
-                                    NeighborConnector.addNeighbor(config.routerID, routerID, ip, port);
+                                    NeighborConnector.addNeighbor(config.routerID, routerID, ip, port, 0);
 									client.out.writeInt(1);
 								}
 							} else if(requestType == 2) { // Cease neighbors

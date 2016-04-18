@@ -45,11 +45,12 @@ public class NeighborConnector extends Thread {
 	    
 	}
 	
-	public static void addNeighbor(int routerID, int neighborRouterID, String ip, int port) {
+	public static void addNeighbor(int routerID, int neighborRouterID, String ip, int port, int delay) {
 		// Add entries to the neighbor, router, and link lists
 		NetworkInfo.getInstance().getNeighbors().put(neighborRouterID, new RouterData(neighborRouterID, ip, port));
 		
 		Link link = new Link(routerID, neighborRouterID);
+        link.delay = delay;
 		if(!NetworkInfo.getInstance().getLinks().contains(link)) {
 			NetworkInfo.getInstance().getLinks().add(link);
             System.out.println(link);
@@ -92,7 +93,8 @@ public class NeighborConnector extends Thread {
 				int delay = (int) (laterTimeStamp - timeStamp);
 				System.out.println("Connection established with neighbor, the delay is: " + delay);
 				
-				addNeighbor(routerID, neighborRouterID, neighborIp, neighborPort);
+				addNeighbor(routerID, neighborRouterID, neighborIp, neighborPort, delay);
+                
 			} else {
 				System.out.println("The neighborhood request has been rejected by the other router, the response type is: "+responseType);
 			}

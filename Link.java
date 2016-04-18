@@ -6,7 +6,7 @@ public class Link {
 
 	public int A;
 	public int B;
-	public double delay;
+	public int delay;
 	public Load load;
 	
 	public Link(int A, int B) {

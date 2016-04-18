@@ -1,8 +1,6 @@
 package sLSRP;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 public class AliveMessageDeamon extends Thread {
     
@@ -23,12 +21,15 @@ public class AliveMessageDeamon extends Thread {
 			}
 			// Periodically set up socket connection to send alive messages
 			HashMap<Integer,RouterData> routers = NetworkInfo.getInstance().getNeighbors();
-			
+            List<Link> links = NetworkInfo.getInstance().getLinks();
+            
 			Iterator iterator = routers.entrySet().iterator();
 			while(iterator.hasNext()){
 				Map.Entry entry = (Map.Entry)iterator.next();
 				int routerID = (Integer)entry.getKey();
-				AliveMessageTask task = new AliveMessageTask(routers.get(routerID), config.routerID, LSAProcessor.getInstance(config, NetworkInfo.getInstance()));
+                Link searchLink = new Link(routerID, config.routerID);
+                Link existingLink = links.get(links.indexOf(searchLink));
+				AliveMessageTask task = new AliveMessageTask(routers.get(routerID), config.routerID, existingLink, LSAProcessor.getInstance(config, NetworkInfo.getInstance()));
 				task.start();
 			}
 			

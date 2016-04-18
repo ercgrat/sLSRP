@@ -83,23 +83,26 @@ public class LSAProcessor {
 				if(map.get(lsa.sequenceNumber).age.before(lsa.age)){
 					//replace the old record
 					receivedLSAHistoryTable.get(lsa.router).put(lsa.sequenceNumber, lsa);
-					NetworkInfo.getInstance().setLinks(lsa.links);
+					NetworkInfo.getInstance().updateLinks(lsa.links);
+                    //send the LSA to all the neighbor except the neighbor who sent it to this router
+                    this.broadcastLSA(lsa);
 				}
-			}else{
+			} else {
 				//put it into the history table
 				receivedLSAHistoryTable.get(lsa.router).put(lsa.sequenceNumber, lsa);
-				NetworkInfo.getInstance().setLinks(lsa.links);
+				NetworkInfo.getInstance().updateLinks(lsa.links);
+                //send the LSA to all the neighbor except the neighbor who sent it to this router
+                this.broadcastLSA(lsa);
 			}
-		}else{
+		} else {
 			//put it into the history table
 			HashMap<Integer,LSA> map = new HashMap<Integer,LSA>();
 			map.put(lsa.sequenceNumber, lsa);
 			receivedLSAHistoryTable.put(lsa.router, map);
-			NetworkInfo.getInstance().setLinks(lsa.links);
+			NetworkInfo.getInstance().updateLinks(lsa.links);
+            //send the LSA to all the neighbor except the neighbor who sent it to this router
+            this.broadcastLSA(lsa);
 		}
-		
-        //send the LSA to all the neighbor except the neighbor who sent it to this router
-		this.broadcastLSA(lsa);
 	}
 	
 }
