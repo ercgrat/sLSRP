@@ -26,20 +26,23 @@ public class PacketTask extends Thread {
 			int port = NetworkInfo.SERVER_PORT ;
 			routerObject = new RouterData(0,ip,port);
 	    }else{
-	    	//Get the SPF and send the packet to the destination
-	    	LinkedList<Integer> paths = NetworkInfo.getInstance().getPath(packet.destinationID);
-	    	//routerObject = NetworkInfo.getInstance().getRouters().get(this.packet.nextID)
-	    	Timer timer=new Timer();  
-			//The following will executed in 'helloInterval'  
-			timer.schedule(new TimerTask(){
-				@Override
-				public void run() {
-					if(PacketTask.this.isAlive()){
-						PacketTask.this.interrupt();
-						System.err.println("Time to send a packet has reached a limit, so the thread is interrupted.");
-						//try to resend the packet
-			        }
-			}}, failureInterval);
+	    	synchronized(NetworkInfo.getInstance()){
+	    		//Get the SPF and send the packet to the destination
+		    	LinkedList<Integer> paths = NetworkInfo.getInstance().getPath(packet.destinationID);
+		    	//routerObject = NetworkInfo.getInstance().getRouters().get(this.packet.nextID)
+		    	Timer timer=new Timer();  
+				//The following will executed in 'helloInterval'  
+				timer.schedule(new TimerTask(){
+					@Override
+					public void run() {
+						if(PacketTask.this.isAlive()){
+							PacketTask.this.interrupt();
+							System.err.println("Time to send a packet has reached a limit, so the thread is interrupted.");
+							//try to resend the packet
+				        }
+				}}, failureInterval);
+	    	}
+	    	
 	    }
 	}
 	@Override
