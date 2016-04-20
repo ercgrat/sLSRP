@@ -28,6 +28,7 @@ public class PacketTask extends Thread {
 	    }else{
 	    	synchronized(NetworkInfo.getInstance()){
 	    		//Get the SPF and send the packet to the destination
+	    		NetworkInfo.getInstance().execute(routerID);
 		    	LinkedList<Integer> paths = NetworkInfo.getInstance().getPath(packet.destinationID);
 		    	//routerObject = NetworkInfo.getInstance().getRouters().get(this.packet.nextID)
 		    	Timer timer=new Timer();  
