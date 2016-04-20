@@ -120,14 +120,14 @@ public class SimulateSubnetPacketClient {
 		return packetList;
 	}
 	static void connectToEdgeRouter(String ip,int port,Packet packet){
-		System.out.println("connectToEdgeRouter" );
+		System.out.println("connectToEdgeRouter ip:"+ip +"  port: "+port);
     	SocketBundle client = NetUtils.clientSocket(ip, port);
 		int requestType = 1;
 		
 		try {
 			
 			client.out.writeInt(requestType);
-			System.out.println("connectToEdgeRouter 2" );
+			System.out.println("connectToEdgeRouter ip:"+ip +"  port: "+port );
 			packet.forward(client.out);
 			
 			//read response type
