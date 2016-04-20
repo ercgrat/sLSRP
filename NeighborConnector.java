@@ -46,24 +46,28 @@ public class NeighborConnector extends Thread {
 	}
 	
 	public static void addNeighbor(int routerID, int neighborRouterID, String ip, int port, int delay) {
-		// Add entries to the neighbor, router, and link lists
-		NetworkInfo.getInstance().getNeighbors().put(neighborRouterID, new RouterData(neighborRouterID, ip, port));
-		
-		Link link = new Link(routerID, neighborRouterID);
-        link.delay = delay;
-		if(!NetworkInfo.getInstance().getLinks().contains(link)) {
-			NetworkInfo.getInstance().getLinks().add(link);
-            System.out.println(link);
-            System.out.println("Adding link from this router (" + routerID + ") to (" + neighborRouterID + ")");
-		}
+        synchronized(NetworkInfo.getInstance()) {
+            // Add entries to the neighbor, router, and link lists
+            NetworkInfo.getInstance().getNeighbors().put(neighborRouterID, new RouterData(neighborRouterID, ip, port));
+            
+            Link link = new Link(routerID, neighborRouterID);
+            link.delay = delay;
+            if(!NetworkInfo.getInstance().getLinks().contains(link)) {
+                NetworkInfo.getInstance().getLinks().add(link);
+                System.out.println(link);
+                System.out.println("Adding link from this router (" + routerID + ") to (" + neighborRouterID + ")");
+            }
+        }
 	}
 	
 	public static void removeNeighbor(int routerID, int neighborRouterID, String ip, int port) {
-		// Remove entries from the neighbor, router, and link lists
-		NetworkInfo.getInstance().getNeighbors().remove(neighborRouterID);
-		
-		Link link = new Link(routerID, neighborRouterID);
-		NetworkInfo.getInstance().getLinks().remove(link);
+		synchronized(NetworkInfo.getInstance()) {
+            // Remove entries from the neighbor, router, and link lists
+            NetworkInfo.getInstance().getNeighbors().remove(neighborRouterID);
+            
+            Link link = new Link(routerID, neighborRouterID);
+            NetworkInfo.getInstance().getLinks().remove(link);
+        }
 	}
 	
 	public static void sendNeighborRequest(int routerID, int routerPort, int neighborRouterID, String neighborIp, int neighborPort) {

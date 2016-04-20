@@ -34,7 +34,9 @@ public class LSAProcessor {
         sequenceNumber++;
         LSA lsa = null;
         try {
-            lsa = new LSA(config.routerID, sequenceNumber, netInfo.getNeighborLinks(config.routerID));
+            synchronized(netInfo) {
+                lsa = new LSA(config.routerID, sequenceNumber, netInfo.getNeighborLinks(config.routerID));
+            }
         } catch(IOException e) {
             e.printStackTrace();
         }
@@ -44,20 +46,22 @@ public class LSAProcessor {
     
     public void broadcastLSA(LSA lsa) {
         try {
-            HashMap<Integer,RouterData> neighbors = netInfo.getNeighbors();
-            System.out.println("neighbors:\n" + neighbors);
-            for(Integer key : neighbors.keySet()) {
-                RouterData rData = neighbors.get(key);
-                if(rData.routerID != lsa.router) {
-                    System.out.println("router data id: " + rData.routerID);
-                    System.out.println("lsa router id: " + lsa.router);
-                    rData.ipAddress = rData.ipAddress.replaceFirst("/", "");
-                    System.out.println("About to send LSA to router id " + rData.routerID + ", " + rData.ipAddress + ", " + rData.port);
-                    SocketBundle client = NetUtils.clientSocket(rData.ipAddress, rData.port);
-                    lsa.forward(client.out);
+            synchronized(netInfo) {
+                HashMap<Integer,RouterData> neighbors = netInfo.getNeighbors();
+                System.out.println("neighbors:\n" + neighbors);
+                for(Integer key : neighbors.keySet()) {
+                    RouterData rData = neighbors.get(key);
+                    if(rData.routerID != lsa.router) {
+                        System.out.println("router data id: " + rData.routerID);
+                        System.out.println("lsa router id: " + lsa.router);
+                        rData.ipAddress = rData.ipAddress.replaceFirst("/", "");
+                        System.out.println("About to send LSA to router id " + rData.routerID + ", " + rData.ipAddress + ", " + rData.port);
+                        SocketBundle client = NetUtils.clientSocket(rData.ipAddress, rData.port);
+                        lsa.forward(client.out);
+                    }
                 }
+                System.out.println("done forwarding generated LSA to neighbors.");
             }
-            System.out.println("done forwarding generated LSA to neighbors.");
         } catch(IOException e) {
             e.printStackTrace();
         }
@@ -73,36 +77,38 @@ public class LSAProcessor {
             return;
         }
 		
-		//Check if LSA history table has records for this router
-		if(receivedLSAHistoryTable.containsKey(lsa.router)){
-			//if there is a record exists in the table
-			//then check if this LSA has been in the table by using sequenceID
-			HashMap<Integer,LSA> map = receivedLSAHistoryTable.get(lsa.router);
-			if(map.containsKey(lsa.sequenceNumber)){
-				//if table has a record of this LSA, then check the age attribute to see if this LSA should be replaced
-				if(map.get(lsa.sequenceNumber).age.before(lsa.age)){
-					//replace the old record
-					receivedLSAHistoryTable.get(lsa.router).put(lsa.sequenceNumber, lsa);
-					NetworkInfo.getInstance().updateLinks(lsa.links);
+        synchronized(netInfo) {
+            //Check if LSA history table has records for this router
+            if(receivedLSAHistoryTable.containsKey(lsa.router)){
+                //if there is a record exists in the table
+                //then check if this LSA has been in the table by using sequenceID
+                HashMap<Integer,LSA> map = receivedLSAHistoryTable.get(lsa.router);
+                if(map.containsKey(lsa.sequenceNumber)){
+                    //if table has a record of this LSA, then check the age attribute to see if this LSA should be replaced
+                    if(map.get(lsa.sequenceNumber).age.before(lsa.age)){
+                        //replace the old record
+                        receivedLSAHistoryTable.get(lsa.router).put(lsa.sequenceNumber, lsa);
+                        netInfo.updateLinks(lsa.router, lsa.links);
+                        //send the LSA to all the neighbor except the neighbor who sent it to this router
+                        this.broadcastLSA(lsa);
+                    }
+                } else {
+                    //put it into the history table
+                    receivedLSAHistoryTable.get(lsa.router).put(lsa.sequenceNumber, lsa);
+                    netInfo.updateLinks(lsa.router, lsa.links);
                     //send the LSA to all the neighbor except the neighbor who sent it to this router
                     this.broadcastLSA(lsa);
-				}
-			} else {
-				//put it into the history table
-				receivedLSAHistoryTable.get(lsa.router).put(lsa.sequenceNumber, lsa);
-				NetworkInfo.getInstance().updateLinks(lsa.links);
+                }
+            } else {
+                //put it into the history table
+                HashMap<Integer,LSA> map = new HashMap<Integer,LSA>();
+                map.put(lsa.sequenceNumber, lsa);
+                receivedLSAHistoryTable.put(lsa.router, map);
+                netInfo.updateLinks(lsa.router, lsa.links);
                 //send the LSA to all the neighbor except the neighbor who sent it to this router
                 this.broadcastLSA(lsa);
-			}
-		} else {
-			//put it into the history table
-			HashMap<Integer,LSA> map = new HashMap<Integer,LSA>();
-			map.put(lsa.sequenceNumber, lsa);
-			receivedLSAHistoryTable.put(lsa.router, map);
-			NetworkInfo.getInstance().updateLinks(lsa.links);
-            //send the LSA to all the neighbor except the neighbor who sent it to this router
-            this.broadcastLSA(lsa);
-		}
+            }
+        }
 	}
 	
 }

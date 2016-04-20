@@ -32,34 +32,38 @@ public class UserInterface extends Thread {
 				String output = "";
 				switch(option) {
 					case 1:
-						List<Link> links = netInfo.getLinks();
-                        System.out.println(links);
-						
-						output = "\n~~~UI Response to 1.~~~\n";
-						for(int i = 0; i < links.size(); i++) {
-							Link l = links.get(i);
-							
-							output += "Link 1:\n\tRouter A: " + l.A + "\tRouter B: " + l.B + "\t delay:" + l.delay + "\tloads class: " + l.load + "\n";
-						}
-						System.out.println(output);
+                        synchronized(netInfo) {
+                            List<Link> links = netInfo.getLinks();
+                            System.out.println(links);
+                            
+                            output = "\n~~~UI Response to 1.~~~\n";
+                            for(int i = 0; i < links.size(); i++) {
+                                Link l = links.get(i);
+                                
+                                output += "Link 1:\n\tRouter A: " + l.A + "\tRouter B: " + l.B + "\t delay:" + l.delay + "\tloads class: " + l.load + "\n";
+                            }
+                            System.out.println(output);
+                        }
 						break;
 					case 2:
-						HashMap<Integer,RouterData> routers = netInfo.getNeighbors();
-						HashMap<Integer,HashMap<Integer,LSA>> receivedLSAHistoryTable = LSAProcessor.getInstance(config, netInfo).receivedLSAHistoryTable;
-						
-						output = "\n~~~UI Response to 2.~~~\n";
-						Iterator iterator = routers.entrySet().iterator();
-						while(iterator.hasNext()){
-							Map.Entry entry = (Map.Entry)iterator.next();
-							int routerID = (Integer)entry.getKey();
-                            HashMap<Integer, LSA> lsaHistory = receivedLSAHistoryTable.get(routerID);
-                            ArrayList<Integer> sequenceNumbers = new ArrayList<Integer>();
-                            sequenceNumbers.addAll(lsaHistory.keySet());
-                            Collections.sort(sequenceNumbers);
-							int sequenceNo = sequenceNumbers.get(sequenceNumbers.size() - 1);
-							output += "Router ID " + routerID + " - Sequence No. " + sequenceNo + "\n";
-						}
-						System.out.println(output);
+                        synchronized(netInfo) {
+                            HashMap<Integer,RouterData> routers = netInfo.getNeighbors();
+                            HashMap<Integer,HashMap<Integer,LSA>> receivedLSAHistoryTable = LSAProcessor.getInstance(config, netInfo).receivedLSAHistoryTable;
+                            
+                            output = "\n~~~UI Response to 2.~~~\n";
+                            Iterator iterator = routers.entrySet().iterator();
+                            while(iterator.hasNext()){
+                                Map.Entry entry = (Map.Entry)iterator.next();
+                                int routerID = (Integer)entry.getKey();
+                                HashMap<Integer, LSA> lsaHistory = receivedLSAHistoryTable.get(routerID);
+                                ArrayList<Integer> sequenceNumbers = new ArrayList<Integer>();
+                                sequenceNumbers.addAll(lsaHistory.keySet());
+                                Collections.sort(sequenceNumbers);
+                                int sequenceNo = sequenceNumbers.get(sequenceNumbers.size() - 1);
+                                output += "Router ID " + routerID + " - Sequence No. " + sequenceNo + "\n";
+                            }
+                            System.out.println(output);
+                        }
 						break;
 					case 3:
 						System.out.println("\n~~~UI Response to 3.~~~\n" +
@@ -79,29 +83,31 @@ public class UserInterface extends Thread {
 						}
 						break;
 					case 5:
-						System.out.println("\n~~~UI Response to 5.~~~\nPlease enter the router id:");
-						String routerInput = br.readLine();
-						
-						if(!routerInput.matches("^\\d+$")) {
-							System.out.println("\n~~~UI Feedback~~~\nThe router id must be an integer.");
-						} else {
-							int routerID = Integer.parseInt(routerInput);
-							
-                            List<Integer> neighbors = netInfo.getNeighbors(config.routerID);
-							RouterData data = null;
-							if(neighbors.contains(routerID)) { // Router specified is a neighbor
-								data = netInfo.getNeighbors().get(routerID);
-							} else {
-								System.out.println("\n~~~UI Feedback~~~\nThere is no neighboring router with that id.");
-                                break;
-							}
-							
-							if(data != null) {
-								NeighborConnector.sendCeaseNeighborRequest(config.routerID, routerID, data.ipAddress, data.port);						
-							} else {
-								System.out.println("\n~~~UI Feedback~~~\nThere is no router in the database with that id.");
-							}
-						}
+                        synchronized(netInfo) {
+                            System.out.println("\n~~~UI Response to 5.~~~\nPlease enter the router id:");
+                            String routerInput = br.readLine();
+                            
+                            if(!routerInput.matches("^\\d+$")) {
+                                System.out.println("\n~~~UI Feedback~~~\nThe router id must be an integer.");
+                            } else {
+                                int routerID = Integer.parseInt(routerInput);
+                                
+                                List<Integer> neighbors = netInfo.getNeighbors(config.routerID);
+                                RouterData data = null;
+                                if(neighbors.contains(routerID)) { // Router specified is a neighbor
+                                    data = netInfo.getNeighbors().get(routerID);
+                                } else {
+                                    System.out.println("\n~~~UI Feedback~~~\nThere is no neighboring router with that id.");
+                                    break;
+                                }
+                                
+                                if(data != null) {
+                                    NeighborConnector.sendCeaseNeighborRequest(config.routerID, routerID, data.ipAddress, data.port);						
+                                } else {
+                                    System.out.println("\n~~~UI Feedback~~~\nThere is no router in the database with that id.");
+                                }
+                            }
+                        }
 						break;
                     case 6:
 						System.exit(0);

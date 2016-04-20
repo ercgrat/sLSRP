@@ -38,13 +38,20 @@ public class NetworkInfo {
 	public HashMap<Integer,RouterData> getNeighbors() {
 		return neighbors;
 	}
-	public void updateLinks(List<Link> links) {
+	public void updateLinks(int sourceID, List<Link> links) {
+        // Update delay for existing links, add new links
 		for(Link link : links) {
             if(!this.links.contains(link)) {
                 this.links.add(link);
             } else {
                 Link old = this.links.get(this.links.indexOf(link));
                 old.delay = link.delay;
+            }
+        }
+        // Remove any absent links
+        for(Link link : this.getNeighborLinks(sourceID)) {
+            if(!links.contains(link)) {
+                this.links.remove(link);
             }
         }
 	}
