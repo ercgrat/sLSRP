@@ -48,7 +48,6 @@ public class LSAProcessor {
         try {
             synchronized(netInfo) {
                 HashMap<Integer,RouterData> neighbors = netInfo.getNeighbors();
-                System.out.println("neighbors:\n" + neighbors);
                 for(Integer key : neighbors.keySet()) {
                     RouterData rData = neighbors.get(key);
                     if(rData.routerID != lsa.router) {

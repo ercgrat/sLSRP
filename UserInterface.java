@@ -106,19 +106,12 @@ public class UserInterface extends Thread {
                             } else {
                                 int routerID = Integer.parseInt(routerInput);
                                 
-                                List<Integer> neighbors = netInfo.getNeighbors(config.routerID);
-                                RouterData data = null;
-                                if(neighbors.contains(routerID)) { // Router specified is a neighbor
-                                    data = netInfo.getNeighbors().get(routerID);
-                                } else {
-                                    System.out.println("\n~~~UI Feedback~~~\nThere is no neighboring router with that id.");
-                                    break;
-                                }
-                                
+                                HashMap<Integer,RouterData> neighbors = netInfo.getNeighbors();
+                                RouterData data = neighbors.get(routerID);                                
                                 if(data != null) {
                                     NeighborConnector.sendCeaseNeighborRequest(config.routerID, routerID, data.ipAddress, data.port);						
                                 } else {
-                                    System.out.println("\n~~~UI Feedback~~~\nThere is no router in the database with that id.");
+                                    System.out.println("\n~~~UI Feedback~~~\nThere is no neighbor with that id.");
                                 }
                             }
                         }
