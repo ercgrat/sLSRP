@@ -103,12 +103,15 @@ public class NetworkInfo {
 	  }
 
 	  private int getDistance(int node, int target) {
-	    for (Link link : links) {
-	      if (link.A==node
-	          && link.B==target) {
-	        return (int) link.delay;
-	      }
-	    }
+        Link searchLink = new Link(node, target);
+        Link existingLink = links.get(links.indexOf(searchLink));
+        if(existingLink.load == Link.Load.LIGHT) {
+            return 1;
+        } else if(existingLink.load == Link.Load.MEDIUM) {
+            return 2;
+        } else if(existingLink.load == Link.Load.HEAVY) {
+            return 3;
+        }
 	    throw new RuntimeException("Should not happen");
 	  }
 
@@ -171,4 +174,28 @@ public class NetworkInfo {
 	    Collections.reverse(path);
 	    return path;
 	  }
+      
+      private void categorizeDelays() {
+          int minDelay = links.get(0).delay;
+          int maxDelay = links.get(0).delay;
+          for(Link link : links) {
+              if(link.delay < minDelay) {
+                  minDelay = link.delay;
+              }
+              if(link.delay > maxDelay) {
+                  maxDelay = link.delay;
+              }
+          }
+          int range = maxDelay - minDelay;
+          int groupSize = range/3;
+          for(Link link : links) {
+              if(link.delay < minDelay + groupSize) {
+                  link.load = Link.Load.LIGHT;
+              } else if(link.delay < maxDelay - groupSize) {
+                  link.load = Link.Load.MEDIUM;
+              } else {
+                  link.load = Link.Load.HEAVY;
+              }
+          }
+      }
 }
