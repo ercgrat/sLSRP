@@ -49,12 +49,10 @@ public class LSA {
 	}
 	
 	public LSA(int router, int sequenceNumber, List<Link> links) throws IOException {
-        System.out.println("Constructing an LSA with the checksum method.");
 		this.router = router;
 		this.age = new Date();
 		this.sequenceNumber = sequenceNumber;
 		this.links = links;
-        System.out.println("this.toChecksum == " + this.toChecksumString());
         this.checksum = NetUtils.getChecksum(new BufferedReader(new StringReader(this.toChecksumString())));
 	}
 

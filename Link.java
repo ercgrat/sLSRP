@@ -18,8 +18,6 @@ public class Link {
             this.A = A;
             this.B = B;
         }
-        System.out.println(this.A);
-        System.out.println(this.B);
 		delay = 0;
 		load = Load.LIGHT;
 	}

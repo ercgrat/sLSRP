@@ -54,7 +54,6 @@ public class NeighborConnector extends Thread {
             link.delay = delay;
             if(!NetworkInfo.getInstance().getLinks().contains(link)) {
                 NetworkInfo.getInstance().getLinks().add(link);
-                System.out.println(link);
                 System.out.println("Adding link from this router (" + routerID + ") to (" + neighborRouterID + ")");
             }
         }

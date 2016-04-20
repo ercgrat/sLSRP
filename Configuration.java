@@ -7,6 +7,8 @@ import java.util.List;
 
 public class Configuration {
 	
+    String nameServerIp;
+    int nameServerPort;
 	int maxNetworkSize;
 	int helloInterval;
 	int updateInterval;
@@ -30,6 +32,10 @@ public class Configuration {
 			BufferedReader br = new BufferedReader(new FileReader(filepath));
 			
 			String[] tokens = readAndParse(br);
+            nameServerIp = tokens[1];
+            tokens = readAndParse(br);
+            nameServerPort = Integer.parseInt(tokens[1]);
+            tokens = readAndParse(br);
 			maxNetworkSize = Integer.parseInt(tokens[1]);
 			tokens = readAndParse(br);
 			helloInterval = Integer.parseInt(tokens[1]);

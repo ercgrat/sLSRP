@@ -27,7 +27,7 @@ public class Router {
 		RoutingTable routingTable = new RoutingTable(config);
 		
 		// Fork all threads
-		
+        
 		// Create socket and listen, get ip/port info
 		ServerSocket serverSocket = NetUtils.serverSocket();
 		try {
@@ -38,6 +38,17 @@ public class Router {
 		config.routerPort = serverSocket.getLocalPort();
 		System.out.println("Listening on port " + serverSocket.getLocalPort() + " at IP Address " + config.routerIpAddress + ".");
 		
+        // Connect to name server and register self
+        try {
+            SocketBundle client = NetUtils.clientSocket(config.nameServerIp, config.nameServerPort);
+            client.out.writeInt(0); // register router
+            client.out.writeInt(config.routerID); // router ID to register
+            client.out.writeInt(serverSocket.getLocalPort());
+            client.socket.close();
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+        
         // Loop over neighbors in the configuration
 		NeighborConnector connector = new NeighborConnector(config, NetworkInfo.getInstance());
 		connector.start();
@@ -66,7 +77,7 @@ public class Router {
 				try {
 					packetType = client.in.readInt();
 				} catch(Exception e) {
-					System.out.println(e);
+					e.printStackTrace();
 				}
 				
 				switch(packetType) {

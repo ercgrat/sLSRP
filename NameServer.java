@@ -19,8 +19,7 @@ public class NameServer {
         while(true) {
             System.out.println("Waiting to accept incoming client...");
             SocketBundle client = NetUtils.acceptClient(serverSocket);
-            String ip = client.socket.getInetAddress().toString();
-            int port = client.socket.getPort();
+            String ip = client.socket.getInetAddress().toString().substring(1);
             
             int connectionType = -1;
             int routerId = -1;
@@ -29,11 +28,13 @@ public class NameServer {
                 routerId = client.in.readInt();
             
                 if(connectionType == 0) { // Register with the name server
+                    int port = client.in.readInt();
                     entries[routerId] = new RouterData(routerId, ip, port);
                 } else if(connectionType == 1) { // Request info about a router
                     client.out.writeInt(entries[routerId].toString().length());
                     client.out.writeChars(entries[routerId].toString());
                 }
+                client.socket.close();
             } catch(IOException e) {
                 e.printStackTrace();
             }

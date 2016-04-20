@@ -72,14 +72,28 @@ public class UserInterface extends Thread {
 						"Port: " + config.routerPort);
 						break;
 					case 4:
-						System.out.println("\n~~~UI Response to 4.~~~\nPlease enter the router id, ip address, and port separated by commas:");
-						String[] routerArgs = br.readLine().split(", |,");
-						if(routerArgs.length != 3) {
-							System.out.println("\n~~~UI Feedback~~~\nAn incorrect number of arguments was specified.");
-						} else if(!routerArgs[0].matches("^\\d+$") || !routerArgs[1].matches("^(\\d{1,3}\\.){3}\\d{1,3}$") || !routerArgs[2].matches("^\\d+$")) {
-							System.out.println("\n~~~UI Feedback~~~\nOne or more of the arguments was invalid.");
+						System.out.println("\n~~~UI Response to 4.~~~\nPlease enter the router id you wish to connect to:");
+						String routerArg = br.readLine();
+                        
+                        if(!routerArg.matches("^\\d+$")) {
+							System.out.println("\n~~~UI Feedback~~~\nThe router ID must be an integer.");
 						} else {
-							NeighborConnector.sendNeighborRequest(config.routerID, config.routerPort, Integer.parseInt(routerArgs[0]), routerArgs[1], Integer.parseInt(routerArgs[2]));
+                            int routerId = Integer.parseInt(routerArg);
+                            SocketBundle client = NetUtils.clientSocket(config.nameServerIp, config.nameServerPort);
+                            client.out.writeInt(1); // Request router info
+                            client.out.writeInt(routerId); // Router to get info about
+                            
+                            int routerDataLength = client.in.readInt();
+                            String routerData = "";
+                            for(int i = 0; i < routerDataLength; i++) {
+                                routerData += client.in.readChar();
+                            }
+                            client.socket.close();
+                            System.out.println("router data length: " + routerDataLength);
+                            System.out.println("router data: " + routerData);
+                            
+                            String[] routerDataInfo = routerData.split("=");
+							NeighborConnector.sendNeighborRequest(config.routerID, config.routerPort, Integer.parseInt(routerDataInfo[0]), routerDataInfo[1], Integer.parseInt(routerDataInfo[2]));
 						}
 						break;
 					case 5:
@@ -112,65 +126,6 @@ public class UserInterface extends Thread {
                     case 6:
 						System.exit(0);
 						break;
-                        /*System.out.println("\n~~~UI Response to 6.~~~\nPlease enter the destination router id and a filename separated by a space:");
-						String[] fileInput = br.readLine().split(" ");
-                        
-                        if(fileInput.length != 2) {
-                            System.out.println("\n~~~UI Feedback~~~\nAn incorrect number of arguments was specified.");
-                            break;
-                        }
-                        if(!fileInput[0].matches("^\\d+$")) {
-							System.out.println("\n~~~UI Feedback~~~\nThe router id must be an integer.");
-                            break;
-						}
-						int routerID = Integer.parseInt(fileInput[0]);
-                        
-                        List<Integer> path = netInfo.getPath(routerID);
-                        if(path == null){
-                            System.out.println("\n~~~UI Feedback~~~\nThere is no valid path to the router with that id.");
-                            break;
-                        }
-                        
-                        RouterData rData = netInfo.getRouters().get(path.get(0)); // Router data for next hop
-                        Packet packet = new Packet(config.routerID, routerID, 0, false, null);
-                        int connectionType = 1;
-                        
-                        File file = new File(fileInput[1]);
-                        byte[] fileData = new byte[(int)file.length()];
-                        FileInputStream fis = new FileInputStream(file);
-                        fis.read(fileData);
-                        fis.close();
-                        
-                        List<Byte> buffer = new ArrayList<Byte>();
-                        for(int i = 0; i < fileData.length; i++) {
-                            buffer.add(fileData[i]);
-                            if(buffer.size() == config.maxPacketLength || i == fileData.length - 1) {
-                                Byte[] data = (Byte [])(buffer.toArray());
-                                packet.data = new byte[data.length];
-                                for(int j = 0; j < data.length; j++) {
-                                    packet.data[j] = data[j];
-                                }
-                                
-                                packet.dataLength = config.maxPacketLength;
-                                if(i == fileData.length - 1) {
-                                    packet.isLastPacket = true;
-                                }
-                                packet.refreshChecksum();
-                                
-                                SocketBundle client = NetUtils.clientSocket(rData.ipAddress, rData.port);
-                                client.out.writeInt(connectionType);
-                                packet.forward(client.out);
-                                client.socket.close();
-                                
-                                buffer.clear();
-                            }
-                        }
-                        
-                        
-                        System.out.println("\n~~~UI Response to 6.~~~\nFile successfully transmitted.");
-                        
-                        break;
-					*/
 					default:
 						break;
 				}

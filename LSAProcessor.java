@@ -52,15 +52,12 @@ public class LSAProcessor {
                 for(Integer key : neighbors.keySet()) {
                     RouterData rData = neighbors.get(key);
                     if(rData.routerID != lsa.router) {
-                        System.out.println("router data id: " + rData.routerID);
-                        System.out.println("lsa router id: " + lsa.router);
                         rData.ipAddress = rData.ipAddress.replaceFirst("/", "");
                         System.out.println("About to send LSA to router id " + rData.routerID + ", " + rData.ipAddress + ", " + rData.port);
                         SocketBundle client = NetUtils.clientSocket(rData.ipAddress, rData.port);
                         lsa.forward(client.out);
                     }
                 }
-                System.out.println("done forwarding generated LSA to neighbors.");
             }
         } catch(IOException e) {
             e.printStackTrace();
