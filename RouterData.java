@@ -11,5 +11,9 @@ public class RouterData {
 		this.ipAddress = ipAddress;
 		this.port = port;
 	}
+    
+    public String toString() {
+        return "" + routerID + "=" + ipAddress + "=" + port;
+    }
 
 }
