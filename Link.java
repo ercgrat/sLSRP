@@ -7,17 +7,17 @@ public class Link {
 	  int B;
 	  int delay; 
 	  public Load load;
-	  public Link( int source, int destination) {
-	    this.A = source;
-	    this.B = destination;
-//	    if(B < A) {
-//			int temp = A;
-//			this.A = B;
-//			this.B = temp;
-//		} else {
-//            this.A = A;
-//            this.B = B;
-//        }
+	  public Link( int A, int B) {
+//	    this.A = source;
+//	    this.B = destination;
+	    if(B < A) {
+			int temp = A;
+			this.A = B;
+			this.B = temp;
+		} else {
+            this.A = A;
+            this.B = B;
+        }
 //        System.out.println(this.A);
 //        System.out.println(this.B);
 	    delay = 0;
