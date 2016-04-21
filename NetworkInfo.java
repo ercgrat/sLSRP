@@ -144,11 +144,13 @@ public class NetworkInfo {
 
 	  public List<Integer> getNeighbors(int node) {
 	    List<Integer> neighbors = new ArrayList<Integer>();
+        
 	    for (Link edge : links) {
-	      if (edge.A==node
-	          && !isSettled(edge.B)) {
+          if (edge.A == node && !isSettled(edge.B)) {
 	        neighbors.add(edge.B);
-	      }
+	      } else if(edge.B == node && !isSettled(edge.A)) {
+            neighbors.add(edge.A);
+          }
 	    }
 	    return neighbors;
 	  }
