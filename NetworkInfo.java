@@ -123,22 +123,22 @@ public class NetworkInfo {
 	  }
 
 	  private int getDistance(int node, int target) {
-//	    for (Link edge : links) {
-//	      if (edge.A==node
-//	          && edge.B==target) {
-//	        return edge.getDelay();
-//	      }
-//	    }
+	    for (Link edge : links) {
+	      if (edge.A==node
+	          && edge.B==target) {
+	        return edge.getDelay();
+	      }
+	    }
 		  
-	    Link searchLink = new Link(node, target);
-        Link existingLink = links.get(links.indexOf(searchLink));
-        if(existingLink.load == Link.Load.LIGHT) {
-            return 1;
-        } else if(existingLink.load == Link.Load.MEDIUM) {
-            return 2;
-        } else if(existingLink.load == Link.Load.HEAVY) {
-            return 3;
-        }
+//	    Link searchLink = new Link(node, target);
+//        Link existingLink = links.get(links.indexOf(searchLink));
+//        if(existingLink.load == Link.Load.LIGHT) {
+//            return 1;
+//        } else if(existingLink.load == Link.Load.MEDIUM) {
+//            return 2;
+//        } else if(existingLink.load == Link.Load.HEAVY) {
+//            return 3;
+//        }
 	    throw new RuntimeException("Should not happen");
 	  }
 
