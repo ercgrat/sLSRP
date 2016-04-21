@@ -28,9 +28,19 @@ public class PacketTask extends Thread {
 	    }else{
 	    	synchronized(NetworkInfo.getInstance()){
 	    		//Get the SPF and send the packet to the destination
+	    		//Get the SPF and send the packet to the destination
+	    		//int size = NetworkInfo.getInstance().getLinks().size();
+	    		//for(int i=0;i<size;i++){
+	    		//	System.out.println("A--->"+NetworkInfo.getInstance().getLinks().get(i).A);
+	    		//	System.out.println("B--->"+NetworkInfo.getInstance().getLinks().get(i).B);
+	    		//}
 	    		NetworkInfo.getInstance().execute(routerID);
 		    	LinkedList<Integer> paths = NetworkInfo.getInstance().getPath(packet.destinationID);
-		    	//routerObject = NetworkInfo.getInstance().getRouters().get(this.packet.nextID)
+		    	//System.out.println("path--->"+paths.get(0));
+		    	routerObject = NetworkInfo.getInstance().getNeighbors().get(paths.get(1));
+		    	//System.out.println("path 2--->"+paths.get(1));
+		    	
+		    	
 		    	Timer timer=new Timer();  
 				//The following will executed in 'helloInterval'  
 				timer.schedule(new TimerTask(){

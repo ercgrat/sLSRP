@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -180,7 +181,7 @@ public class SimulateSubnetPacketClient {
 	}
     
 	public static void main(String[] args) {
-		//First connect to its edge router
+//		//First connect to its edge router
 		if(args.length < 4) {
             System.out.println("Invalid number of arguments. Please provide an IP address and port number.");
             return;
@@ -190,6 +191,64 @@ public class SimulateSubnetPacketClient {
 		senderId = Integer.parseInt(args[2]);;
 		destinationID = Integer.parseInt(args[3]);;
 		userAction();
+		
+		
+//		NetworkInfo info = NetworkInfo.getInstance();
+//		Link link = new Link(0,1);
+//		link.delay=85;
+//		info.getLinks().add(link);
+//		
+//		link = new Link(0,2);
+//		link.delay=217;
+//		info.getLinks().add(link);
+//		
+//		link = new Link(0,4);
+//		link.delay=173;
+//		info.getLinks().add(link);
+//		
+//		link = new Link(2,6);
+//		link.delay=186;
+//		info.getLinks().add(link);
+//		
+//		link = new Link(2,7);
+//		link.delay=103;
+//		info.getLinks().add(link);
+//		
+//		link = new Link(3,7);
+//		link.delay=183;
+//		info.getLinks().add(link);
+//		
+//		link = new Link(5,8);
+//		link.delay=250;
+//		info.getLinks().add(link);
+//		
+//		link = new Link(8,9);
+//		link.delay=84;
+//		info.getLinks().add(link);
+//		
+//		link = new Link(7,9);
+//		link.delay=167;
+//		info.getLinks().add(link);
+//		
+//		link = new Link(4,9);
+//		link.delay=502;
+//		info.getLinks().add(link);
+//		
+//		link = new Link(9,10);
+//		link.delay=40;
+//		info.getLinks().add(link);
+//		
+//		link = new Link(1,10);
+//		link.delay=600;
+//		info.getLinks().add(link);
+//	    
+//		info.execute(0);
+//		
+//		LinkedList<Integer> path = info.getPath(10);
+//	    
+//	    for (int id : path) {
+//	      System.out.println("id--->"+id);
+//	    }
 		
 	}
 }

@@ -39,9 +39,20 @@ public class NetworkInfo {
 		return neighbors;
 	}
 	public void updateLinks(int sourceID, List<Link> links) {
+		//int size = NetworkInfo.getInstance().getLinks().size();
+		//for(int i=0;i<size;i++){
+		//	System.out.println("A--->"+NetworkInfo.getInstance().getLinks().get(i).A);
+		//	System.out.println("B--->"+NetworkInfo.getInstance().getLinks().get(i).B);
+		//}
+		//System.out.println("updateLinks a--->"+links.get(0).A);
+		//System.out.println("updateLinks b--->"+links.get(0).B);
         // Update delay for existing links, add new links
 		for(Link link : links) {
             if(!this.links.contains(link)) {
+            	if(config.routerID==link.B){
+            		link.B = link.A;
+            		link.A = config.routerID;
+            	}
                 this.links.add(link);
             } else {
                 Link old = this.links.get(this.links.indexOf(link));
@@ -54,6 +65,11 @@ public class NetworkInfo {
                 this.links.remove(link);
             }
         }
+        //size = NetworkInfo.getInstance().getLinks().size();
+		//for(int i=0;i<size;i++){
+		//	System.out.println("A--->"+NetworkInfo.getInstance().getLinks().get(i).A);
+		//	System.out.println("B--->"+NetworkInfo.getInstance().getLinks().get(i).B);
+		//}
 	}
 	public List<Link> getLinks() {
 		return links;
@@ -69,26 +85,30 @@ public class NetworkInfo {
 		return neighborList;
 	}
 	
-	private Set<Integer> settledNodes;
-	private Set<Integer> unSettledNodes;
-	private Map<Integer, Integer> predecessors;
-	private Map<Integer, Integer> distance;
-	public void execute(int sourceRouter) {
+	
+	
+	  
+	  private Set<Integer> settledNodes;
+	  private Set<Integer> unSettledNodes;
+	  private Map<Integer, Integer> predecessors;
+	  private Map<Integer, Integer> distance;
+
+	  public void execute(Integer source) {
 	    settledNodes = new HashSet<Integer>();
 	    unSettledNodes = new HashSet<Integer>();
 	    distance = new HashMap<Integer, Integer>();
 	    predecessors = new HashMap<Integer, Integer>();
-	    distance.put(sourceRouter, 0);
-	    unSettledNodes.add(sourceRouter);
+	    distance.put(source, 0);
+	    unSettledNodes.add(source);
 	    while (unSettledNodes.size() > 0) {
-	      int node = getMinimum(unSettledNodes);
+	    	int node = getMinimum(unSettledNodes);
 	      settledNodes.add(node);
 	      unSettledNodes.remove(node);
 	      findMinimalDistances(node);
 	    }
 	  }
 
-	  private void findMinimalDistances(Integer node) {
+	  private void findMinimalDistances(int node) {
 	    List<Integer> adjacentNodes = getNeighbors(node);
 	    for (int target : adjacentNodes) {
 	      if (getShortestDistance(target) > getShortestDistance(node)
@@ -103,46 +123,52 @@ public class NetworkInfo {
 	  }
 
 	  private int getDistance(int node, int target) {
-        Link searchLink = new Link(node, target);
-        Link existingLink = links.get(links.indexOf(searchLink));
-        if(existingLink.load == Link.Load.LIGHT) {
-            return 1;
-        } else if(existingLink.load == Link.Load.MEDIUM) {
-            return 2;
-        } else if(existingLink.load == Link.Load.HEAVY) {
-            return 3;
-        }
+	    for (Link edge : links) {
+	      if (edge.A==node
+	          && edge.B==target) {
+	        return edge.getDelay();
+	      }
+	    }
+		  
+//	    Link searchLink = new Link(node, target);
+//        Link existingLink = links.get(links.indexOf(searchLink));
+//        if(existingLink.load == Link.Load.LIGHT) {
+//            return 1;
+//        } else if(existingLink.load == Link.Load.MEDIUM) {
+//            return 2;
+//        } else if(existingLink.load == Link.Load.HEAVY) {
+//            return 3;
+//        }
 	    throw new RuntimeException("Should not happen");
 	  }
 
 	  public List<Integer> getNeighbors(int node) {
 	    List<Integer> neighbors = new ArrayList<Integer>();
-	    for (Link link : links) {
-	      if (link.A == node) {
-	        neighbors.add(link.A);
-	      } else if(link.B == node) {
-            neighbors.add(link.B);
-          }
+	    for (Link edge : links) {
+	      if (edge.A==node
+	          && !isSettled(edge.B)) {
+	        neighbors.add(edge.B);
+	      }
 	    }
 	    return neighbors;
 	  }
 
-	  private int getMinimum(Set<Integer> routers) {
-	    int minimum =0;
-	    for (int r : routers) {
+	  private int getMinimum(Set<Integer> vertexes) {
+	    int minimum = 0;
+	    for (int vertex : vertexes) {
 	      if (minimum == 0) {
-	        minimum = r;
+	        minimum = vertex;
 	      } else {
-	        if (getShortestDistance(r) < getShortestDistance(minimum)) {
-	          minimum = r;
+	        if (getShortestDistance(vertex) < getShortestDistance(minimum)) {
+	          minimum = vertex;
 	        }
 	      }
 	    }
 	    return minimum;
 	  }
 
-	  private boolean isSettled(int r) {
-	    return settledNodes.contains(r);
+	  private boolean isSettled(int vertex) {
+	    return settledNodes.contains(vertex);
 	  }
 
 	  private int getShortestDistance(int destination) {
@@ -154,11 +180,8 @@ public class NetworkInfo {
 	    }
 	  }
 
-	  /*
-	   * This method returns the path from the source to the selected target and
-	   * NULL if no path exists
-	   */
-	  public LinkedList<Integer> getPath(int target) {
+	  
+	  public LinkedList<Integer> getPath(Integer target) {
 	    LinkedList<Integer> path = new LinkedList<Integer>();
 	    int step = target;
 	    // check if a path exists
