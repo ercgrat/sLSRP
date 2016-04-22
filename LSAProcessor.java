@@ -36,6 +36,11 @@ public class LSAProcessor {
         try {
             synchronized(netInfo) {
                 lsa = new LSA(config.routerID, sequenceNumber, netInfo.getNeighborLinks(config.routerID));
+                double rate = config.packetErrorRate ;
+        		int r = (int) (rate*100);
+                if(getProbabilityByPercent(r)){
+                	lsa.checksum = 0;
+                }
             }
         } catch(IOException e) {
             e.printStackTrace();
@@ -106,5 +111,8 @@ public class LSAProcessor {
             }
         }
 	}
-	
+	public static Boolean getProbabilityByPercent(int rate){
+		int r = new Random().nextInt(101);
+		return r>rate?false:true;
+	}
 }
