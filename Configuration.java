@@ -7,12 +7,12 @@ import java.util.List;
 
 public class Configuration {
 	
+    int routerID;
     String nameServerIp;
     int nameServerPort;
 	int maxNetworkSize;
 	int helloInterval;
 	int updateInterval;
-	int routerID;
 	String routerIpAddress;
 	int routerPort;
 	String version;
@@ -27,8 +27,10 @@ public class Configuration {
 	List<String> neighborBlacklist = new ArrayList<String>();
 	
 	
-	public Configuration(String filepath) {
+	public Configuration(String routerIdString, String filepath) {
 		try {
+            this.routerID = Integer.parseInt(routerIdString);
+            
 			BufferedReader br = new BufferedReader(new FileReader(filepath));
 			
 			String[] tokens = readAndParse(br);
@@ -41,8 +43,6 @@ public class Configuration {
 			helloInterval = Integer.parseInt(tokens[1]);
 			tokens = readAndParse(br);
 			updateInterval = Integer.parseInt(tokens[1]);
-			tokens = readAndParse(br);
-			routerID = Integer.parseInt(tokens[1]);
 			tokens = readAndParse(br);
 			version = tokens[1];
 			tokens = readAndParse(br);
@@ -65,7 +65,7 @@ public class Configuration {
 			String[] configNonNeighbors =  nonNeighborStr.split(",");
 			neighborBlacklist = (List) Arrays.asList(configNonNeighbors);
 			
-			try{
+			try {
 				tokens = readAndParse(br);
 				if(tokens!=null){
 					String neighborStr = tokens[1];
@@ -79,7 +79,7 @@ public class Configuration {
 					}
 				}
 				
-			}catch(Exception e){
+			} catch(Exception e) {
 				e.printStackTrace();
 			}
 			

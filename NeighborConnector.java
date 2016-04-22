@@ -64,10 +64,33 @@ public class NeighborConnector extends Thread {
             // Remove entries from the neighbor, router, and link lists
             NetworkInfo.getInstance().getNeighbors().remove(neighborRouterID);
             
-            Link link = new Link(routerID, neighborRouterID);
-            NetworkInfo.getInstance().getLinks().remove(link);
+            Link searchLink = new Link(routerID, neighborRouterID);
+            List<Link> links = NetworkInfo.getInstance().getLinks();
+            links.remove(links.indexOf(searchLink));
         }
 	}
+    
+    public static void addNeighborViaNameServer(int routerId, Configuration config) {
+        try {
+            SocketBundle client = NetUtils.clientSocket(config.nameServerIp, config.nameServerPort);
+            client.out.writeInt(1); // Request router info
+            client.out.writeInt(routerId); // Router to get info about
+            
+            int routerDataLength = client.in.readInt();
+            String routerData = "";
+            for(int i = 0; i < routerDataLength; i++) {
+                routerData += client.in.readChar();
+            }
+            client.socket.close();
+            System.out.println("router data length: " + routerDataLength);
+            System.out.println("router data: " + routerData);
+            
+            String[] routerDataInfo = routerData.split("=");
+            sendNeighborRequest(config.routerID, config.routerPort, Integer.parseInt(routerDataInfo[0]), routerDataInfo[1], Integer.parseInt(routerDataInfo[2]));
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+    }
 	
 	public static void sendNeighborRequest(int routerID, int routerPort, int neighborRouterID, String neighborIp, int neighborPort) {
 	

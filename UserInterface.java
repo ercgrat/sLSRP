@@ -19,7 +19,7 @@ public class UserInterface extends Thread {
 			"1. Print Link State Database\n" +
 			"2. Print LSA History\n" +
 			"3. Print Router Info (id, ip address, port)\n" +
-			"4. Add Router Info to Neighbor List\n" +
+			"4. Add Router to Neighbor List\n" +
 			"5. Remove Router from Neighbor List\n" +
             "6. Shut down router");
 			
@@ -51,18 +51,22 @@ public class UserInterface extends Thread {
                             HashMap<Integer,HashMap<Integer,LSA>> receivedLSAHistoryTable = LSAProcessor.getInstance(config, netInfo).receivedLSAHistoryTable;
                             
                             output = "\n~~~UI Response to 2.~~~\n";
-                            Iterator iterator = routers.entrySet().iterator();
-                            while(iterator.hasNext()){
-                                Map.Entry entry = (Map.Entry)iterator.next();
-                                int routerID = (Integer)entry.getKey();
-                                HashMap<Integer, LSA> lsaHistory = receivedLSAHistoryTable.get(routerID);
-                                ArrayList<Integer> sequenceNumbers = new ArrayList<Integer>();
-                                sequenceNumbers.addAll(lsaHistory.keySet());
-                                Collections.sort(sequenceNumbers);
-                                int sequenceNo = sequenceNumbers.get(sequenceNumbers.size() - 1);
-                                output += "Router ID " + routerID + " - Sequence No. " + sequenceNo + "\n";
+                            try {
+                                Iterator iterator = routers.entrySet().iterator();
+                                while(iterator.hasNext()){
+                                    Map.Entry entry = (Map.Entry)iterator.next();
+                                    int routerID = (Integer)entry.getKey();
+                                    HashMap<Integer, LSA> lsaHistory = receivedLSAHistoryTable.get(routerID);
+                                    ArrayList<Integer> sequenceNumbers = new ArrayList<Integer>();
+                                    sequenceNumbers.addAll(lsaHistory.keySet());
+                                    Collections.sort(sequenceNumbers);
+                                    int sequenceNo = sequenceNumbers.get(sequenceNumbers.size() - 1);
+                                    output += "Router ID " + routerID + " - Sequence No. " + sequenceNo + "\n";
+                                }
+                                System.out.println(output);
+                            } catch(NullPointerException e) {
+                                System.out.println("No LSAs have been received yet.");
                             }
-                            System.out.println(output);
                         }
 						break;
 					case 3:
@@ -79,21 +83,7 @@ public class UserInterface extends Thread {
 							System.out.println("\n~~~UI Feedback~~~\nThe router ID must be an integer.");
 						} else {
                             int routerId = Integer.parseInt(routerArg);
-                            SocketBundle client = NetUtils.clientSocket(config.nameServerIp, config.nameServerPort);
-                            client.out.writeInt(1); // Request router info
-                            client.out.writeInt(routerId); // Router to get info about
-                            
-                            int routerDataLength = client.in.readInt();
-                            String routerData = "";
-                            for(int i = 0; i < routerDataLength; i++) {
-                                routerData += client.in.readChar();
-                            }
-                            client.socket.close();
-                            System.out.println("router data length: " + routerDataLength);
-                            System.out.println("router data: " + routerData);
-                            
-                            String[] routerDataInfo = routerData.split("=");
-							NeighborConnector.sendNeighborRequest(config.routerID, config.routerPort, Integer.parseInt(routerDataInfo[0]), routerDataInfo[1], Integer.parseInt(routerDataInfo[2]));
+                            NeighborConnector.addNeighborViaNameServer(routerId, config);
 						}
 						break;
 					case 5:
@@ -119,6 +109,9 @@ public class UserInterface extends Thread {
                     case 6:
 						System.exit(0);
 						break;
+                    case 7:
+                        Router.failing = !Router.failing;
+                        break;
 					default:
 						break;
 				}

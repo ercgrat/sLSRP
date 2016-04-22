@@ -39,20 +39,9 @@ public class NetworkInfo {
 		return neighbors;
 	}
 	public void updateLinks(int sourceID, List<Link> links) {
-		//int size = NetworkInfo.getInstance().getLinks().size();
-		//for(int i=0;i<size;i++){
-		//	System.out.println("A--->"+NetworkInfo.getInstance().getLinks().get(i).A);
-		//	System.out.println("B--->"+NetworkInfo.getInstance().getLinks().get(i).B);
-		//}
-		//System.out.println("updateLinks a--->"+links.get(0).A);
-		//System.out.println("updateLinks b--->"+links.get(0).B);
-        // Update delay for existing links, add new links
+		
 		for(Link link : links) {
             if(!this.links.contains(link)) {
-//            	if(config.routerID==link.B){
-//            		link.B = link.A;
-//            		link.A = config.routerID;
-//            	}
                 this.links.add(link);
             } else {
                 Link old = this.links.get(this.links.indexOf(link));
@@ -65,11 +54,8 @@ public class NetworkInfo {
                 this.links.remove(link);
             }
         }
-        //size = NetworkInfo.getInstance().getLinks().size();
-		//for(int i=0;i<size;i++){
-		//	System.out.println("A--->"+NetworkInfo.getInstance().getLinks().get(i).A);
-		//	System.out.println("B--->"+NetworkInfo.getInstance().getLinks().get(i).B);
-		//}
+        
+        this.categorizeDelays();
 	}
 	public List<Link> getLinks() {
 		return links;

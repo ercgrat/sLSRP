@@ -10,17 +10,19 @@ import sLSRP.NetworkInfo;
 public class Router {
 
 	public static volatile boolean failing = false;	
+    private static boolean needToRecover = false;
+    private static ArrayList<Integer> recoveryNeighbors = new ArrayList<Integer>();
 	private static final int ACK_FLAG = 100; //The universal acknowledgement number
 	
 	public static void main(String args[]) {
         
-        if(args.length != 1) {
-            System.out.println("Invalid number of arguments. Please provide a configuration filename, e.g.:\n\tjava sLSRP/Router.java config.txt");
+        if(args.length != 2) {
+            System.out.println("Invalid number of arguments. Please provide a router id and configuration filename, e.g.:\n\tjava sLSRP/Router 1 config.txt");
             return;
         }
         
 		// Read in configuration
-		Configuration config = new Configuration(args[0]);
+		Configuration config = new Configuration(args[0], args[1]);
 		NetworkInfo.getInstance().setConfiguration(config);
 		
 		// Create data structures
@@ -64,12 +66,24 @@ public class Router {
         LSAGeneratorDaemon lsaGenerator = new LSAGeneratorDaemon(config, NetworkInfo.getInstance(), lsaProcessor);
         lsaGenerator.start();
         
+        // Router failure daemon
+        RouterFailureDaemon failureDaemon = new RouterFailureDaemon(config, NetworkInfo.getInstance());
+        failureDaemon.start();
+        
 		// Create user interface
 		UserInterface ui = new UserInterface(config, NetworkInfo.getInstance());
 		ui.start();
 		
 		while(true) {
 			if(!failing) {
+                if(needToRecover) {
+                    System.out.println("Recovering from failure... reestablishing neighbor connections...");
+                    for(Integer routerID : recoveryNeighbors) {
+                        NeighborConnector.addNeighborViaNameServer(routerID, config);
+                    }
+                    needToRecover = false;
+                }
+                
 				System.out.println("Waiting to accept incoming client...");
 				SocketBundle client = NetUtils.acceptClient(serverSocket);
 				String ip = client.socket.getInetAddress().toString();
@@ -162,7 +176,19 @@ public class Router {
                         System.out.println("Received invalid connection type " + packetType);
                         break;
 				}
-			}
+			} else {
+                NetworkInfo netInfo = NetworkInfo.getInstance();
+                synchronized(netInfo) {
+                    Iterator iterator = netInfo.getNeighbors().keySet().iterator();
+                    while(iterator.hasNext()) {
+                        Integer routerID = (Integer)iterator.next();
+                        recoveryNeighbors.add(routerID);
+                    }
+                    netInfo.getNeighbors().clear();
+                    netInfo.getLinks().clear();
+                }
+                needToRecover = true;
+            }
 		}
 	}
 

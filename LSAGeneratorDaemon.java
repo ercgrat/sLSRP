@@ -23,10 +23,11 @@ public class LSAGeneratorDaemon extends Thread {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-            
-            // Broadcast a new LSA
-            LSA lsa = processor.createLSA();
-            processor.broadcastLSA(lsa);
+            if(!Router.failing) {
+                // Broadcast a new LSA
+                LSA lsa = processor.createLSA();
+                processor.broadcastLSA(lsa);
+            }
 		}
 	}
 }
