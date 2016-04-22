@@ -200,9 +200,9 @@ public class NetworkInfo {
           int range = maxDelay - minDelay;
           int groupSize = range/3;
           for(Link link : links) {
-              if(link.delay < minDelay + groupSize) {
+              if(link.delay <= minDelay + groupSize) {
                   link.load = Link.Load.LIGHT;
-              } else if(link.delay < maxDelay - groupSize) {
+              } else if(link.delay <= maxDelay - groupSize) {
                   link.load = Link.Load.MEDIUM;
               } else {
                   link.load = Link.Load.HEAVY;

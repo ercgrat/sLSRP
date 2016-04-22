@@ -34,7 +34,6 @@ public class UserInterface extends Thread {
 					case 1:
                         synchronized(netInfo) {
                             List<Link> links = netInfo.getLinks();
-                            System.out.println(links);
                             
                             output = "\n~~~UI Response to 1.~~~\n";
                             for(int i = 0; i < links.size(); i++) {
