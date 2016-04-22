@@ -175,7 +175,7 @@ public class SimulateSubnetPacketClient {
 				}
 			}
 		}else{
-			System.out.println("Please enter a valid directory path.");
+			System.err.println("Please enter a valid directory path.");
 			userAction();
 		}
 	}
