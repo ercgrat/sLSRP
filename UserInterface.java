@@ -47,27 +47,20 @@ public class UserInterface extends Thread {
 						break;
 					case 2:
                         synchronized(netInfo) {
-                            HashMap<Integer,RouterData> routers = netInfo.getNeighbors();
                             HashMap<Integer,HashMap<Integer,LSA>> receivedLSAHistoryTable = LSAProcessor.getInstance(config, netInfo).receivedLSAHistoryTable;
                             
                             output = "\n~~~UI Response to 2.~~~\n";
-                            try {
-                                Iterator iterator = routers.entrySet().iterator();
-                                while(iterator.hasNext()){
-                                    Map.Entry entry = (Map.Entry)iterator.next();
-                                    int routerID = (Integer)entry.getKey();
-                                    HashMap<Integer, LSA> lsaHistory = receivedLSAHistoryTable.get(routerID);
-                                    ArrayList<Integer> sequenceNumbers = new ArrayList<Integer>();
-                                    sequenceNumbers.addAll(lsaHistory.keySet());
-                                    Collections.sort(sequenceNumbers);
-                                    int sequenceNo = sequenceNumbers.get(sequenceNumbers.size() - 1);
-                                    output += "Router ID " + routerID + " - Sequence No. " + sequenceNo + "\n";
-                                }
-                                System.out.println(output);
-                            } catch(NullPointerException e) {
-                            	System.out.println("\033[31;4m No LSAs have been received yet.\033[0m");
-                                //System.out.println("No LSAs have been received yet.");
+                            Iterator iterator = receivedLSAHistoryTable.keySet().iterator();
+                            while(iterator.hasNext()) {
+                                Integer routerID = (Integer)iterator.next();
+                                HashMap<Integer, LSA> lsaHistory = receivedLSAHistoryTable.get(routerID);
+                                ArrayList<Integer> sequenceNumbers = new ArrayList<Integer>();
+                                sequenceNumbers.addAll(lsaHistory.keySet());
+                                Collections.sort(sequenceNumbers);
+                                int sequenceNo = sequenceNumbers.get(sequenceNumbers.size() - 1);
+                                output += "Router ID " + routerID + " - Sequence No. " + sequenceNo + "\n";
                             }
+                            System.out.println(output);
                         }
 						break;
 					case 3:
@@ -81,11 +74,11 @@ public class UserInterface extends Thread {
 						String routerArg = br.readLine();
                         
                         if(!routerArg.matches("^\\d+$")) {
-							//System.out.println("\n~~~UI Feedback~~~\nThe router ID must be an integer.");
-							System.out.println("\033[31;4m \n~~~UI Feedback~~~\nThe router id must be an integer.\033[0m");
+							System.out.println("\n~~~UI Feedback~~~\nThe router ID must be an integer.");
 						} else {
                             int routerId = Integer.parseInt(routerArg);
-                            NeighborConnector.addNeighborViaNameServer(routerId, config);
+                            NewNeighborTask neighborTask = new NewNeighborTask(routerId, config);
+                            neighborTask.start();
 						}
 						break;
 					case 5:
@@ -94,8 +87,7 @@ public class UserInterface extends Thread {
                             String routerInput = br.readLine();
                             
                             if(!routerInput.matches("^\\d+$")) {
-                                //System.out.println("\n~~~UI Feedback~~~\nThe router id must be an integer.");
-                                System.out.println("\033[31;4m \n~~~UI Feedback~~~\nThe router id must be an integer.\033[0m");
+                                System.out.println("\n~~~UI Feedback~~~\nThe router id must be an integer.");
                             } else {
                                 int routerID = Integer.parseInt(routerInput);
                                 
@@ -104,8 +96,7 @@ public class UserInterface extends Thread {
                                 if(data != null) {
                                     NeighborConnector.sendCeaseNeighborRequest(config.routerID, routerID, data.ipAddress, data.port);						
                                 } else {
-                                	System.out.println("\033[31;4m \n~~~UI Feedback~~~\nThere is no neighbor with that id.\033[0m");
-                                    //System.out.println("\n~~~UI Feedback~~~\nThere is no neighbor with that id.");
+                                    System.out.println("\n~~~UI Feedback~~~\nThere is no neighbor with that id.");
                                 }
                             }
                         }

@@ -9,7 +9,7 @@ public class AliveMessageTask extends Thread {
     Link neighborLink;
     final LSAProcessor processor;
 	int routerID = 0;
-    private final int ALIVE_FAILURE_TIME = 2000;
+    private final int ALIVE_FAILURE_TIME = 500;
     Timer timer; 
     
 	public AliveMessageTask(RouterData routerObject, int routerID, Link neighborLink, LSAProcessor processorInstance){

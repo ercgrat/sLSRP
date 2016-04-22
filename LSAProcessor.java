@@ -63,7 +63,7 @@ public class LSAProcessor {
                     }
                 }
             }
-        } catch(IOException e) {
+        } catch(Exception e) {
             e.printStackTrace();
         }
     }

@@ -35,7 +35,7 @@ public class NameServer {
                     client.out.writeChars(entries[routerId].toString());
                 }
                 client.socket.close();
-            } catch(IOException e) {
+            } catch(Exception e) {
                 e.printStackTrace();
             }
             
