@@ -65,7 +65,8 @@ public class UserInterface extends Thread {
                                 }
                                 System.out.println(output);
                             } catch(NullPointerException e) {
-                                System.out.println("No LSAs have been received yet.");
+                            	System.out.println("\033[31;4m No LSAs have been received yet.\033[0m");
+                                //System.out.println("No LSAs have been received yet.");
                             }
                         }
 						break;
@@ -80,7 +81,8 @@ public class UserInterface extends Thread {
 						String routerArg = br.readLine();
                         
                         if(!routerArg.matches("^\\d+$")) {
-							System.out.println("\n~~~UI Feedback~~~\nThe router ID must be an integer.");
+							//System.out.println("\n~~~UI Feedback~~~\nThe router ID must be an integer.");
+							System.out.println("\033[31;4m \n~~~UI Feedback~~~\nThe router id must be an integer.\033[0m");
 						} else {
                             int routerId = Integer.parseInt(routerArg);
                             NeighborConnector.addNeighborViaNameServer(routerId, config);
@@ -92,7 +94,8 @@ public class UserInterface extends Thread {
                             String routerInput = br.readLine();
                             
                             if(!routerInput.matches("^\\d+$")) {
-                                System.out.println("\n~~~UI Feedback~~~\nThe router id must be an integer.");
+                                //System.out.println("\n~~~UI Feedback~~~\nThe router id must be an integer.");
+                                System.out.println("\033[31;4m \n~~~UI Feedback~~~\nThe router id must be an integer.\033[0m");
                             } else {
                                 int routerID = Integer.parseInt(routerInput);
                                 
@@ -101,7 +104,8 @@ public class UserInterface extends Thread {
                                 if(data != null) {
                                     NeighborConnector.sendCeaseNeighborRequest(config.routerID, routerID, data.ipAddress, data.port);						
                                 } else {
-                                    System.out.println("\n~~~UI Feedback~~~\nThere is no neighbor with that id.");
+                                	System.out.println("\033[31;4m \n~~~UI Feedback~~~\nThere is no neighbor with that id.\033[0m");
+                                    //System.out.println("\n~~~UI Feedback~~~\nThere is no neighbor with that id.");
                                 }
                             }
                         }
