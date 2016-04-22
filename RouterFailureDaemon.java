@@ -28,7 +28,7 @@ public class RouterFailureDaemon extends Thread {
                 Random r = new Random();
                 double val = r.nextDouble();
                 if(val < config.routerFailureRate) {
-                	System.out.println("\033[31;4mRed ****************************\n*****ROUTER FAILING NOW*****\n****************************\033[0m");
+                	System.out.println("\033[31;4m ****************************\n*****ROUTER FAILING NOW*****\n****************************\033[0m");
                     //System.out.println("****************************\n*****ROUTER FAILING NOW*****\n****************************");
                     Router.failing = true;
                 }

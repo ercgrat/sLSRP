@@ -122,7 +122,7 @@ public class NeighborConnector extends Thread {
 				addNeighbor(routerID, neighborRouterID, neighborIp, neighborPort, delay);
                 
 			} else {
-				System.out.println("\033[31;4mRed The neighborhood request has been rejected by the other router, the response type is: "+responseType+"\033[0m");
+				System.out.println("\033[31;4m The neighborhood request has been rejected by the other router, the response type is: "+responseType+"\033[0m");
 				//System.out.println(");
 			}
 			

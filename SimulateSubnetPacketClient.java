@@ -139,7 +139,7 @@ public class SimulateSubnetPacketClient {
 			if(responseType == ACK_FLAG) {
 				System.out.println("Successfully sent a packet" );
 			} else {
-				System.out.println("\033[31;4mRed Failed to send a packet.\033[0m");
+				System.out.println("\033[31;4mFailed to send a packet.\033[0m");
 			}
 			
 		} catch (IOException e) {
@@ -170,12 +170,12 @@ public class SimulateSubnetPacketClient {
 				if(new File(fpath).exists()){
 					sendFile(fpath,name);
 				}else{
-					System.out.println("\033[31;4mRed The file does not exist.\033[0m");
+					System.out.println("\033[31;4m The file does not exist.\033[0m");
 					userAction();
 				}
 			}
 		}else{
-			System.out.println("\033[31;4mRed Please enter a valid directory path.\033[0m");
+			System.out.println("\033[31;4m Please enter a valid directory path.\033[0m");
 			userAction();
 		}
 	}
@@ -183,7 +183,7 @@ public class SimulateSubnetPacketClient {
 	public static void main(String[] args) {
 //		//First connect to its edge router
 		if(args.length < 4) {
-			System.out.println("\033[31;4mRed Invalid number of arguments. Please provide an IP address and port number.\033[0m");
+			System.out.println("\033[31;4m Invalid number of arguments. Please provide an IP address and port number.\033[0m");
             return;
         }
 		ip = args[0];
