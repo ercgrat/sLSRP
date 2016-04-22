@@ -48,7 +48,7 @@ public class PacketTask extends Thread {
 					public void run() {
 						if(PacketTask.this.isAlive()){
 							PacketTask.this.interrupt();
-							System.err.println("Time to send a packet has reached a limit, so the thread is interrupted.");
+							System.out.println("\033[31;4mRed Time to send a packet has reached a limit, so the thread is interrupted.\033[0m");
 							//try to resend the packet
 				        }
 				}}, failureInterval);

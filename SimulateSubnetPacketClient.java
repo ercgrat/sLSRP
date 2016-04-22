@@ -79,7 +79,7 @@ public class SimulateSubnetPacketClient {
 		boolean flag = true;
 		while(flag){
 			if(toIndex>=list.size()){
-				System.out.println("toIndex>=list.size()");
+				//System.out.println("toIndex>=list.size()");
 				List<Byte> sublist = (List<Byte>) list.subList(fromIndex, list.size());
 				byte list2[] = new byte[sublist.size()];
 				for(int i=0;i<sublist.size();i++){
@@ -96,7 +96,7 @@ public class SimulateSubnetPacketClient {
 				
 				flag = false;
 			}else{
-				System.out.println("toIndex<list.size()"+toIndex);
+				//System.out.println("toIndex<list.size()"+toIndex);
 				List<Byte> sublist = (List<Byte>) list.subList(fromIndex, toIndex);
 				byte list2[] = new byte[sublist.size()];
 				for(int i=0;i<sublist.size();i++){
@@ -121,14 +121,14 @@ public class SimulateSubnetPacketClient {
 		return packetList;
 	}
 	static void connectToEdgeRouter(String ip,int port,Packet packet){
-		System.out.println("connectToEdgeRouter ip:"+ip +"  port: "+port);
+		//System.out.println("connectToEdgeRouter ip:"+ip +"  port: "+port);
     	SocketBundle client = NetUtils.clientSocket(ip, port);
 		int requestType = 1;
 		
 		try {
 			
 			client.out.writeInt(requestType);
-			System.out.println("connectToEdgeRouter ip:"+ip +"  port: "+port );
+			System.out.println("Connect to edge router :"+ip +"  port: "+port );
 			packet.forward(client.out);
 			
 			//read response type
@@ -139,7 +139,7 @@ public class SimulateSubnetPacketClient {
 			if(responseType == ACK_FLAG) {
 				System.out.println("Successfully sent a packet" );
 			} else {
-				System.out.println("Failed to send a packet" );
+				System.out.println("\033[31;4mRed Failed to send a packet.\033[0m");
 			}
 			
 		} catch (IOException e) {
@@ -170,12 +170,12 @@ public class SimulateSubnetPacketClient {
 				if(new File(fpath).exists()){
 					sendFile(fpath,name);
 				}else{
-					System.out.println("The file does not exist.");
+					System.out.println("\033[31;4mRed The file does not exist.\033[0m");
 					userAction();
 				}
 			}
 		}else{
-			System.err.println("Please enter a valid directory path.");
+			System.out.println("\033[31;4mRed Please enter a valid directory path.\033[0m");
 			userAction();
 		}
 	}
@@ -183,7 +183,7 @@ public class SimulateSubnetPacketClient {
 	public static void main(String[] args) {
 //		//First connect to its edge router
 		if(args.length < 4) {
-            System.out.println("Invalid number of arguments. Please provide an IP address and port number.");
+			System.out.println("\033[31;4mRed Invalid number of arguments. Please provide an IP address and port number.\033[0m");
             return;
         }
 		ip = args[0];

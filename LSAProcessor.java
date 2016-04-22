@@ -74,7 +74,7 @@ public class LSAProcessor {
         System.out.println("Received checksum on incoming packet: " + lsa.checksum);
         System.out.println("Calculated checksum on incoming packet: " + checksum);
         if(checksum != lsa.checksum) {
-            System.out.println("LSA is corruped; received checksum does not match calculated checksum. Dropping this LSA update.");
+        	System.out.println("\033[31;4mRed LSA is corruped; received checksum does not match calculated checksum. Dropping this LSA update.\033[0m");
             return;
         }
 		

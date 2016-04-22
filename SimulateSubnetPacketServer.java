@@ -19,7 +19,7 @@ public class SimulateSubnetPacketServer {
 	static HashMap<String,HashMap<Integer,Packet>> packTable = new HashMap<String,HashMap<Integer,Packet>>();
 	
 	public static void assemblePacket(Packet packet){
-		System.out.println("assemblePacket : ");
+		System.out.println("Assemble packets : ");
 		if(packTable.containsKey(packet.contentType)){//if the table contains storage info of incoming object(files)
 			if(packTable.get(packet.contentType).containsKey(packet.sequenceID)){
 				//drop the packet because this packet has been received.
@@ -37,7 +37,7 @@ public class SimulateSubnetPacketServer {
 			String fileName = packet.contentType;
 			HashMap<Integer,Packet> ps = packTable.get(packet.contentType);
             for(Integer key : ps.keySet()) {
-            	System.out.println("assemblePacket key: "+key);
+            	System.out.println("Assemble packet key: "+key);
             }
 			FileOutputStream out;
 			try {
@@ -60,7 +60,7 @@ public class SimulateSubnetPacketServer {
 	private static final int ACK_FLAG = 100; //The universal acknowledgement number
 	public static void main(String[] args) {
 		if(args.length < 2) {
-            System.out.println("Invalid number of arguments. Please provide an IP address and port number.");
+			System.out.println("\033[31;4mRed Invalid number of arguments. Please provide an IP address and port number.\033[0m");
             return;
         }
 		final String ip = args[0];
