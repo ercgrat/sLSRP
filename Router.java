@@ -17,7 +17,7 @@ public class Router {
 	public static void main(String args[]) {
         
         if(args.length != 2) {
-        	System.out.println("\033[31;4mRed Invalid number of arguments. Please provide a router id and configuration filename, e.g.:\n\tjava sLSRP/Router 1 config.txt\033[0m");
+        	System.out.println("\033[31;4m Invalid number of arguments. Please provide a router id and configuration filename, e.g.:\n\tjava sLSRP/Router 1 config.txt\033[0m");
             return;
         }
         
@@ -145,7 +145,7 @@ public class Router {
 							if(requestType == 1) { // Request neighbors
 								if(config.neighborBlacklist.contains(routerID+"")){ // Send NAK flag
 									client.out.writeInt(0);
-									System.out.println("\033[31;4mRed This router has been denied neighborhood: " + routerID + ", " + ip + ", " + port+"\033[0m");
+									System.out.println("\033[31;4m This router has been denied neighborhood: " + routerID + ", " + ip + ", " + port+"\033[0m");
 								} else { //Send ACK flag
                                     NeighborConnector.addNeighbor(config.routerID, routerID, ip, port, 0);
 									client.out.writeInt(1);
@@ -153,7 +153,7 @@ public class Router {
 							} else if(requestType == 2) { // Cease neighbors
 								NeighborConnector.removeNeighbor(config.routerID, routerID, ip, port);
 							} else {
-								System.out.println("\033[31;4mRed Neighbor packet had invalid request type.\033[0m");
+								System.out.println("\033[31;4m Neighbor packet had invalid request type.\033[0m");
 							}						    
 					    } catch (IOException e) {
 						    e.printStackTrace();
@@ -173,7 +173,7 @@ public class Router {
 					    }
 						break;
                     default:
-                        System.out.println("\033[31;4mRed Received invalid connection type .\033[0m");
+                        System.out.println("\033[31;4m Received invalid connection type .\033[0m");
                         break;
 				}
 			} else {

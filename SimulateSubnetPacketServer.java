@@ -60,7 +60,7 @@ public class SimulateSubnetPacketServer {
 	private static final int ACK_FLAG = 100; //The universal acknowledgement number
 	public static void main(String[] args) {
 		if(args.length < 2) {
-			System.out.println("\033[31;4mRed Invalid number of arguments. Please provide an IP address and port number.\033[0m");
+			System.out.println("\033[31;4m Invalid number of arguments. Please provide an IP address and port number.\033[0m");
             return;
         }
 		final String ip = args[0];
