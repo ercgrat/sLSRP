@@ -1,12 +1,7 @@
 package sLSRP;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class AliveMessageTask extends Thread {
     
@@ -32,6 +27,18 @@ public class AliveMessageTask extends Thread {
                     //remove this router from router table
                     NeighborConnector.removeNeighbor(AliveMessageTask.this.routerID,AliveMessageTask.this.routerObject.routerID
                             ,AliveMessageTask.this.routerObject.ipAddress,AliveMessageTask.this.routerObject.port);
+                    
+                    // The neighbor router failed, so remove all associated links
+                    synchronized(NetworkInfo.getInstance()) {
+                        List<Link> links = NetworkInfo.getInstance().getLinks();
+                        ArrayList<Link> removeLinks = new ArrayList<Link>();
+                        for(Link link : links) {
+                            if(link.A == AliveMessageTask.this.routerObject.routerID || link.B == AliveMessageTask.this.routerObject.routerID) {
+                                removeLinks.add(link);
+                            }
+                        }
+                        links.removeAll(removeLinks);
+                    }
                     
                     //And then send LSAs to tell every neighbor about new established links.
             		LSA lsa = processor.createLSA();
@@ -64,6 +71,19 @@ public class AliveMessageTask extends Thread {
 			e.printStackTrace();
             NeighborConnector.removeNeighbor(AliveMessageTask.this.routerID, AliveMessageTask.this.routerObject.routerID,
                 AliveMessageTask.this.routerObject.ipAddress, AliveMessageTask.this.routerObject.port);
+            
+            // The neighbor router failed, so remove all associated links
+            synchronized(NetworkInfo.getInstance()) {
+                List<Link> links = NetworkInfo.getInstance().getLinks();
+                ArrayList<Link> removeLinks = new ArrayList<Link>();
+                for(Link link : links) {
+                    if(link.A == AliveMessageTask.this.routerObject.routerID || link.B == AliveMessageTask.this.routerObject.routerID) {
+                        removeLinks.add(link);
+                    }
+                }
+                links.removeAll(removeLinks);
+            }
+            
             LSA lsa = processor.createLSA();
             processor.broadcastLSA(lsa);
 		}
